@@ -11,7 +11,14 @@
             'app.population.auth.reset-password',
             'app.population.auth.lock',
             'app.population.administration',
-            'app.population.ddb'
+            'app.population.ddb',
+            // 'app.population.registresocial',
+            'app.population.recommandation',
+            'app.population.traitement',
+            'app.population.validationdonnees',
+            'app.population.importationdonnees',
+            'app.population.reporting',
+            // 'app.population.beneficiaire',
        ])
         .config(config);
 

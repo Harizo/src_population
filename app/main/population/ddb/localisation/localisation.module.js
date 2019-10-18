@@ -15,9 +15,9 @@
     function config(msNavigationServiceProvider)
     {
         msNavigationServiceProvider.saveItem('population.ddb.localisation', {
-            title : 'Localisation',
+            title : "Découpage administratif",
             icon  : 'icon-map-marker-multiple',
-            weight: 6
+            weight: 8
         });
     }
 

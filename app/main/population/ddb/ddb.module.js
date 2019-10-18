@@ -3,9 +3,13 @@
     'use strict';
 
     angular
-        .module('app.population.ddb', [
-			
-            'app.population.ddb.localisation'
+        .module('app.population.ddb', [			
+           'app.population.ddb.enquetesurmenage',
+            'app.population.ddb.enquetesurindividu',
+            'app.population.ddb.acteurs',
+            'app.population.ddb.ddbprojet',
+            'app.population.ddb.localisation',
+            'app.population.ddb.annuaire'
             ])
         .run(testPermission)
         .config(config);
@@ -17,11 +21,11 @@
         msNavigationServiceProvider.saveItem('population.ddb', {
             title : 'Données de Bases',
             icon  : 'icon-data',
-            weight: 2/*,
+            weight: 2,
             hidden: function()
             {
                     return vs;
-            }*/
+            }
         });
 
 

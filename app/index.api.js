@@ -33,6 +33,12 @@
           },
           getAPIgeneraliserREST: function(controller,champ1,valeur1,champ2,valeur2,champ3,valeur3,champ4,valeur4) {
             return $http.get(apiUrl+controller+"?"+champ1+"="+valeur1+"&"+champ2+"="+valeur2+"&"+champ3+"="+valeur3+"&"+champ4+"="+valeur4);
+          },
+          getAllNonFait: function(model,fait) {//DP
+            return $http.get(apiUrl+model+"?fait='"+fait+"'");
+          },
+          getTable: function(controller, nom_table) {
+            return $http.get(apiUrl+controller+"?nom_table="+nom_table);
           }
 
 
@@ -70,7 +76,7 @@
     };
 
     /** @ngInject */
-    function loginService($http, apiUrl, $location, cookieService, storageService, $mdDialog, $state,$window)
+    function loginService($cookieStore,$http, apiUrl, $location, cookieService, storageService, $mdDialog, $state,$window,apiFactory)
     {
       return{
         sing_in: function(utilisateur, ev){
@@ -80,7 +86,6 @@
           cookieService.del('prenom');
           cookieService.del('email');
           cookieService.del('token');
-          cookieService.del('site');
           cookieService.del('roles');
           cookieService.del('exist');
           storageService.del('exist');
@@ -98,10 +103,23 @@
                     cookieService.set('prenom',data.response.prenom);
                     cookieService.set('email',data.response.email);
                     cookieService.set('token',data.response.token);
-                    cookieService.set('site',data.response.site_id);
                     cookieService.set('roles',data.response.roles);
                     storageService.set('exist',9);
                     storageService.set('enabled',data.response.enabled);
+					var id_utilisateur = data.response.id;
+                    //add historique
+                    var config = {
+                        headers : {
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                        }
+                    };
+                    var datas = $.param({
+                        action:"Connection à l'application",
+                        id_utilisateur:id_utilisateur
+                    });
+                    //factory
+                    apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+					});
                     if(data.response.enabled==0)
                     {
                       $location.path("/auth/lock");
@@ -141,7 +159,6 @@
                     cookieService.del('prenom');
                     cookieService.del('email');
                     cookieService.del('token');
-                    cookieService.del('site');
                     cookieService.del('roles');
                     cookieService.del('exist');
                     storageService.del('exist');
@@ -151,17 +168,30 @@
             });
         },
         logout: function(){
-          cookieService.del('id');
-          cookieService.del('nom');
-          cookieService.del('prenom');
-          cookieService.del('email');
-          cookieService.del('token');
-          cookieService.del('site');
-          cookieService.del('roles');
-          cookieService.del('exist');
-          storageService.del('exist');
-          storageService.del('enabled');
-          $location.path("/auth/login");
+			var id_utilisateur = $cookieStore.get('id');
+			//add historique
+			var config = {
+				headers : {
+					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+				}
+			};
+			var datas = $.param({
+				action:"Déconnection",
+				id_utilisateur:id_utilisateur	   			
+			});
+			//factory
+			apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+			}); 
+			cookieService.del('id');
+			cookieService.del('nom');
+			cookieService.del('prenom');
+			cookieService.del('email');
+			cookieService.del('token');
+			cookieService.del('roles');
+			cookieService.del('exist');
+			storageService.del('exist');
+			storageService.del('enabled');
+			$location.path("/auth/login");
         },
         isEnabled: function(){
           var token = cookieService.get('token');

@@ -42,7 +42,7 @@
     };
 
     //col table
-    vm.fokontany_column = [{titre:"Code"},{titre:"Nom"},{titre:"Commune"}];
+    vm.fokontany_column = [{titre:"Code"},{titre:"Nom"},{titre:"Commune"},{titre:"Latitude"},{titre:"Longitude"}];
     
     // apiFactory.getAll("commune/index").then(function(result)  {
       // vm.allcommune = result.data.response;
@@ -117,6 +117,8 @@
                 code: fokontany.code,
                 nom: fokontany.nom,
                 id_commune:fokontany.id_commune,
+                latitude:fokontany.latitude,
+                longitude:fokontany.longitude,
                 commune:fokontany.commune
                 
             });
@@ -134,6 +136,8 @@
                       vm.selectedItem.nom = vm.fokontany.nom;
                       vm.selectedItem.code = vm.fokontany.code;
                       vm.selectedItem.id_commune = vm.fokontany.id_commune;
+                      vm.selectedItem.latitude = vm.fokontany.latitude;
+                      vm.selectedItem.longitude = vm.fokontany.longitude;
                       vm.selectedItem.commune = vm.fokontany.commune;
                       vm.afficherboutonModifSupr = 0 ;
                       vm.afficherboutonnouveau = 1 ;
@@ -155,6 +159,8 @@
                         code: fokontany.code,
                         id:String(data.response),
                         id_commune:fokontany.id_commune,
+                        latitude:fokontany.latitude,
+                        longitude:fokontany.longitude,
                         commune:fokontany.commune 
                     };
         
@@ -202,12 +208,15 @@
       //function cache masque de saisie
         vm.ajouter = function () 
         {
+			vm.fokontany={};
           vm.selectedItem.$selected = false;
           vm.affichageMasque = 1 ;
           vm.fokontany.code='';
           vm.fokontany.nom='';
           vm.fokontany.commune='';
           vm.fokontany.id_commune='';
+          vm.fokontany.latitude=null;
+          vm.fokontany.longitude=null;
           NouvelItem = true ;
 
         };
@@ -231,6 +240,8 @@
           vm.fokontany.id = vm.selectedItem.id ;
           vm.fokontany.code = vm.selectedItem.code ;
           vm.fokontany.nom = vm.selectedItem.nom ;        
+          vm.fokontany.latitude = vm.selectedItem.latitude ;        
+          vm.fokontany.longitude = vm.selectedItem.longitude ;        
           vm.allcommune.forEach(function(comm) {
             if(comm.id==vm.selectedItem.id_commune) {
 				vm.fokontany.id_commune = comm.id ;
@@ -291,8 +302,20 @@
                         district_id: comm.district_id,
                     };
                     vm.fokontany.commune.push(itemss);
-					apiFactory.getAPIgeneraliser("commune/index","id_commune",comm.id,"id_region","'TOUT'").then(function(result) {
-						var code = parseInt(result.data.response[0].codefokontany) + 1;
+					var param_id_region =1;
+					vm.alldistrict.forEach(function(dis) {
+						if(dis.id==comm.district_id) {
+							param_id_region=dis.region_id;
+						}
+					});	
+					apiFactory.getAPIgeneraliser("commune/index","id_commune",comm.id,"id_region",param_id_region).then(function(result) {
+						console.log(result.data.response);
+						var code = 0;
+						if(result.data.response) {
+							code =  result.data.response.length + 1 ;
+						} else {
+							code=1;
+						}
 						if(code < 10) {
 							code = '00' + code;
 						} else if(code >=10 && code < 100){

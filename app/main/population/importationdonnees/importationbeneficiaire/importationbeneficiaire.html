@@ -1,0 +1,123 @@
+<div id="forms" class="page-layout simple fullwidth doc-page" layout="column">
+    <div class="header md-accent-bg" layout="row" layout-align="space-between">
+        <div layout="column" layout-align="space-between">
+            <div class="breadcrumb" layout="row" layout-align="start center">
+                <md-icon md-font-icon="icon-home" class="s16"></md-icon>
+                <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
+                <span class="parent">Importation des données</span>
+                <span class="parent"> </span>
+                <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
+                <span class="parent" href="javascript:;">Validation des bénéficiaires</span>
+            </div>
+
+            <div class="title">Validation des bénéficiaires</div>
+        </div>
+    </div>
+    <div class="content"layout="column">
+		<div class="form-wrapper"> 
+			<md-tabs md-dynamic-height>
+				<md-tab label="Liste validation des bénéficiaires">
+					<md-tab-body>
+						<fieldset>
+							<legend>
+								Validation des bénéficiaires
+								<button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
+							</legend>
+							<div style="clear:both;"></div>
+							<table ng-table="tableAvancement" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
+								<thead>
+									<tr>
+										<th class="secondary-text" ng-repeat="c in :: vm.tdr_coldetail">
+											<div class="table-header">
+												<span class="column-title">{{c.titre}}</span>
+											</div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr  ng-repeat="lstvld in vm.Listevalidationdonnees"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionDocument(lstvld)">
+										<td>
+											<span ng-if="lstvld.$edit">
+												<md-input-container>
+													<label>Acteur</label>
+													<input type="text" ng-model="lstvld.raisonsociale" disabled />
+													<div ng-messages="raisonsociale.$error" role="alert">									   
+													</div>
+												</md-input-container> 
+											</span>
+											<span ng-if="!lstvld.$edit">{{lstvld.raisonsociale}}</span>
+										</td>
+										<td>
+											<span ng-if="lstvld.$edit">
+												<label>{{lstvld.nom_fichier}}</label>
+												<div class="file-upload">
+													<input file-uploader id="fichier" name="fichier" type="file" custom-on-change="uploadFile"  ng-multiple="false" />
+													<button ng-click="vm.uploadFile()" style="background: #b4ddb4; /* Old browsers */
+background: -moz-linear-gradient(top,  #b4ddb4 0%, #83c783 17%, #52b152 33%, #008a00 67%, #005700 83%, #002400 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b4ddb4), color-stop(17%,#83c783), color-stop(33%,#52b152), color-stop(67%,#008a00), color-stop(83%,#005700), color-stop(100%,#002400)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b4ddb4', endColorstr='#002400',GradientType=0 ); /* IE6-9 */
+color:white;
+font-weight:bold;
+height:30px;">Upload me</button>
+												</div>
+												<div ng-messages="fichier.$error" role="alert"> 
+												</div>
+											</span>
+											<span ng-if="!lstvld.$edit">{{lstvld.nom_fichier}}</span>
+										</td>
+										<td>
+											<span ng-if="lstvld.$edit">
+												<md-input-container>
+													<label>Date upload</label>
+													<input type="datetime-local" ng-model="lstvld.date_reception" disabled />
+													<div ng-messages="date_reception.$error" role="alert">									   
+													</div>
+												</md-input-container> 
+											</span>
+											<span ng-if="!lstvld.$edit">{{lstvld.date_reception |date:'dd/MM/yyyy HH:mm:ss'}}</span>
+										</td>
+										<td>
+											<span ng-if="lstvld.$edit">
+												<md-input-container>
+													<label>Utilisateur</label>
+													<input type="text" ng-model="lstvld.nomutilisateur" disabled />
+													<div ng-messages="nomutilisateur.$error" role="alert">									   
+													</div>
+												</md-input-container> 
+											</span>
+											<span ng-if="!lstvld.$edit">{{lstvld.nomutilisateur}}</span>
+										</td>
+										<td>
+											<a ng-if="!lstvld.$edit && (vm.utilisateur_id ==lstvld.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.modifierDocument(lstvld)" title="Modifier">
+												<span class="icon-table-edit"></span>
+											</a>
+											<a ng-if="!lstvld.$edit && (vm.utilisateur_id ==lstvld.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.supprimerDocument(lstvld)" title="Supprimer">
+												<span class="icon-delete"></span>
+											</a>
+											<a ng-if="lstvld.$edit" ng-click="vm.annulerDocument(lstvld)" title="Annuler modification">
+												<span class="icon-cancel"></span>
+											</a>
+											<a ng-if="lstvld.$edit" ng-show="lstvld.nom_fichier >''" ng-click="vm.uploadFile(lstvld,0)" title="Enregistrer">
+												<span class="icon-content-save"></span>
+											</a>
+											<a ng-if="!lstvld.$edit" ng-click="vm.exportfichier(lstvld)" title="Enregistré par : {{lstvld.nomutilisateur}} (Download)">
+												<span class="icon-download"></span>
+											</a>								  
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</fieldset>
+					</md-tab-body>
+				</md-tab> 
+			</md-tabs>
+		</div>
+    </div>
+</div>
+    
+
+
