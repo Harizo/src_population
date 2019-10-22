@@ -16,7 +16,7 @@
         msNavigationServiceProvider.saveItem('population.reporting', {
             title : 'Reporting',
             icon  : 'icon-data',
-            weight: 5,
+            weight: 8,
             hidden: function()
             {
                     return vs;

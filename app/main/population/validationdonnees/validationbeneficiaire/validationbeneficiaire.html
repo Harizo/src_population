@@ -27,7 +27,7 @@
 							<table ng-table="tableAvancement" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
 								<thead>
 									<tr>
-										<th class="secondary-text" ng-repeat="c in :: vm.tdr_coldetail">
+										<th class="secondary-text" ng-repeat="c in :: vm.colonne_donnees_a_validees">
 											<div class="table-header">
 												<span class="column-title">{{c.titre}}</span>
 											</div>
@@ -92,10 +92,32 @@ height:30px;">Upload me</button>
 											<span ng-if="!lstvld.$edit">{{lstvld.nomutilisateur}}</span>
 										</td>
 										<td>
-											<a ng-if="!lstvld.$edit && (vm.utilisateur_id ==lstvld.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.modifierDocument(lstvld)" title="Modifier">
+											<span ng-if="lstvld.$edit">
+												<md-input-container>
+													<label>Date validation</label>
+													<input type="date" ng-model="lstvld.date_validation" disabled />
+													<div ng-messages="date_validation.$error" role="alert">									   
+													</div>
+												</md-input-container> 
+											</span>
+											<span ng-if="!lstvld.$edit">{{lstvld.date_validation}}</span>
+										</td>
+										<td>
+											<span ng-if="lstvld.$edit">
+												<md-input-container>
+													<label>Validateur</label>
+													<input type="text" ng-model="lstvld.nomutilisateurvalidation" disabled />
+													<div ng-messages="nomutilisateurvalidation.$error" role="alert">									   
+													</div>
+												</md-input-container> 
+											</span>
+											<span ng-if="!lstvld.$edit">{{lstvld.nomutilisateurvalidation}}</span>
+										</td>
+										<td>
+											<a ng-if="!lstvld.$edit && (vm.id_utilisateur ==lstvld.id_utilisateur)" ng-show="!lstvld.id_utilisateur_validation" ng-click="vm.modifierDocument(lstvld)" title="Modifier">
 												<span class="icon-table-edit"></span>
 											</a>
-											<a ng-if="!lstvld.$edit && (vm.utilisateur_id ==lstvld.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.supprimerDocument(lstvld)" title="Supprimer">
+											<a ng-if="!lstvld.$edit && (vm.id_utilisateur ==lstvld.id_utilisateur)" ng-show="!lstvld.id_utilisateur_validation" ng-click="vm.supprimerDocument(lstvld)" title="Supprimer">
 												<span class="icon-delete"></span>
 											</a>
 											<a ng-if="lstvld.$edit" ng-click="vm.annulerDocument(lstvld)" title="Annuler modification">

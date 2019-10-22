@@ -71,7 +71,8 @@
         vm.affichageMasquestache = 0 ;
         //fin pour les sous tâches
         vm.allActivite = [] ;
-        vm.Listevalidationdonnees = [] ;
+        vm.Listevalidationbeneficiaire=[];
+		vm.Listebeneficiairevalidees=[];
         vm.allParent = [] ;
         vm.ListeParent = [] ;
 		vm.monfichier ='';
@@ -83,14 +84,18 @@
         responsive: true
         };
         // vm.activite_col = [{"titre":"Type de document"}];
-        vm.tdr_coldetail = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Action"}];           
+        vm.colonne_validation = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Action"}];           
+        vm.colonne_donnees_validees = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Date intégration"},{"titre":"Validateur"}];           
         var id_user = $cookieStore.get('id');
 		vm.id_utilisateur = id_user;
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			vm.raisonsociale = result.data.response.raison_sociale;
-			apiFactory.getAPIgeneraliser("listevalidationdonnees/index","donnees_validees",0,"id_utilisateur",vm.id_utilisateur).then(function(result) {
-				vm.Listevalidationdonnees = result.data.response;
+			apiFactory.getAPIgeneraliser("listevalidationbeneficiaire/index","etat",10).then(function(result) {
+				vm.Listevalidationbeneficiaire = result.data.response;
+			});               
+			apiFactory.getAPIgeneraliser("listevalidationbeneficiaire/index","etat",20).then(function(result) {
+				vm.Listebeneficiairevalidees = result.data.response;
 			});               
         });     
 		function formatDate(date) {
@@ -159,7 +164,7 @@
                 id_utilisateur_validation:null,
             });
             //factory
-            apiFactory.add("listevalidationdonnees/index",datas, config).success(function (data) {
+            apiFactory.add("listevalidationbeneficiaire/index",datas, config).success(function (data) {
                 if (NouvelItem == false) {
                     // Update or delete: id exclu                  
                     if(suppression==0) {
@@ -258,7 +263,7 @@
         };
         $scope.$watch('vm.selectedListedonneesavaliderItem', function() {
 			if (!vm.selectedListedonneesavaliderItem) return;
-			vm.Listevalidationdonnees.forEach(function(item) {
+			vm.Listevalidationbeneficiaire.forEach(function(item) {
 				item.$selected = false;
 			});
 			vm.selectedListedonneesavaliderItem.$selected = true;
@@ -290,13 +295,13 @@
 				nomutilisateur:vm.nomutilisateur,		
 				raisonsociale:vm.raisonsociale		
 			};
-			vm.Listevalidationdonnees.push(items);
+			vm.Listevalidationbeneficiaire.push(items);
 			vm.afficherboutonnouveau=0;
 		}
 		vm.annulerDocument = function(item) {
 			vm.afficherboutonnouveau=1;
 			if (!item.id) {
-				vm.Listevalidationdonnees.pop();
+				vm.Listevalidationbeneficiaire.pop();
 				return;
 			}          
 			vm.selectedListedonneesavaliderItem.resume=vm.resume;
@@ -342,7 +347,7 @@
             vm.fait=item.fait;
 			currentdepenseItem = JSON.parse(JSON.stringify(vm.selectedListedonneesavaliderItem));
 			item.date_reception = new Date(item.date_reception);
-			vm.Listevalidationdonnees.forEach(function(it) {
+			vm.Listevalidationbeneficiaire.forEach(function(it) {
 				it.$selected = false;
 				it.$edit = false;
 			});
@@ -383,7 +388,7 @@
                 id_utilisateur:id_user,
                 id_utlisateur_validation:null
             });
-            apiFactory.add("listevalidationdonnees/index",datas, config).success(function (data) {
+            apiFactory.add("listevalidationbeneficiaire/index",datas, config).success(function (data) {
                 if (NouveldonneesavaliderItem == 0) {
                     vm.selectedListedonneesavaliderItem.nom_fichier=vm.fichier;
                     vm.selectedListedonneesavaliderItem.repertoire=vm.repertoire;
@@ -393,7 +398,7 @@
 					  // repertoire : à écraser chaque fois au cas où l'utilisateur change le nom du type de document dans DDB type document
                       vm.selectedListedonneesavaliderItem ={};
                     } else {    
-						vm.Listevalidationdonnees = vm.Listevalidationdonnees.filter(function(obj) {
+						vm.Listevalidationbeneficiaire = vm.Listevalidationbeneficiaire.filter(function(obj) {
 							return obj.id !== currentdepenseItem.id;
 						});         
                     }
@@ -450,7 +455,7 @@
 					} else {
 						vm.showAlert("INFORMATION","Il y a des erreurs dans le fichier à importer.Veuillez consulter votre e-mail et corriger les données marquées en rouge.Merci");
 						// Enlever de la liste puisqu'il y a des erreurs : sans sauvegarde dans la BDD
-						vm.Listevalidationdonnees = vm.Listevalidationdonnees.filter(function(obj) {
+						vm.Listevalidationbeneficiaire = vm.Listevalidationbeneficiaire.filter(function(obj) {
 							return parseInt(obj.id) !== 0;
 						});         						
 					}	
@@ -461,12 +466,53 @@
 				vm.sauverDocument(item,0);
 			}
 		}
-		vm.exportfichier = function(item) {
-			var bla = $.post(apiUrl + "Uploadfichier/prendre_fichier",{
+        vm.ConfirmerImportBeneficiaire = function(donnees) {
+			var confirm = $mdDialog.confirm()
+                .title("Vous-êtes en train d'importer cet enregistrement.Continuer ?")
+                .textContent('')
+                .ariaLabel('Lucky day')
+                .clickOutsideToClose(true)
+                .parent(angular.element(document.body))
+                .ok('Continuer')
+                .cancel('annuler');
+			$mdDialog.show(confirm).then(function() {          
+				vm.importerbeneficiaire(donnees);
+			}, function() {
+			});
+        }
+
+		vm.importerbeneficiaire = function(item) {
+			var bla = $.post(apiUrl + "importationbeneficiaire/importer_donnees_beneficiaire",{
 						nom_fichier : item.nom_fichier,
-						repertoire: item.repertoire
-					},function(data) {   
-						window.location = data;
+						repertoire: item.repertoire,
+						id_utilisateur:vm.id_utilisateur,
+						id:item.id
+					},function(data) {  
+						console.log(data);
+						// window.location = data;
+						// Actualisation liste validation bénéficiaire
+						vm.Listevalidationbeneficiaire =[];
+						vm.Listebeneficiairevalidees =[];
+						apiFactory.getAPIgeneraliser("listevalidationbeneficiaire/index","etat",10).then(function(result) {
+							vm.Listevalidationbeneficiaire = result.data.response;
+						});               
+						apiFactory.getAPIgeneraliser("listevalidationbeneficiaire/index","etat",20).then(function(result) {
+							vm.Listebeneficiairevalidees = result.data.response;
+						});               
+						//add historique : Intégration bénéficiaire : 
+						var actions ="Intégration bénéficiaire : fichier " + item.raisonsociale + "  " + item.repertoire + item.nom_fichier;
+						var config = {
+							headers : {
+								'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+							}
+						};
+						var datas = $.param({
+							action:actions,
+							id_utilisateur:vm.id_utilisateur
+						});
+						//factory
+						apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+						});				
 					});
 		}
     }

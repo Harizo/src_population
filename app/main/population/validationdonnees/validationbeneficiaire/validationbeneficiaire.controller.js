@@ -63,6 +63,7 @@
         vm.selectedItem = {} ;
         vm.selectedcourant={};
         vm.ajout = ajout ;
+		vm.repertoire_complet="";
         //variale affichage bouton nouveau
         vm.afficherboutonnouveau = 1 ;
         //variable cache masque de saisie
@@ -84,6 +85,7 @@
         };
         // vm.activite_col = [{"titre":"Type de document"}];
         vm.tdr_coldetail = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Action"}];           
+        vm.colonne_donnees_a_validees = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Date intégration"},{"titre":"Validateur"},{"titre":"Actions"}];           
         var id_user = $cookieStore.get('id');
 		vm.id_utilisateur = id_user;
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
@@ -288,6 +290,7 @@
                 donnees_validees:0,
 				id:0,
 				nomutilisateur:vm.nomutilisateur,		
+				nomutilisateurvalidation:null,		
 				raisonsociale:vm.raisonsociale		
 			};
 			vm.Listevalidationbeneficiaire.push(items);
@@ -403,6 +406,7 @@
 					vm.selectedListedonneesavaliderItem.date_reception=data.response[0].date_reception;
 					vm.selectedListedonneesavaliderItem.nom_fichier=vm.fichier;
 					vm.selectedListedonneesavaliderItem.repertoire=vm.repertoire;
+					vm.repertoire_complet =data.response[0].date_reception;
                 }
 				// vm.item.$selected=false;
 				// vm.item.$edit=false;
@@ -446,6 +450,20 @@
 					if(data["reponse"]=="OK") {
 						// Sauvegarde dans la BDD
 						vm.sauverDocument(item,0);
+						//add historique : Validation bénéficiaire : 
+						var actions ="Envoi fichier bénéficiaire à valider : fichier " + vm.raisonsociale + vm.repertoire + vm.fichier;
+						var config = {
+							headers : {
+								'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+							}
+						};
+						var datas = $.param({
+							action:actions,
+							id_utilisateur:vm.id_utilisateur
+						});
+						//factory
+						apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+						});				
 						vm.showAlert("INFORMATION","Le fichier à importer ne contient pas des erreurs.Merci de votre collaboration.A bientôt");
 					} else {
 						vm.showAlert("INFORMATION","Il y a des erreurs dans le fichier à importer.Veuillez consulter votre e-mail et corriger les données marquées en rouge.Merci");
