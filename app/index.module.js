@@ -21,7 +21,8 @@
             'app.quick-panel',
           
             //peche
-			      'app.population'
+			      'app.population',
+                  "kendo.directives"
 
         ]);
 })();
