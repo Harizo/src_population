@@ -48,7 +48,7 @@
             //var date_d= moment(filtre.date_debut).format('YYYY-MM-DD');
             vm.affiche_load = true ;
             apiFactory.getAPIgeneraliserREST("systeme_protection_social/index","menu","beneficiaire_sexe_age",
-            "id_region",filtre.region_id,"id_district",filtre.district_id,"id_commune",filtre.commune_id,"id_intervention",filtre.intervention_id,).then(function(result)
+            "id_region",filtre.region_id,"id_district",filtre.district_id,"id_commune",filtre.commune_id,"id_intervention",filtre.intervention_id).then(function(result)
             {
                 vm.beneficiaire_age_sexe = result.data.response;
                 vm.affiche_load = false ;
