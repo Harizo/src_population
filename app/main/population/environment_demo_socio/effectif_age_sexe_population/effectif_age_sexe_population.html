@@ -1,0 +1,137 @@
+<div id="forms" class="page-layout simple fullwidth doc-page" layout="column">
+    <!-- HEADER -->
+    <div class="header md-accent-bg" layout="row" layout-align="space-between">
+        <div layout="column" layout-align="space-between">
+            <div class="breadcrumb" layout="row" layout-align="start center">
+                <md-icon md-font-icon="icon-home" class="s16"></md-icon>
+                <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
+                <span class="parent">Environnement démographique et socioéconomique</span>
+            </div>
+
+            <div class="title">Effectif par age par sexede la population</div>
+        </div>
+    </div>
+    <!--/ HEADER -->
+   
+    <!-- CONTENT -->
+    <div class="content"layout="column">
+        <div class="form-wrapper">
+            <md-progress-circular ng-if="vm.affiche_load" class="md-accent" aria-label="Rating" md-mode="indeterminate" md-diameter="34"></md-progress-circular> 
+                  <div ng-if="vm.affiche_load" style="position:relative;top: -30px;  left: 60px;color: #039be5">
+                      Chargement,veuillez patienter s'il vous plait ...
+                  </div>
+            <div class="white-bg md-whiteframe-4dp">
+            <md-tabs md-dynamic-height>
+                <md-tab label="numero1">
+                    <md-tab-body>
+                        <form name="formEffAgeSexe" class="md-inline-form" novalidate >
+                            <div layout="column" layout-gt-xs="row">       
+                                
+                                <md-input-container flex="100" flex-gt-xs="33">
+                                  <label>Region</label>
+                                    <md-select ng-model="vm.filtre.region_id" ng-change="vm.modifierregion(vm.filtre)" required>
+                                        <md-option ng-repeat="region in vm.allregion" value="{{region.id}}">
+                                        {{region.nom}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <md-input-container flex="100" flex-gt-xs="33">
+                                    <label>District</label>
+                                    <md-select ng-model="vm.filtre.district_id" ng-change="vm.modifierdistrict(vm.filtre)" ng-disabled="!vm.isDistrict">
+                                        <md-option  value="*">*</md-option>
+                                        <md-option ng-repeat="district in vm.alldistrict" value="{{district.id}}">
+                                            {{district.nom}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <md-input-container flex="100" flex-gt-xs="33">
+                                    <label>Commune</label>
+                                    <md-select ng-model="vm.filtre.commune_id" ng-change="vm.modifiercommune(vm.filtre)" ng-disabled="!vm.isCommune">
+                                        <md-option  value="*">*</md-option>
+                                        <md-option ng-repeat="commune in vm.allcommune" value="{{commune.id}}">
+                                            {{commune.nom}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <!--md-input-container flex="100" flex-gt-xs="33" >
+                                    <label>Sexe</label>
+                                    <md-select ng-model="vm.filtre.sexe" ng-disabled="vm.affiche_load">
+                                        <md-option  value="*">*</md-option>
+                                        <md-option  value="H">H</md-option>
+                                        <md-option  value="F">F</md-option>
+                                    </md-select>
+                                </md-input-container-->
+                            </div>
+                            
+                            <div>
+                                <md-button type="submit" class="md-raised md-accent" aria-label="Enregistrer" ng-disabled="formEffAgeSexe.$invalid" ng-click="vm.filtre_effe_age_sexe(vm.filtre)"> Actualiser
+                                </md-button>
+                            </div>
+                        </form>  
+                      <table class="dataTable row-border cell-border hover" datatable="ng"
+                        dt-options="vm.dtOptions" ms-responsive-table>
+                        <thead>
+                            <tr>
+                                <!--th class="secondary-text larg" ng-repeat="env1 in ::vm.effectif_age_sexe_column" >
+                                    <div class="table-header">
+                                        <span class="column-title">{{env1.titre}}</span>
+                                    </div>
+                                </th-->                             
+                                <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Region</span>
+                                </div>
+                              </th>
+                              <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">District</span>
+                                </div>
+                              </th>
+                              <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Commune</span>
+                                </div>
+                              </th>
+                                <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Nombre enfant (H)<br/>Nombre enfant (F)</span>
+                                </div>
+                              </th>
+                              <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Nombre en âge scolaire (H)<br/>Nombre en âge scolaire (F)</span>
+                                </div>
+                              </th>
+                              <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Nombre en âge de travailler (H) <br/>Nombre en âge de travailler (F)</span>
+                                </div>
+                              </th>
+                              <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Personnes âgées (H) <br/>Personnes âgées (F)</span>
+                                </div>
+                              </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="effectif in vm.effectif_age_sexe">
+                                <td>{{effectif.region}}</td>
+                                <td>{{effectif.district}}</td>
+                                <td>{{effectif.commune}}</td>
+                                <td>{{effectif.nbr_enfant_homme}}<br/>{{effectif.nbr_enfant_fille}}</td>
+                                <td>{{effectif.nbr_agescolaire_homme}}<br/>{{effectif.nbr_agescolaire_fille}}</td>
+                                <td>{{effectif.nbr_agetravaille_homme}}<br/>{{effectif.nbr_agetravaille_fille}}</td>
+                                <td>{{effectif.nbr_agee_homme}}<br/>{{effectif.nbr_agee_fille}}</td>
+                            </tr>
+                        </tbody>
+                    </table>  
+                    </md-tab-body>
+                    
+                </md-tab>                
+            </md-tabs>
+            </div>
+        </div>
+    </div>
+    <!--/ CONTENT -->    
+</div>

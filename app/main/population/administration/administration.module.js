@@ -6,7 +6,8 @@
         .module('app.population.administration', 
             [
                 'app.population.administration.utilisateur',
-                'app.population.administration.profil'
+                'app.population.administration.profil',
+                'app.population.administration.historiqueutilisateur'
             ])
         .run(testPermission)        
         .config(config);

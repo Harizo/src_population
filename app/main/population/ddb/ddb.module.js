@@ -8,8 +8,9 @@
             'app.population.ddb.enquetesurindividu',
             'app.population.ddb.acteurs',
             'app.population.ddb.ddbprojet',
-            'app.population.ddb.localisation',
-            'app.population.ddb.annuaire'
+            //'app.population.ddb.localisation',
+            'app.population.ddb.annuaire',
+            'app.population.ddb.region_district_commune'
             ])
         .run(testPermission)
         .config(config);
