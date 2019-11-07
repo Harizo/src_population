@@ -1113,7 +1113,6 @@
 			txtTmp += "duree" +":\"" + entite.duree + "\",";	
 			txtTmp += "unite_duree" +":\"" + entite.unite_duree + "\",";	
 			txtTmp += "id_type_transfert" +":\"" + entite.id_type_transfert + "\",";	
-			txtTmp += "montant_transfert" +":\"" + entite.montant_transfert + "\",";	
 			txtTmp += "flag_integration_donnees" +":\"" + entite.flag_integration_donnees + "\",";	
 			txtTmp += "nouvelle_integration" +":\"" + entite.nouvelle_integration + "\",";	
 			txtTmp += "commentaire" +":\"" + entite.commentaire + "\",";	
@@ -1139,6 +1138,7 @@
 						det.id_detail_type_transfert=0;
 					}
 				});	
+				vm.detail_transfert ="";
 				vm.ListeDetailtypetransfert.forEach(function(det) {
 					if(parseInt(det.id_detail_type_transfert) >0 && parseFloat(det.valeur_quantite) >0) {
 						vm.allRecordsDetailtypetransfert.forEach(function(obj) {	
@@ -1146,6 +1146,7 @@
 							if(parseInt(obj.id) == det.id_detail_type_transfert) {
 								obj.valeur_quantite=det.valeur_quantite;
 								obj.id_detail_type_transfert=det.id_detail_type_transfert;
+								vm.detail_transfert =vm.detail_transfert  + det.description + " " + det.valeur_quantite + " " + det.unitedemesure[0].description + String.fromCharCode(13)+"; ";
 							}
 						});	
 					}	
@@ -1175,7 +1176,6 @@
 				duree: entite.duree,
 				unite_duree: entite.unite_duree,
 				id_type_transfert: entite.id_type_transfert,
-				montant_transfert: entite.montant_transfert,
 				flag_integration_donnees: entite.flag_integration_donnees,
 				nouvelle_integration: entite.nouvelle_integration,
 				commentaire: entite.commentaire,
@@ -1208,7 +1208,6 @@
 					  vm.selectedItemIntervention.unite_duree = entite.unite_duree;
 					  vm.selectedItemIntervention.id_type_transfert = entite.id_type_transfert;
 					  vm.selectedItemIntervention.typetransfert = entite.typetransfert;
-					  vm.selectedItemIntervention.montant_transfert = entite.montant_transfert;
 					  vm.selectedItemIntervention.flag_integration_donnees = entite.flag_integration_donnees;
 					  vm.selectedItemIntervention.nouvelle_integration = entite.nouvelle_integration;
 					  vm.selectedItemIntervention.commentaire = entite.commentaire;
@@ -1216,6 +1215,7 @@
 					  vm.selectedItemIntervention.typeaction = entite.typeaction;
 					  vm.selectedItemIntervention.id_frequence_transfert = entite.id_frequence_transfert;
 					  vm.selectedItemIntervention.frequencetransfert = entite.frequencetransfert;
+					  vm.selectedItemIntervention.detail_transfert = vm.detail_transfert;
 					  vm.selectedItemIntervention.$selected = false;
 					  vm.selectedItemIntervention.$edit = false;
 						vm.afficherboutonModifSuprintervention = 0 ;
@@ -1247,7 +1247,6 @@
 						unite_duree: entite.unite_duree,
 						id_type_transfert: entite.id_type_transfert,
 						typetransfert: entite.typetransfert,
-						montant_transfert: entite.montant_transfert,
 						flag_integration_donnees: entite.flag_integration_donnees,
 						nouvelle_integration: entite.nouvelle_integration,
 						commentaire: entite.commentaire,
@@ -1255,6 +1254,7 @@
 						typeaction: entite.typeaction,
 						id_frequence_transfert: entite.id_frequence_transfert,
 						frequencetransfert: entite.frequencetransfert,
+						detail_transfert: vm.detail_transfert,
 					};
 					vm.selectedItemProgramme.detail_intervention.push(item); 
 					NouvelItemIntervention=false;
@@ -1361,7 +1361,6 @@
 			vm.intervention.unite_duree=null;
 			vm.intervention.id_type_transfert=null;
 			vm.intervention.typetransfert=[];
-			vm.intervention.montant_transfert=null;
 			vm.intervention.flag_integration_donnees=null;
 			vm.intervention.nouvelle_integration=null;
 			vm.intervention.commentaire=null;
@@ -1410,9 +1409,6 @@
 				vm.intervention.id_type_transfert=parseInt(vm.selectedItemIntervention.id_type_transfert);
 			} else vm.intervention.id_type_transfert=null;
 			vm.intervention.typetransfert=vm.selectedItemIntervention.typetransfert;
-			if(vm.selectedItemIntervention.montant_transfert) {
-				vm.intervention.montant_transfert=parseFloat(vm.selectedItemIntervention.montant_transfert);
-			} else vm.intervention.montant_transfert=null;
 			vm.intervention.flag_integration_donnees=vm.selectedItemIntervention.flag_integration_donnees;
 			vm.intervention.nouvelle_integration=vm.selectedItemIntervention.nouvelle_integration;
 			vm.intervention.commentaire=vm.selectedItemIntervention.commentaire;

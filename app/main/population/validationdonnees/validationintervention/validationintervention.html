@@ -7,27 +7,27 @@
                 <span class="parent">Importation des données</span>
                 <span class="parent"> </span>
                 <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
-                <span class="parent" href="javascript:;">Importation des bénéficiaires</span>
+                <span class="parent" href="javascript:;">Validation des interventions</span>
             </div>
 
-            <div class="title">Importation des bénéficiaires</div>
+            <div class="title">Validation des interventions</div>
         </div>
     </div>
     <div class="content"layout="column">
 		<div class="form-wrapper"> 
 			<md-tabs md-dynamic-height>
-				<md-tab label="Bénéficiaires en attente d'importation vers BDD">
+				<md-tab label="Liste validation des interventions">
 					<md-tab-body>
 						<fieldset>
 							<legend>
-								Importation des bénéficiaires
-								<!--button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button-->
+								Validation des interventions
+								<button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
 							</legend>
 							<div style="clear:both;"></div>
-							<table ng-table="tablelistevalidationbeneficiaire" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
+							<table ng-table="tableAvancement" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
 								<thead>
 									<tr>
-										<th class="secondary-text" ng-repeat="c in :: vm.colonne_validation">
+										<th class="secondary-text" ng-repeat="c in :: vm.colonne_donnees_a_validees">
 											<div class="table-header">
 												<span class="column-title">{{c.titre}}</span>
 											</div>
@@ -35,7 +35,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr  ng-repeat="lstvld in vm.Listevalidationbeneficiaire"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionDocument(lstvld)">
+									<tr  ng-repeat="lstvld in vm.Listevalidationintervention"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionDocument(lstvld)">
 										<td>
 											<span ng-if="lstvld.$edit">
 												<md-input-container>
@@ -92,8 +92,42 @@ height:30px;">Upload me</button>
 											<span ng-if="!lstvld.$edit">{{lstvld.nomutilisateur}}</span>
 										</td>
 										<td>
-											<a ng-if="!lstvld.$edit" ng-click="vm.ConfirmerImportBeneficiaire(lstvld)" title="Intégrer dans la base de données">
-												<span class="icon-upload"></span>
+											<span ng-if="lstvld.$edit">
+												<md-input-container>
+													<label>Date validation</label>
+													<input type="date" ng-model="lstvld.date_validation" disabled />
+													<div ng-messages="date_validation.$error" role="alert">									   
+													</div>
+												</md-input-container> 
+											</span>
+											<span ng-if="!lstvld.$edit">{{lstvld.date_validation}}</span>
+										</td>
+										<td>
+											<span ng-if="lstvld.$edit">
+												<md-input-container>
+													<label>Validateur</label>
+													<input type="text" ng-model="lstvld.nomutilisateurvalidation" disabled />
+													<div ng-messages="nomutilisateurvalidation.$error" role="alert">									   
+													</div>
+												</md-input-container> 
+											</span>
+											<span ng-if="!lstvld.$edit">{{lstvld.nomutilisateurvalidation}}</span>
+										</td>
+										<td>
+											<a ng-if="!lstvld.$edit && (vm.id_utilisateur ==lstvld.id_utilisateur)" ng-show="!lstvld.id_utilisateur_validation" ng-click="vm.modifierDocument(lstvld)" title="Modifier">
+												<span class="icon-table-edit"></span>
+											</a>
+											<a ng-if="!lstvld.$edit && (vm.id_utilisateur ==lstvld.id_utilisateur)" ng-show="!lstvld.id_utilisateur_validation" ng-click="vm.supprimerDocument(lstvld)" title="Supprimer">
+												<span class="icon-delete"></span>
+											</a>
+											<a ng-if="lstvld.$edit" ng-click="vm.annulerDocument(lstvld)" title="Annuler modification">
+												<span class="icon-cancel"></span>
+											</a>
+											<a ng-if="lstvld.$edit" ng-show="lstvld.nom_fichier >''" ng-click="vm.uploadFile(lstvld,0)" title="Enregistrer">
+												<span class="icon-content-save"></span>
+											</a>
+											<a ng-if="!lstvld.$edit" ng-click="vm.exportfichier(lstvld)" title="Enregistré par : {{lstvld.nomutilisateur}} (Download)">
+												<span class="icon-download"></span>
 											</a>								  
 										</td>
 									</tr>
@@ -101,52 +135,6 @@ height:30px;">Upload me</button>
 							</table>
 						</fieldset>
 					</md-tab-body>
-				</md-tab> 
-				<md-tab label="Bénéficiaires importés">
-					<md-tab-body>
-						<fieldset>
-							<legend>
-								Liste des données bénéficiaires importés
-								<!--button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button-->
-							</legend>
-							<div style="clear:both;"></div>
-							<table ng-table="tablelistebeneficiairevalidees" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
-								<thead>
-									<tr>
-										<th class="secondary-text" ng-repeat="c in :: vm.colonne_donnees_validees">
-											<div class="table-header">
-												<span class="column-title">{{c.titre}}</span>
-											</div>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr  ng-repeat="lstvld in vm.Listebeneficiairevalidees"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionBeneficiaireValidees(lstvld)">
-										<td>
-											<span>{{lstvld.raisonsociale}}</span>
-										</td>
-										<td>
-											<span>{{lstvld.nom_fichier}}</span>
-										</td>
-										<td> 
-											<span>{{lstvld.date_reception}}</span>
-										</td>
-										<td>
-											<span>{{lstvld.nomutilisateur}}</span>
-										</td>
-										<td>
-											<span>{{lstvld.date_validation}}</span>
-										</td>
-										<td>
-											<span>{{lstvld.nomutilisateurvalidation}}</span>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</fieldset>
-					</md-tab-body>
-				</md-tab> 
-				<md-tab> 
 				</md-tab> 
 			</md-tabs>
 		</div>

@@ -3,28 +3,27 @@
     'use strict';
 
     angular
-        .module('app.population.importationdonnees', [			
-           'app.population.importationdonnees.importationbeneficiaire',
-           'app.population.importationdonnees.importationintervention',
+        .module('app.population.importdecoupage', [			
+           'app.population.importdecoupage.decoupageregion',
+           'app.population.importdecoupage.decoupagedistrict',
+           'app.population.importdecoupage.decoupagecommune',
+           'app.population.importdecoupage.decoupagefokontany',
             ])
-         .run(testPermission)
-         .run(Donnees_non_importees)
+        // .run(testPermission)
         .config(config);
         var vs ;
-		var nombre_non_importes={};
 
     /** @ngInject */
     function config(msNavigationServiceProvider)
     {
-        msNavigationServiceProvider.saveItem('population.importationdonnees', {
-            title : 'Importation données',
+        msNavigationServiceProvider.saveItem('population.importdecoupage', {
+            title : 'Import découpage admin',
             icon  : 'icon-data',
-            weight: 6,
+            weight: 8,
             hidden: function()
             {
                     return vs;
-            },
-            badge: nombre_non_importes,
+            }
         });
 
 
@@ -43,7 +42,7 @@
                
 
                 var permission = user.roles;
-                var permissions = ["IMP"];
+                var permissions = ["VLD"];
                 var x =  loginService.gestionMenu(permissions,permission);        
                 vs = x ;
 
@@ -51,12 +50,5 @@
         }
      
     }
-	function Donnees_non_importees(loginService,$cookieStore,apiFactory,apiUrl) {
-		var bla = $.post(apiUrl + "importationbeneficiaire/recuperer_nombre_liste_fichier_non_importes",{
-			},function(data) {  
-				var x = data;
-				nombre_non_importes.content = x ;
-				nombre_non_importes.color = '#F44336' ;
-			});
-	}
+
 })();

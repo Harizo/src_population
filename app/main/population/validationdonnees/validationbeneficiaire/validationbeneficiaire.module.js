@@ -4,8 +4,9 @@
 
     angular
         .module('app.population.validationdonnees.validationbeneficiaire', [])
+        .run(Donnees_non_validees)
         .config(config);
-
+	var nombre_non_valides={};
     /** @ngInject */
     function config($stateProvider, $translatePartialLoaderProvider, msNavigationServiceProvider)
     {
@@ -21,18 +22,27 @@
             bodyClass: 'validationbeneficiaire',
             data : {
               authorizer : true,
-              permitted : ["USER","PERSONNEL","ADMIN","VLD"],
+              permitted : ["ADMIN","VLD"],
               page: "Validation-bénéficiaire"
             }
 
         });
         // Navigation
         msNavigationServiceProvider.saveItem('population.validationdonnees.validationbeneficiaire', {
-            title: 'Validation bénéficiaire',
+            title: 'Bénéficiaire',
             icon  : 'icon-swap-horizontal',
             state: 'app.population_validationdonnees_validationbeneficiaire',
+            badge: nombre_non_valides,
 			weight: 1
         });
     }
+	function Donnees_non_validees(loginService,$cookieStore,apiFactory,apiUrl) {
+		var bla = $.post(apiUrl + "validationbeneficiaire/recuperer_nombre_liste_beneficiaire_non_valides",{
+			},function(data) {  
+				var x = data;
+				nombre_non_valides.content = x ;
+				nombre_non_valides.color = '#F44336' ;
+			});
+	}
 
 })();

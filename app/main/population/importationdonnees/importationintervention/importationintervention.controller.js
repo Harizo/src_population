@@ -2,7 +2,7 @@
 {
     'use strict';
     angular
-        .module('app.population.validationdonnees.validationbeneficiaire')
+        .module('app.population.importationdonnees.importationintervention')
         .directive('customOnChange', function() {
 			return {
 				restrict: 'A',
@@ -43,9 +43,9 @@
 				});
 			}
 		}])
-        .controller('ValidationbeneficiaireController', ValidationbeneficiaireController);
+        .controller('ImportationinterventionController', ImportationinterventionController);
     /** @ngInject */
-    function ValidationbeneficiaireController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlvalidationbeneficiaire)  {
+    function ImportationinterventionController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlvalidationintervention)  {
         var vm = this;
         var NouvelItem=false;
         var currentItem;
@@ -53,6 +53,7 @@
         var NouveldonneesavaliderItem=0;
         var  currentdepenseItem;
         vm.selectedListedonneesavaliderItem={};
+        vm.selectedItemBeneficiaireValidees={};
         vm.myFile={};
         vm.parent_courant={};
         vm.etat="";
@@ -63,7 +64,6 @@
         vm.selectedItem = {} ;
         vm.selectedcourant={};
         vm.ajout = ajout ;
-		vm.repertoire_complet="";
         //variale affichage bouton nouveau
         vm.afficherboutonnouveau = 1 ;
         //variable cache masque de saisie
@@ -72,7 +72,8 @@
         vm.affichageMasquestache = 0 ;
         //fin pour les sous tâches
         vm.allActivite = [] ;
-        vm.Listevalidationbeneficiaire = [] ;
+        vm.Listevalidationintervention=[];
+		vm.Listeinterventionvalidees=[];
         vm.allParent = [] ;
         vm.ListeParent = [] ;
 		vm.monfichier ='';
@@ -84,25 +85,28 @@
         responsive: true
         };
         // vm.activite_col = [{"titre":"Type de document"}];
-        vm.tdr_coldetail = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Action"}];           
-        vm.colonne_donnees_a_validees = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Date intégration"},{"titre":"Validateur"},{"titre":"Actions"}];           
+        vm.colonne_validation = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Action"}];           
+        vm.colonne_donnees_validees = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Date intégration"},{"titre":"Validateur"}];           
         var id_user = $cookieStore.get('id');
 		vm.id_utilisateur = id_user;
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			vm.raisonsociale = result.data.response.raison_sociale;
-			apiFactory.getAPIgeneraliser("listevalidationbeneficiaire/index","donnees_validees",0,"id_utilisateur",vm.id_utilisateur).then(function(result) {
-				vm.Listevalidationbeneficiaire = result.data.response;
+			apiFactory.getAPIgeneraliser("listevalidationintervention/index","etat",10).then(function(result) {
+				vm.Listevalidationintervention = result.data.response;
+			});               
+			apiFactory.getAPIgeneraliser("listevalidationintervention/index","etat",20).then(function(result) {
+				vm.Listeinterventionvalidees = result.data.response;
 			});               
         });     
-			//add historique : Consultation menu validation bénéficiaire
+			//add historique : Consultation menu importation bénéficiaire
 			var config = {
 				headers : {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
 				}
 			};
 			var datas = $.param({
-				action:"Consultation : Menu validation bénéficiaire",
+				action:"Consultation : Menu importation bénéficiaire",
 				id_utilisateur:vm.id_utilisateur
 			});
 			//factory
@@ -174,7 +178,7 @@
                 id_utilisateur_validation:null,
             });
             //factory
-            apiFactory.add("listevalidationbeneficiaire/index",datas, config).success(function (data) {
+            apiFactory.add("listevalidationintervention/index",datas, config).success(function (data) {
                 if (NouvelItem == false) {
                     // Update or delete: id exclu                  
                     if(suppression==0) {
@@ -214,6 +218,16 @@
                 item.$selected = false;
             });
             vm.selectedItem.$selected = true;
+        });
+        vm.selectionBeneficiaireValidees= function (item) {             
+            vm.selectedItemBeneficiaireValidees = item;
+        };
+        $scope.$watch('vm.selectedItemBeneficiaireValidees', function() {
+            if (!vm.Listeinterventionvalidees) return;
+            vm.Listeinterventionvalidees.forEach(function(item) {
+                item.$selected = false;
+            });
+            vm.selectedItemBeneficiaireValidees.$selected = true;
         });
         //function cache masque de saisie
         vm.ajouter = function () {
@@ -273,7 +287,7 @@
         };
         $scope.$watch('vm.selectedListedonneesavaliderItem', function() {
 			if (!vm.selectedListedonneesavaliderItem) return;
-			vm.Listevalidationbeneficiaire.forEach(function(item) {
+			vm.Listevalidationintervention.forEach(function(item) {
 				item.$selected = false;
 			});
 			vm.selectedListedonneesavaliderItem.$selected = true;
@@ -303,16 +317,15 @@
                 donnees_validees:0,
 				id:0,
 				nomutilisateur:vm.nomutilisateur,		
-				nomutilisateurvalidation:null,		
 				raisonsociale:vm.raisonsociale		
 			};
-			vm.Listevalidationbeneficiaire.push(items);
+			vm.Listevalidationintervention.push(items);
 			vm.afficherboutonnouveau=0;
 		}
 		vm.annulerDocument = function(item) {
 			vm.afficherboutonnouveau=1;
 			if (!item.id) {
-				vm.Listevalidationbeneficiaire.pop();
+				vm.Listevalidationintervention.pop();
 				return;
 			}          
 			vm.selectedListedonneesavaliderItem.resume=vm.resume;
@@ -358,7 +371,7 @@
             vm.fait=item.fait;
 			currentdepenseItem = JSON.parse(JSON.stringify(vm.selectedListedonneesavaliderItem));
 			item.date_reception = new Date(item.date_reception);
-			vm.Listevalidationbeneficiaire.forEach(function(it) {
+			vm.Listevalidationintervention.forEach(function(it) {
 				it.$selected = false;
 				it.$edit = false;
 			});
@@ -385,8 +398,8 @@
 			} else {
 				var date_temporaire = formatDate(vm.selectedListedonneesavaliderItem.date_reception);
 			}
-			// var rep = apiUrlbase + apiUrlvalidationbeneficiaire + vm.site.toLowerCase()  ;
-			var rep = apiUrlbase + apiUrlvalidationbeneficiaire ;
+			// var rep = apiUrlbase + apiUrlvalidationintervention + vm.site.toLowerCase()  ;
+			var rep = apiUrlbase + apiUrlvalidationintervention ;
 			vm.directoryName=rep;
             var datas = $.param({
                 supprimer:suppression,
@@ -399,46 +412,31 @@
                 id_utilisateur:id_user,
                 id_utlisateur_validation:null
             });
-            apiFactory.add("listevalidationbeneficiaire/index",datas, config).success(function (data) {
+            apiFactory.add("listevalidationintervention/index",datas, config).success(function (data) {
                 if (NouveldonneesavaliderItem == 0) {
                     vm.selectedListedonneesavaliderItem.nom_fichier=vm.fichier;
                     vm.selectedListedonneesavaliderItem.repertoire=vm.repertoire;
                     if(suppression==0) {
                       vm.selectedListedonneesavaliderItem.$selected = false;
 					  vm.selectedListedonneesavaliderItem.$edit=false;
+					  // repertoire : à écraser chaque fois au cas où l'utilisateur change le nom du type de document dans DDB type document
                       vm.selectedListedonneesavaliderItem ={};
                     } else {    
-						vm.Listevalidationbeneficiaire = vm.Listevalidationbeneficiaire.filter(function(obj) {
+						vm.Listevalidationintervention = vm.Listevalidationintervention.filter(function(obj) {
 							return obj.id !== currentdepenseItem.id;
 						});         
                     }
-					//add historique : Validation bénéficiaire : 
-					var actions ="Modification envoi fichier bénéficiaire à valider : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier;
-					var config = {
-						headers : {
-							'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-						}
-					};
-					var datas = $.param({
-						action:actions,
-						id_utilisateur:vm.id_utilisateur
-					});
-					//factory
-					apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-					});									
                 } else {
                     NouveldonneesavaliderItem=0;
 					vm.selectedListedonneesavaliderItem.id=data.response[0].id;
 					vm.selectedListedonneesavaliderItem.date_reception=data.response[0].date_reception;
 					vm.selectedListedonneesavaliderItem.nom_fichier=vm.fichier;
 					vm.selectedListedonneesavaliderItem.repertoire=vm.repertoire;
-					vm.repertoire_complet ==vm.repertoire;
                 }
 				// vm.item.$selected=false;
 				// vm.item.$edit=false;
 				vm.selectedListedonneesavaliderItem.$edit=false;
 				vm.selectedListedonneesavaliderItem.$selected=false;
-				vm.selectedListedonneesavaliderItem={};
 				vm.afficherboutonnouveau=1;
 				vm.disable=false;
             }).error(function (data) {
@@ -456,9 +454,9 @@
 			var file =vm.myFile[0];
 			// console.log('file is ' );
 			// console.dir(file);
-			var repertoire = apiUrlvalidationbeneficiaire;
+			var repertoire = apiUrlvalidationintervention;
 			// var bt = vm.site.toLowerCase() + '/';
-			var uploadUrl = apiUrl + "validationbeneficiaire/upload_validationdonneesbeneficiaire";
+			var uploadUrl = apiUrl + "validationintervention/upload_validationdonneesintervention";
 			var name = $scope.name;
 			// console.log(name);
 			var fd = new FormData();
@@ -474,33 +472,17 @@
 					// console.log(data);
 					vm.fichier=data["nom_fichier"];
 					vm.repertoire=data["repertoire"];
-					if(data["reponse"]=="OK") {
-						// Aucune erreur détectée => Sauvegarde dans la liste de validation bénéficiaire
+					if(data["reponse"]!="OK") {
+						// Sauvegarde dans la BDD
 						vm.sauverDocument(item,0);
-						var actions ="Envoi fichier bénéficiaire à valider : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier;
 						vm.showAlert("INFORMATION","Le fichier à importer ne contient pas des erreurs.Merci de votre collaboration.A bientôt");
 					} else {
-						var actions ="Envoi fichier bénéficiaire à valider avec " + data["nombre_erreur"] + "erreur(s) : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier +"(non sauvegardé)";
 						vm.showAlert("INFORMATION","Il y a des erreurs dans le fichier à importer.Veuillez consulter votre e-mail et corriger les données marquées en rouge.Merci");
 						// Enlever de la liste puisqu'il y a des erreurs : sans sauvegarde dans la BDD
-						vm.Listevalidationbeneficiaire = vm.Listevalidationbeneficiaire.filter(function(obj) {
+						vm.Listevalidationintervention = vm.Listevalidationintervention.filter(function(obj) {
 							return parseInt(obj.id) !== 0;
-						});  
-						vm.afficherboutonnouveau=1;
-					}						
-					//add historique : Validation bénéficiaire : 
-					var config = {
-						headers : {
-							'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-						}
-					};
-					var datas = $.param({
-						action:actions,
-						id_utilisateur:vm.id_utilisateur
-					});
-					//factory
-					apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-					});									
+						});         						
+					}	
 				}).error(function(){
 					// console.log("Rivotra");
 				});
@@ -508,12 +490,55 @@
 				vm.sauverDocument(item,0);
 			}
 		}
-		vm.exportfichier = function(item) {
-			var bla = $.post(apiUrl + "Uploadfichier/prendre_fichier",{
+        vm.ConfirmerImportBeneficiaire = function(donnees) {
+			var confirm = $mdDialog.confirm()
+                .title("Vous-êtes en train d'importer cet enregistrement.Continuer ?")
+                .textContent('')
+                .ariaLabel('Lucky day')
+                .clickOutsideToClose(true)
+                .parent(angular.element(document.body))
+                .ok('Continuer')
+                .cancel('annuler');
+			$mdDialog.show(confirm).then(function() {          
+				vm.importerintervention(donnees);
+			}, function() {
+			});
+        }
+
+		vm.importerintervention = function(item) {
+			var bla = $.post(apiUrl + "importationintervention/importer_donnees_intervention",{
 						nom_fichier : item.nom_fichier,
-						repertoire: item.repertoire
-					},function(data) {   
-						window.location = data;
+						repertoire: item.repertoire,
+						id_liste_validation_intervention:item.id,
+						id_utilisateur:vm.id_utilisateur,
+						id:item.id
+					},function(data) {  
+						console.log(data);
+						// window.location = data;
+						// Actualisation liste validation bénéficiaire
+						vm.Listevalidationintervention =[];
+						vm.Listeinterventionvalidees =[];
+						apiFactory.getAPIgeneraliser("listevalidationintervention/index","etat",10).then(function(result) {
+							vm.Listevalidationintervention = result.data.response;
+						});               
+						apiFactory.getAPIgeneraliser("listevalidationintervention/index","etat",20).then(function(result) {
+							vm.Listeinterventionvalidees = result.data.response;
+						});               
+						//add historique : Intégration bénéficiaire : 
+						var actions ="Intégration bénéficiaire : fichier " + item.raisonsociale + "  " + item.repertoire + item.nom_fichier;
+						var config = {
+							headers : {
+								'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+							}
+						};
+						var datas = $.param({
+							action:actions,
+							id_utilisateur:vm.id_utilisateur
+						});
+						//factory
+						apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+						});
+						vm.showAlert("INFORMATION","Les données sont intégrées dans la base de données.Merci !");
 					});
 		}
     }

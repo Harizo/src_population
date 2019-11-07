@@ -18,6 +18,7 @@
             'app.population.validationdonnees',
             'app.population.importationdonnees',
             'app.population.reporting',
+            'app.population.importdecoupage',
             // 'app.population.beneficiaire',
             'app.population.environment_demo_socio',
             'app.population.systeme_protection_social',

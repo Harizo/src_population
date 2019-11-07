@@ -495,14 +495,6 @@
 									</div>							  
 								</div>
 							</md-input-container>
-							<md-input-container flex="100" flex-gt-xs="15" ng-show="false">
-								<input type="number" name="montant_transfert" ng-model="vm.intervention.montant_transfert" placeholder="Montant transfert" ng-init="vm.intervention.montant_transfert=''" >
-								<div ng-messages="interventionform.montant_transfert.$error" role="alert">
-									<div ng-message="required">
-										<span>Montant transfert obligatoire</span>
-									</div>							  
-								</div>
-							</md-input-container>
 							<md-input-container flex="100" flex-gt-xs="30">
 								<label>Commentaire</label>
 								<input type="text" name="commentaire" ng-model="vm.intervention.commentaire" placeholder="Commentaire sur intervention" ng-init="vm.intervention.commentaire=''" >
@@ -869,7 +861,7 @@
                                             </td>
                                             <td>
                                                 <p style="margin:0;"><b>Transf :</b>{{prg.typetransfert[0].description}}</p>
-                                                <p style="margin:0;"><b>Montant :</b>{{prg.montant_transfert}}</p>
+                                                <p style="margin:0;"><b>Détail :</b>{{prg.detail_transfert}}</p>
                                             </td>
                                         </tr>
                                     </tbody>
