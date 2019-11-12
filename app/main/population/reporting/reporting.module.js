@@ -5,8 +5,8 @@
     angular
         .module('app.population.reporting', [			
            'app.population.reporting.nombrebeneficiaire',
-            'app.population.reporting.environment_demo_socio',
-            'app.population.reporting.systeme_protection_social',
+            'app.population.reporting.environment_et_systeme',
+            //'app.population.reporting.systeme_protection_social',
             ])
         // .run(testPermission)
         .config(config);
