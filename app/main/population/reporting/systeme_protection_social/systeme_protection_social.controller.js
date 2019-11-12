@@ -3,11 +3,11 @@
     'use strict';
 
     angular
-        .module('app.population.systeme_protection_social.repartition_age_sexe_beneficiaire')
-        .controller('Repartition_age_sexe_beneficiaireController', Repartition_age_sexe_beneficiaireController);
+        .module('app.population.reporting.systeme_protection_social')
+        .controller('Systeme_protection_socialController', Systeme_protection_socialController);
 
     /** @ngInject */
-    function Repartition_age_sexe_beneficiaireController($scope, $mdDialog, apiFactory,$state)
+    function Systeme_protection_socialController($scope, $mdDialog, apiFactory,$state)
     {
         /*********DEBUT INITIALISATION *********/
             var vm = this;
@@ -31,11 +31,20 @@
             responsive: false
         };
 
+        vm.pivots = [
+        {titre:"repartition_beneficiaire",id:"req38_interven_petitenfan_agesco_agetrava_agee_region_dist_comm"},
+        {titre:"Nombre cumulé bénéficiaire",id:"req33_interven_nbrbenef_region_dist_comm"},
+       
+        
+      ];
+
         //recuperation region
         apiFactory.getAll("region/index").then(function(result)
         {
             vm.allregion = result.data.response;    
         });
+
+        //recuperation intervention
         apiFactory.getAll("intervention/index").then(function(result)
         {
             vm.allintervention = result.data.response;
@@ -43,16 +52,16 @@
         });
 
         //recuperation effectif population
-        vm.filtre_benefi_age_sexe= function(filtre)
+        vm.filtrer= function(filtre)
         {   
             //var date_d= moment(filtre.date_debut).format('YYYY-MM-DD');
             vm.affiche_load = true ;
-            apiFactory.getAPIgeneraliserREST("systeme_protection_social/index","menu","beneficiaire_sexe_age",
+            apiFactory.getAPIgeneraliserREST("systeme_protection_social/index","menu",filtre.pivot,
             "id_region",filtre.region_id,"id_district",filtre.district_id,"id_commune",filtre.commune_id,"id_intervention",filtre.intervention_id).then(function(result)
             {
-                vm.beneficiaire_age_sexe = result.data.response;
+                vm.datas = result.data.response;
                 vm.affiche_load = false ;
-                console.log(vm.beneficiaire_age_sexe);
+                console.log(vm.datas);
             });
         }
 
@@ -90,6 +99,23 @@
                   vm.allfokontany = result.data.response; 
                   console.log(vm.allfokontany);
                 });
+            }
+        }
+
+        vm.cacher_table = function(mot_a_cherecher,string)
+        {
+            if (!string) 
+            {
+            string = "" ;
+            }
+            var res = string.indexOf(mot_a_cherecher);
+            if (res != -1) 
+            {
+            return true ;
+            }
+          else
+            {
+            return false ;
             }
         }
        

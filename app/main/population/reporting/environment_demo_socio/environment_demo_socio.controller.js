@@ -3,11 +3,11 @@
     'use strict';
 
     angular
-        .module('app.population.environment_demo_socio.effectif_age_sexe_population')
-        .controller('Effectif_age_sexe_populationController', Effectif_age_sexe_populationController);
+        .module('app.population.reporting.environment_demo_socio')
+        .controller('Environment_demo_socioController', Environment_demo_socioController);
 
     /** @ngInject */
-    function Effectif_age_sexe_populationController($scope, $mdDialog, apiFactory,$state)
+    function Environment_demo_socioController($scope, $mdDialog, apiFactory,$state)
     {
         /*********DEBUT INITIALISATION *********/
             var vm = this;
@@ -31,6 +31,13 @@
             responsive: false
         };
 
+        vm.pivots = [
+        {titre:"Effectif par age/sexe de la population",id:"effectif_population_petitenfan_agesco_agetrava_agee_region_dist_comm"},
+        {titre:"Effectif manage ayant enfant",id:"effectif_menage_enfant_menagenfan_menagescolai_region_dist_comm"},
+       
+        
+      ];
+
         //recuperation region
         apiFactory.getAll("region/index").then(function(result)
         {
@@ -38,18 +45,19 @@
         });
 
         //recuperation effectif population
-        vm.filtre_effe_age_sexe= function(filtre)
+        vm.filtrer= function(filtre)
         {   
             //var date_d= moment(filtre.date_debut).format('YYYY-MM-DD');
             vm.affiche_load = true ;
-            apiFactory.getAPIgeneraliserREST("Environment_demo_socio/index","menu","effectif_sexe_age",
+            apiFactory.getAPIgeneraliserREST("Environment_demo_socio/index","menu",filtre.pivot,
             "id_region",filtre.region_id,"id_district",filtre.district_id,"id_commune",filtre.commune_id).then(function(result)
             {
-                vm.effectif_age_sexe = result.data.response;
+                vm.datas = result.data.response;
                 vm.affiche_load = false ;
                 console.log(vm.effectif_age_sexe);
             });
         }
+
 
         //recuperation district par region
         vm.modifierregion = function(filtre)
@@ -76,6 +84,23 @@
             }
             
         }
+
+        vm.cacher_table = function(mot_a_cherecher,string)
+      	{
+          	if (!string) 
+          	{
+            string = "" ;
+          	}
+          	var res = string.indexOf(mot_a_cherecher);
+          	if (res != -1) 
+          	{
+            return true ;
+          	}
+         	else
+          	{
+            return false ;
+          	}
+      	}
        
        /*********FIN ONGLET EFFECTIF AGE SEXE*********/
 
