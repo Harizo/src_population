@@ -2,7 +2,7 @@
 {
     'use strict';
     angular
-        .module('app.population.validationdonnees.validationbeneficiaire')
+        .module('app.population.validationdonnees.validationintervention')
         .directive('customOnChange', function() {
 			return {
 				restrict: 'A',
@@ -43,9 +43,9 @@
 				});
 			}
 		}])
-        .controller('ValidationbeneficiaireController', ValidationbeneficiaireController);
+        .controller('ValidationinterventionController', ValidationinterventionController);
     /** @ngInject */
-    function ValidationbeneficiaireController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlvalidationbeneficiaire)  {
+    function ValidationinterventionController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlvalidationintervention)  {
         var vm = this;
         var NouvelItem=false;
         var currentItem;
@@ -72,7 +72,7 @@
         vm.affichageMasquestache = 0 ;
         //fin pour les sous tâches
         vm.allActivite = [] ;
-        vm.Listevalidationbeneficiaire = [] ;
+        vm.Listevalidationintervention = [] ;
         vm.allParent = [] ;
         vm.ListeParent = [] ;
 		vm.monfichier ='';
@@ -91,18 +91,18 @@
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			vm.raisonsociale = result.data.response.raison_sociale;
-			apiFactory.getAPIgeneraliser("listevalidationbeneficiaire/index","donnees_validees",0,"id_utilisateur",vm.id_utilisateur).then(function(result) {
-				vm.Listevalidationbeneficiaire = result.data.response;
+			apiFactory.getAPIgeneraliser("listevalidationintervention/index","donnees_validees",0,"id_utilisateur",vm.id_utilisateur).then(function(result) {
+				vm.Listevalidationintervention = result.data.response;
 			});               
         });     
-			//add historique : Consultation menu validation bénéficiaire
+			//add historique : Consultation menu validation intervention
 			var config = {
 				headers : {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
 				}
 			};
 			var datas = $.param({
-				action:"Consultation : Menu validation bénéficiaire",
+				action:"Consultation : Menu validation intervention",
 				id_utilisateur:vm.id_utilisateur
 			});
 			//factory
@@ -174,7 +174,7 @@
                 id_utilisateur_validation:null,
             });
             //factory
-            apiFactory.add("listevalidationbeneficiaire/index",datas, config).success(function (data) {
+            apiFactory.add("listevalidationintervention/index",datas, config).success(function (data) {
                 if (NouvelItem == false) {
                     // Update or delete: id exclu                  
                     if(suppression==0) {
@@ -273,7 +273,7 @@
         };
         $scope.$watch('vm.selectedListedonneesavaliderItem', function() {
 			if (!vm.selectedListedonneesavaliderItem) return;
-			vm.Listevalidationbeneficiaire.forEach(function(item) {
+			vm.Listevalidationintervention.forEach(function(item) {
 				item.$selected = false;
 			});
 			vm.selectedListedonneesavaliderItem.$selected = true;
@@ -306,13 +306,13 @@
 				nomutilisateurvalidation:null,		
 				raisonsociale:vm.raisonsociale		
 			};
-			vm.Listevalidationbeneficiaire.push(items);
+			vm.Listevalidationintervention.push(items);
 			vm.afficherboutonnouveau=0;
 		}
 		vm.annulerDocument = function(item) {
 			vm.afficherboutonnouveau=1;
 			if (!item.id) {
-				vm.Listevalidationbeneficiaire.pop();
+				vm.Listevalidationintervention.pop();
 				return;
 			}          
 			vm.selectedListedonneesavaliderItem.resume=vm.resume;
@@ -358,7 +358,7 @@
             vm.fait=item.fait;
 			currentdepenseItem = JSON.parse(JSON.stringify(vm.selectedListedonneesavaliderItem));
 			item.date_reception = new Date(item.date_reception);
-			vm.Listevalidationbeneficiaire.forEach(function(it) {
+			vm.Listevalidationintervention.forEach(function(it) {
 				it.$selected = false;
 				it.$edit = false;
 			});
@@ -385,8 +385,8 @@
 			} else {
 				var date_temporaire = formatDate(vm.selectedListedonneesavaliderItem.date_reception);
 			}
-			// var rep = apiUrlbase + apiUrlvalidationbeneficiaire + vm.site.toLowerCase()  ;
-			var rep = apiUrlbase + apiUrlvalidationbeneficiaire ;
+			// var rep = apiUrlbase + apiUrlvalidationintervention + vm.site.toLowerCase()  ;
+			var rep = apiUrlbase + apiUrlvalidationintervention ;
 			vm.directoryName=rep;
             var datas = $.param({
                 supprimer:suppression,
@@ -399,7 +399,7 @@
                 id_utilisateur:id_user,
                 id_utlisateur_validation:null
             });
-            apiFactory.add("listevalidationbeneficiaire/index",datas, config).success(function (data) {
+            apiFactory.add("listevalidationintervention/index",datas, config).success(function (data) {
                 if (NouveldonneesavaliderItem == 0) {
                     vm.selectedListedonneesavaliderItem.nom_fichier=vm.fichier;
                     vm.selectedListedonneesavaliderItem.repertoire=vm.repertoire;
@@ -408,12 +408,12 @@
 					  vm.selectedListedonneesavaliderItem.$edit=false;
                       vm.selectedListedonneesavaliderItem ={};
                     } else {    
-						vm.Listevalidationbeneficiaire = vm.Listevalidationbeneficiaire.filter(function(obj) {
+						vm.Listevalidationintervention = vm.Listevalidationintervention.filter(function(obj) {
 							return obj.id !== currentdepenseItem.id;
 						});         
                     }
-					//add historique : Validation bénéficiaire : 
-					var actions ="Modification envoi fichier bénéficiaire à valider : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier;
+					//add historique : Validation intervention : 
+					var actions ="Modification envoi fichier intervention à valider : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier;
 					var config = {
 						headers : {
 							'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -456,9 +456,9 @@
 			var file =vm.myFile[0];
 			// console.log('file is ' );
 			// console.dir(file);
-			var repertoire = apiUrlvalidationbeneficiaire;
+			var repertoire = apiUrlvalidationintervention;
 			// var bt = vm.site.toLowerCase() + '/';
-			var uploadUrl = apiUrl + "validationbeneficiaire/upload_validationdonneesbeneficiaire";
+			var uploadUrl = apiUrl + "validationintervention/upload_validationdonneesintervention";
 			var name = $scope.name;
 			// console.log(name);
 			var fd = new FormData();
@@ -475,20 +475,20 @@
 					vm.fichier=data["nom_fichier"];
 					vm.repertoire=data["repertoire"];
 					if(data["reponse"]=="OK") {
-						// Aucune erreur détectée => Sauvegarde dans la liste de validation bénéficiaire
+						// Aucune erreur détectée => Sauvegarde dans la liste de validation intervention
 						vm.sauverDocument(item,0);
-						var actions ="Envoi fichier bénéficiaire à valider : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier;
+						var actions ="Envoi fichier intervention à valider : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier;
 						vm.showAlert("INFORMATION","Le fichier à importer ne contient pas des erreurs.Merci de votre collaboration.A bientôt");
 					} else {
-						var actions ="Envoi fichier bénéficiaire à valider avec " + data["nombre_erreur"] + "erreur(s) : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier +"(non sauvegardé)";
+						var actions ="Envoi fichier intervention à valider avec " + data["nombre_erreur"] + "erreur(s) : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier +"(non sauvegardé)";
 						vm.showAlert("INFORMATION","Il y a des erreurs dans le fichier à importer.Veuillez consulter votre e-mail et corriger les données marquées en rouge.Merci");
 						// Enlever de la liste puisqu'il y a des erreurs : sans sauvegarde dans la BDD
-						vm.Listevalidationbeneficiaire = vm.Listevalidationbeneficiaire.filter(function(obj) {
+						vm.Listevalidationintervention = vm.Listevalidationintervention.filter(function(obj) {
 							return parseInt(obj.id) !== 0;
-						});  
+						});   
 						vm.afficherboutonnouveau=1;
 					}						
-					//add historique : Validation bénéficiaire : 
+					//add historique : Validation intervention : 
 					var config = {
 						headers : {
 							'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'

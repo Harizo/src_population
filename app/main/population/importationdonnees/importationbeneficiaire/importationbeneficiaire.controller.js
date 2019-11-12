@@ -45,7 +45,7 @@
 		}])
         .controller('ImportationbeneficiaireController', ImportationbeneficiaireController);
     /** @ngInject */
-    function ImportationbeneficiaireController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlvalidation)  {
+    function ImportationbeneficiaireController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlvalidationbeneficiaire)  {
         var vm = this;
         var NouvelItem=false;
         var currentItem;
@@ -53,6 +53,7 @@
         var NouveldonneesavaliderItem=0;
         var  currentdepenseItem;
         vm.selectedListedonneesavaliderItem={};
+        vm.selectedItemBeneficiaireValidees={};
         vm.myFile={};
         vm.parent_courant={};
         vm.etat="";
@@ -98,6 +99,19 @@
 				vm.Listebeneficiairevalidees = result.data.response;
 			});               
         });     
+			//add historique : Consultation menu importation bénéficiaire
+			var config = {
+				headers : {
+					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+				}
+			};
+			var datas = $.param({
+				action:"Consultation : Menu importation bénéficiaire",
+				id_utilisateur:vm.id_utilisateur
+			});
+			//factory
+			apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+			});									
 		function formatDate(date) {
 			var mois = date.getMonth()+1;
 			var dateSQL = (date.getFullYear()+ "/"+ mois + "/" + date.getDate());
@@ -204,6 +218,16 @@
                 item.$selected = false;
             });
             vm.selectedItem.$selected = true;
+        });
+        vm.selectionBeneficiaireValidees= function (item) {             
+            vm.selectedItemBeneficiaireValidees = item;
+        };
+        $scope.$watch('vm.selectedItemBeneficiaireValidees', function() {
+            if (!vm.Listebeneficiairevalidees) return;
+            vm.Listebeneficiairevalidees.forEach(function(item) {
+                item.$selected = false;
+            });
+            vm.selectedItemBeneficiaireValidees.$selected = true;
         });
         //function cache masque de saisie
         vm.ajouter = function () {
@@ -374,8 +398,8 @@
 			} else {
 				var date_temporaire = formatDate(vm.selectedListedonneesavaliderItem.date_reception);
 			}
-			// var rep = apiUrlbase + apiUrlvalidation + vm.site.toLowerCase()  ;
-			var rep = apiUrlbase + apiUrlvalidation ;
+			// var rep = apiUrlbase + apiUrlvalidationbeneficiaire + vm.site.toLowerCase()  ;
+			var rep = apiUrlbase + apiUrlvalidationbeneficiaire ;
 			vm.directoryName=rep;
             var datas = $.param({
                 supprimer:suppression,
@@ -430,7 +454,7 @@
 			var file =vm.myFile[0];
 			// console.log('file is ' );
 			// console.dir(file);
-			var repertoire = apiUrlvalidation;
+			var repertoire = apiUrlvalidationbeneficiaire;
 			// var bt = vm.site.toLowerCase() + '/';
 			var uploadUrl = apiUrl + "validationbeneficiaire/upload_validationdonneesbeneficiaire";
 			var name = $scope.name;
@@ -512,7 +536,8 @@
 						});
 						//factory
 						apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-						});				
+						});
+						vm.showAlert("INFORMATION","Les données sont intégrées dans la base de données.Merci !");
 					});
 		}
     }

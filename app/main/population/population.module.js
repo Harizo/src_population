@@ -18,6 +18,7 @@
             'app.population.validationdonnees',
             'app.population.importationdonnees',
             'app.population.reporting',
+            'app.population.importdecoupage',
             // 'app.population.beneficiaire',
        ])
         .config(config);

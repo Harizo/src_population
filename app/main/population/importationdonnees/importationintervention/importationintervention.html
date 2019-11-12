@@ -7,24 +7,24 @@
                 <span class="parent">Importation des données</span>
                 <span class="parent"> </span>
                 <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
-                <span class="parent" href="javascript:;">Importation des bénéficiaires</span>
+                <span class="parent" href="javascript:;">Importation des interventions</span>
             </div>
 
-            <div class="title">Importation des bénéficiaires</div>
+            <div class="title">Importation des interventions</div>
         </div>
     </div>
     <div class="content"layout="column">
 		<div class="form-wrapper"> 
 			<md-tabs md-dynamic-height>
-				<md-tab label="Bénéficiaires en attente d'importation vers BDD">
+				<md-tab label="Interventions en attente d'importation vers BDD">
 					<md-tab-body>
 						<fieldset>
 							<legend>
-								Importation des bénéficiaires
+								Importation des interventions
 								<!--button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button-->
 							</legend>
 							<div style="clear:both;"></div>
-							<table ng-table="tablelistevalidationbeneficiaire" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
+							<table ng-table="tablelistevalidationintervention" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
 								<thead>
 									<tr>
 										<th class="secondary-text" ng-repeat="c in :: vm.colonne_validation">
@@ -35,7 +35,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr  ng-repeat="lstvld in vm.Listevalidationbeneficiaire"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionDocument(lstvld)">
+									<tr  ng-repeat="lstvld in vm.Listevalidationintervention"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionDocument(lstvld)">
 										<td>
 											<span ng-if="lstvld.$edit">
 												<md-input-container>
@@ -102,15 +102,15 @@ height:30px;">Upload me</button>
 						</fieldset>
 					</md-tab-body>
 				</md-tab> 
-				<md-tab label="Bénéficiaires importés">
+				<md-tab label="Interventions importés">
 					<md-tab-body>
 						<fieldset>
 							<legend>
-								Liste des données bénéficiaires importés
+								Liste des données interventions importés
 								<!--button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button-->
 							</legend>
 							<div style="clear:both;"></div>
-							<table ng-table="tablelistebeneficiairevalidees" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
+							<table ng-table="tablelisteinterventionvalidees" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
 								<thead>
 									<tr>
 										<th class="secondary-text" ng-repeat="c in :: vm.colonne_donnees_validees">
@@ -121,7 +121,7 @@ height:30px;">Upload me</button>
 									</tr>
 								</thead>
 								<tbody>
-									<tr  ng-repeat="lstvld in vm.Listebeneficiairevalidees"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionBeneficiaireValidees(lstvld)">
+									<tr  ng-repeat="lstvld in vm.Listeinterventionvalidees"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionBeneficiaireValidees(lstvld)">
 										<td>
 											<span>{{lstvld.raisonsociale}}</span>
 										</td>
