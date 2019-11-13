@@ -178,13 +178,13 @@
                             <tr ng-repeat="data in vm.datas">
 
                             	<!-- req1theme1, req3theme1, req33theme2, req38theme2-->
-                                <td ng-show="vm.cacher_table('region',vm.filtre.pivot)">{{data.region}}</td>
+                                <td ng-show="vm.cacher_table('region',vm.filtre.pivot)">{{data.nom_region}}</td>
 
                                 <!-- req1theme1, req3theme1, req33theme2, req38theme2 -->
-                                <td ng-show="vm.cacher_table('dist',vm.filtre.pivot)">{{data.district}}</td>
+                                <td ng-show="vm.cacher_table('dist',vm.filtre.pivot)">{{data.nom_dist}}</td>
 
                                 <!-- req1theme1, req3theme1, req33theme2, req38theme2-->
-                                <td ng-show="vm.cacher_table('comm',vm.filtre.pivot)">{{data.commune}}</td>
+                                <td ng-show="vm.cacher_table('comm',vm.filtre.pivot)">{{data.nom_com}}</td>
 
                                 <!-- req33theme2, req38theme2 -->
                                 <td ng-show="vm.cacher_table('interven',vm.filtre.pivot)">{{data.intervention}}</td>
