@@ -51,6 +51,7 @@
           titre:"Nombre cumulé bénéficiaire",
           id:"req33theme2_interven_nbrbenef_region_dist_comm",
           category:"theme2"
+
         }
         //DEBUT CODE HARIZO
         ,
@@ -75,6 +76,34 @@
           category:"theme2"
         }   
         //FIN CODE HARIZO       
+
+        },
+        {
+          titre:"Répartition financement par programme",
+          id:"req7theme2_budgetinit_budgetmodif_situation",
+          category:"theme2"
+        },
+        {
+          titre:"Répartition financement par source",
+          id:"req8theme2_budgetinit_budgetmodif_situation_source",
+          category:"theme2"
+        },
+        {
+          titre:"Répartition financement par tutele",
+          id:"req9theme2_budgetinit_budgetmodif_situation_tutelle",
+          category:"theme2"
+        },
+        {
+          titre:"Nombre des bénéficiaires prévus",
+          id:"req31theme2_interven_nbrinter_program_beneparan_beneprevu_region",
+          category:"theme2"
+        },
+        {
+          titre:"Taux d’atteinte des résultats",
+          id:"req34theme2_program_interven_nbrbene_nbrinter_tauxinter_region",
+          category:"theme2"
+        }       
+
         
       ];
 
@@ -85,6 +114,7 @@
         {
             vm.allregion = result.data.response;    
         });
+
 
         apiFactory.getAll("type_transfert/index").then(function(result)
         {
@@ -108,11 +138,19 @@
             }      
         }
 
+        //recuperation intervention
+        apiFactory.getAll("intervention/index").then(function(result)
+        {
+            vm.allintervention = result.data.response;    
+        });
+
+
         //recuperation effectif population
         vm.filtrer= function(filtre)
         {   
             //var date_d= moment(filtre.date_debut).format('YYYY-MM-DD');
             vm.affiche_load = true ;
+
             apiFactory.getAPIgeneraliserREST("Environment_et_systeme/index",
                                               "menu",filtre.pivot,
                                               "id_region",filtre.region_id,
@@ -123,6 +161,10 @@
                                               "date_debut",convertionDate(filtre.date_debut),
                                               "date_fin",convertionDate(filtre.date_fin))//fin code harizo
             .then(function(result)
+
+            apiFactory.getAPIgeneraliserREST("Environment_et_systeme/index","menu",filtre.pivot,
+            "id_region",filtre.region_id,"id_district",filtre.district_id,"id_commune",filtre.commune_id,"id_intervention",filtre.id_intervention).then(function(result)
+
             {
                 vm.datas = result.data.response;
                 vm.affiche_load = false ;
@@ -156,7 +198,20 @@
             }
             
         }
+        //recuperation commune par district
+        vm.modifiercommune = function(filtre)
+        {   console.log(filtre.district_id);
+            if (filtre.district_id!='*')
+            {
+                apiFactory.getAPIgeneraliserREST("fokontany/index","cle_etrangere",filtre.commune_id).then(function(result)
+                {
+                  console.log(result.data.response);
+                });
+            }
+            
+        }
 
+        //masque de table
         vm.cacher_table = function(mot_a_cherecher,string)
       	{
           	if (!string) 
@@ -173,6 +228,15 @@
             return false ;
           	}
       	}
+
+        //nombre après virgul = 0
+        vm.nombre_apre_virgul = function(val)
+        {
+            var nbr=parseFloat(val).toFixed(0);
+
+            return nbr;
+         
+        }
        
        /*********FIN ONGLET EFFECTIF AGE SEXE*********/
 
