@@ -28,7 +28,7 @@
         });
         // Navigation
         msNavigationServiceProvider.saveItem('population.reporting.environment_et_systeme', {
-            title: 'environment et systeme',
+            title: 'Tableau de bord',
             icon  : 'icon-swap-horizontal',
             state: 'app.population_reporting_environment_et_systeme',
             weight: 1
