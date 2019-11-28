@@ -98,7 +98,7 @@
 
                                 <md-input-container flex="100" flex-gt-xs="33" ng-show="vm.cacher_table('interven',vm.filtre.pivot)">
                                     <label>Intervention</label>
-                                    <md-select ng-model="vm.filtre.id_intervention">
+                                    <md-select ng-model="vm.filtre.intervention_id">
                                         <md-option  value="*">*</md-option>
                                         <md-option ng-repeat="intervention in vm.allintervention" value="{{intervention.id}}">
                                             {{intervention.intitule}}
@@ -384,6 +384,48 @@
                                                     <span class="column-title">Nombre total prevu</span>
                                                 </div>
                                             </th>
+
+                                            <!-- req14theme2-->
+                                            <th class="secondary-text" ng-show="vm.cacher_table('peffectif',vm.filtre.pivot)">
+                                                <div class="table-header">
+                                                    <span class="column-title">Pourcentage effectif</span>
+                                                </div>
+                                            </th>
+
+                                            <!-- req19theme2-->
+                                            <th class="secondary-text" ng-show="vm.cacher_table('pourcenenfan',vm.filtre.pivot)">
+                                                <div class="table-header">
+                                                    <span class="column-title">Pourcentage enfant</span>
+                                                </div>
+                                            </th>
+
+                                            <!-- req19theme2-->
+                                            <th class="secondary-text" ng-show="vm.cacher_table('pourcensco',vm.filtre.pivot)">
+                                                <div class="table-header">
+                                                    <span class="column-title">Pourcentage age scolaire</span>
+                                                </div>
+                                            </th>
+
+                                            <!-- req19theme2-->
+                                            <th class="secondary-text" ng-show="vm.cacher_table('pourcentra',vm.filtre.pivot)">
+                                                <div class="table-header">
+                                                    <span class="column-title">Pourcentage age travaillé</span>
+                                                </div>
+                                            </th>
+
+                                            <!-- req19theme2-->
+                                            <th class="secondary-text" ng-show="vm.cacher_table('pourcenage',vm.filtre.pivot)">
+                                                <div class="table-header">
+                                                    <span class="column-title">Pourcentage agée</span>
+                                                </div>
+                                            </th>
+
+                                            <!-- req14theme2-->
+                                            <th class="secondary-text" ng-show="vm.cacher_table('pcout',vm.filtre.pivot)">
+                                                <div class="table-header">
+                                                    <span class="column-title">Pourcentage coût</span>
+                                                </div>
+                                            </th>
                             <!-- Bruce-->                
 
                             </tr>
@@ -485,6 +527,25 @@
 
                                                 <!-- req31theme2,req34theme2-->
                                                 <td ng-show="vm.cacher_table('beneprevu',vm.filtre.pivot)" class="text-center">{{data.nbr_total_prevu}}</td>
+
+
+                                                <!-- req14theme2-->
+                                                <td ng-show="vm.cacher_table('peffectif',vm.filtre.pivot)" class="text-center">{{vm.nombre_apre_virgul(data.pourcen_effectif)}}%</td>
+
+                                                <!-- req19theme2-->
+                                                <td ng-show="vm.cacher_table('pourcenenfan',vm.filtre.pivot)" class="text-center">{{vm.nombre_apre_virgul(data.pourcen_enfant)}}%</td>
+
+                                                <!-- req19theme2-->
+                                                <td ng-show="vm.cacher_table('pourcensco',vm.filtre.pivot)" class="text-center">{{vm.nombre_apre_virgul(data.pourcen_agesco)}}%</td>
+
+                                                <!-- req19theme2-->
+                                                <td ng-show="vm.cacher_table('pourcentra',vm.filtre.pivot)" class="text-center">{{vm.nombre_apre_virgul(data.pourcen_agetra)}}%</td>
+
+                                                <!-- req19theme2-->
+                                                <td ng-show="vm.cacher_table('pourcenage',vm.filtre.pivot)" class="text-center">{{vm.nombre_apre_virgul(data.pourcen_agee)}}%</td>
+
+                                                <!-- req14theme2-->
+                                                <td ng-show="vm.cacher_table('pcout',vm.filtre.pivot)" class="text-center">{{vm.nombre_apre_virgul(data.pourcen_cout)}}%</td>
                             <!-- Bruce-->
 
                             </tr>
