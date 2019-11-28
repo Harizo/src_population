@@ -89,6 +89,7 @@
         vm.colonne_donnees_validees = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Date intégration"},{"titre":"Validateur"}];           
         var id_user = $cookieStore.get('id');
 		vm.id_utilisateur = id_user;
+		vm.adresse_mail =$cookieStore.get('email');
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			vm.raisonsociale = result.data.response.raison_sociale;
@@ -510,9 +511,36 @@
 						nom_fichier : item.nom_fichier,
 						repertoire: item.repertoire,
 						id_utilisateur:vm.id_utilisateur,
-						id:item.id
+						id_liste_validation_beneficiaire:item.id
 					},function(data) {  
 						console.log(data);
+						// Envoi email pour signaler qu'aucune erreur a été détéctée
+						var repertoire = apiUrlvalidationbeneficiaire;
+						var uploadUrl = apiUrl + "importationbeneficiaire/envoyer_mail_integration_donnees";
+						var name = $scope.name;
+						var fd = new FormData();
+						fd.append('id_utilisateur',vm.id_utilisateur);
+						fd.append('adresse_mail',vm.adresse_mail);
+						fd.append('region',data["region"]);
+						fd.append('district',data["district"]);
+						fd.append('commune',data["commune"]);
+						fd.append('fokontany',data["fokontany"]);
+						fd.append('intervention',data["intervention"]);
+						fd.append('date_inscription',data["date_inscription"]);
+						fd.append('id_liste_validation_beneficiaire',item.id);
+						var upl=   $http.post(uploadUrl, fd, {
+							transformRequest: angular.identity,
+							headers: {'Content-Type': undefined}
+						}).success(function(data){
+							if(parseInt(data)==1) {
+								// Aucune erreur détectée => Sauvegarde dans la liste de validation bénéficiaire
+								vm.showAlert("INFORMATION","Un email a été envoyé à votre adresse.Merci de votre collaboration.A bientôt");
+							} else {
+								vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers l'acteur.Veuillez vérifier l'adresse e-mail si correct.Merci");
+							}						
+						}).error(function(){
+							vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers l'acteur.Veuillez vérifier l'adresse e-mail si correct.Merci");
+						});
 						// window.location = data;
 						// Actualisation liste validation bénéficiaire
 						vm.Listevalidationbeneficiaire =[];

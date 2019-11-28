@@ -76,7 +76,13 @@
         vm.allParent = [] ;
         vm.ListeParent = [] ;
 		vm.monfichier ='';
-        // Data
+ 		vm.region="";
+		vm.district="";
+		vm.commune="";
+		vm.fokontany="";
+		vm.intervention="";
+		vm.date_inscription="";
+       // Data
         vm.dtOptions = {
         dom       : '<"top"f>rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
         pagingType: 'simple',
@@ -88,6 +94,7 @@
         vm.colonne_donnees_a_validees = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Date intégration"},{"titre":"Validateur"},{"titre":"Actions"}];           
         var id_user = $cookieStore.get('id');
 		vm.id_utilisateur = id_user;
+		vm.adresse_mail =$cookieStore.get('email');
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			vm.raisonsociale = result.data.response.raison_sociale;
@@ -434,8 +441,32 @@
 					vm.selectedListedonneesavaliderItem.repertoire=vm.repertoire;
 					vm.repertoire_complet ==vm.repertoire;
                 }
-				// vm.item.$selected=false;
-				// vm.item.$edit=false;
+				// Envoi email pour signaler qu'aucune erreur a été détéctée
+				var repertoire = apiUrlvalidationintervention;
+				var uploadUrl = apiUrl + "validationintervention/envoyer_mail_validation_donnees";
+				var name = $scope.name;
+				var fd = new FormData();
+				fd.append('id_utilisateur',vm.id_utilisateur);
+				fd.append('adresse_mail',vm.adresse_mail);
+				fd.append('region',vm.region);
+				fd.append('district',vm.district);
+				fd.append('commune',vm.commune);
+				fd.append('fokontany',vm.fokontany);
+				fd.append('intervention',vm.intervention);
+				fd.append('date_inscription',vm.date_inscription);
+				var upl=   $http.post(uploadUrl, fd, {
+					transformRequest: angular.identity,
+					headers: {'Content-Type': undefined}
+				}).success(function(data){
+					if(parseInt(data)==1) {
+						// Aucune erreur détectée => Sauvegarde dans la liste de validation bénéficiaire
+						vm.showAlert("INFORMATION","Un email a été envoyé à votre adresse.Merci de votre collaboration.A bientôt");
+					} else {
+						vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'nvoi d'un email vers votre adresse.Veuillez vérifier votre adresse e-mail si correct.Merci");
+					}						
+				}).error(function(){
+					vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers votre adresse.Veuillez vérifier votre adresse e-mail si correct.Merci");
+				});
 				vm.selectedListedonneesavaliderItem.$edit=false;
 				vm.selectedListedonneesavaliderItem.$selected=false;
 				vm.selectedListedonneesavaliderItem={};
@@ -465,6 +496,8 @@
 			fd.append('file', file);
 			fd.append('repertoire',repertoire);
 			fd.append('raison_sociale',vm.raisonsociale);
+			fd.append('adresse_mail',vm.adresse_mail);
+			fd.append('id_utilisateur',vm.id_utilisateur);
 			if(file) { 
 				var upl=   $http.post(uploadUrl, fd, {
 					transformRequest: angular.identity,
@@ -475,6 +508,12 @@
 					vm.fichier=data["nom_fichier"];
 					vm.repertoire=data["repertoire"];
 					if(data["reponse"]=="OK") {
+						vm.region=data["region"];
+						vm.district=data["district"];
+						vm.commune=data["commune"];
+						vm.fokontany=data["fokontany"];
+						vm.intervention=data["intervention"];
+						vm.date_inscription=data["date_inscription"];
 						// Aucune erreur détectée => Sauvegarde dans la liste de validation intervention
 						vm.sauverDocument(item,0);
 						var actions ="Envoi fichier intervention à valider : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier;
@@ -511,7 +550,8 @@
 		vm.exportfichier = function(item) {
 			var bla = $.post(apiUrl + "Uploadfichier/prendre_fichier",{
 						nom_fichier : item.nom_fichier,
-						repertoire: item.repertoire
+						repertoire: item.repertoire,
+						email :vm.adresse_mail,
 					},function(data) {   
 						window.location = data;
 					});

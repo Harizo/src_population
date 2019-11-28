@@ -459,6 +459,7 @@
 						};
 						vm.listes_utilisateurs.push(itemss); 
 						vm.action="Ajout compte utilisateur ("+ user.raison_sociale + ") au nom de : " + user.prenom + " " + user.nom + "("+ user.email + ")";
+						// Envoi e-mail pour signaler que le compte utilisateur a été ouvert
 					} else {
 						vm.selectedItem.roles = tab ;
 						vm.selectedItem.nom = user.nom;

@@ -10,6 +10,7 @@
             'app.population.auth.forgot-password',
             'app.population.auth.reset-password',
             'app.population.auth.lock',
+            'app.population.auth.firstlogin',
             'app.population.administration',
             'app.population.ddb',
             // 'app.population.registresocial',
