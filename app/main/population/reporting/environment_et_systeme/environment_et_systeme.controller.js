@@ -74,7 +74,33 @@
             titre:"Total des transferts",
             id:"req43_theme2",
             category:"theme2"
-          }   
+          },
+          {
+            titre:"Répartition décaissement par programme",
+            id:"req10_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Répartition décaissement par tutelle",
+            id:"req11_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Répartition des agences d'exécution par programme",
+            id:"req12_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Montant du budget non consommé",
+            id:"req37_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Taux de décaissement par intervention",
+            id:"req36_theme2",
+            category:"theme2"
+          }      
+
           //FIN CODE HARIZO       
 
           ,
@@ -106,6 +132,37 @@
 
         
         ];
+
+        //  harizo
+        vm.formatMillier = function (nombre) 
+        {
+            if (typeof nombre != 'undefined' && parseInt(nombre) >= 0) {
+                nombre += '';
+                var sep = ' ';
+                var reg = /(\d+)(\d{3})/;
+                while (reg.test(nombre)) {
+                    nombre = nombre.replace(reg, '$1' + sep + '$2');
+                }
+                return nombre;
+            } else {
+                return "";
+            }
+        }
+
+        vm.replace_point = function(nbr)
+        {
+          var str = ""+nbr ;
+          var res = str.replace(".",",") ;
+          return res ;
+        }
+
+        vm.parseFloat_0 = function(int)
+        {
+          var float = parseFloat(int);
+          var x = vm.replace_point(float.toFixed(3)) ;
+          return x ;
+        }
+        // fin code harizo
 
         vm.max_date = new Date();
 
