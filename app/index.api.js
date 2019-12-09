@@ -94,10 +94,8 @@
           var email = utilisateur.email;
           var pwd = utilisateur.password;
 
-          $http.get(apiUrl+'utilisateurs?email='+email+'&pwd='+pwd)
-            .success(function(data){
-              if(data.status == true)
-                  {
+			$http.get(apiUrl+'utilisateurs?email='+email+'&pwd='+pwd).success(function(data){
+				if(data.status == true) {
                     cookieService.set('id',data.response.id);
                     cookieService.set('nom',data.response.nom);
                     cookieService.set('prenom',data.response.prenom);
@@ -107,6 +105,12 @@
                     storageService.set('exist',9);
                     storageService.set('enabled',data.response.enabled);
 					var id_utilisateur = data.response.id;
+					var actions="";
+					if(parseInt(data.response.default_password)==1) {
+						actions="Premier connection à l'application";
+					} else {
+						actions="Connection à l'application";
+					}
                     //add historique
                     var config = {
                         headers : {
@@ -114,26 +118,26 @@
                         }
                     };
                     var datas = $.param({
-                        action:"Connection à l'application",
+                        action:actions,
                         id_utilisateur:id_utilisateur
                     });
                     //factory
                     apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
 					});
-                    if(data.response.enabled==0)
-                    {
-                      $location.path("/auth/lock");
+					
+                    if(data.response.enabled==0) {
+						$location.path("/auth/lock");
+                    } else  {
+						// Si mot de passe par défaut => rédirection modification mot de passe 
+						if(parseInt(data.response.default_password)==1) {
+							$location.path("/auth/firstlogin");
+						} else {	
+							location.reload();
+							// $location.path("/accueil");//si n'est pas packeT    
+							$window.location.href = '/population';
+						}	
                     }
-                    else
-                    {
-                      location.reload();
-
-                 // $location.path("/accueil");//si n'est pas packeT
-                  
-                      $window.location.href = '/population';
-                    }
-                  }else{
-
+				} else {
                     $mdDialog.show({
                       controller         : function ($scope, $mdDialog)
                       {
@@ -164,7 +168,7 @@
                     storageService.del('exist');
                     storageService.del('enabled');
                     $location.path("/auth/login");
-                  }
+				}
             });
         },
         logout: function(){
@@ -217,29 +221,81 @@
         gestionMenu:function(listesAutorise, autorisationPersonnel)
         {
             var tab = [];
-            angular.forEach(listesAutorise, function(value, key)
-            {
-                angular.forEach(autorisationPersonnel, function(val, k)
-                {
-                
-                    if (value == val) 
-                    {
+            angular.forEach(listesAutorise, function(value, key) {
+                angular.forEach(autorisationPersonnel, function(val, k) {
+                    if (value == val) {
                        tab.push(1);
-
-
                     };
-
-
                 });
             });
-            if(tab.length > 0 )
-            {
-              return false;
+            if(tab.length > 0 ) {
+				return false;
             }else{
-              return true;
+				return true;
             }
-        }
+        },first_login:function(motdepasse,ev) {
+			//clear
+			var pwd = motdepasse.password;
+			var conf_pwd = motdepasse.confirm_password;
+			var id_utilisateur = $cookieStore.get('id');
+			$http.get(apiUrl+'utilisateurs?id_utilisateur='+id_utilisateur+'&conf_pwd='+conf_pwd).success(function(data){
+				if(data.status == true) {
+					var	actions="Ré-connection à l'application après modification mot de passe par défaut";
+                    //add historique
+                    var config = {
+                        headers : {
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                        }
+                    };
+                    var datas = $.param({
+                        action:actions,
+                        id_utilisateur:id_utilisateur
+                    });
+                    //factory
+                    apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+					});
+					
+                    if(data.response.enabled==0) {
+						$location.path("/auth/lock");
+                    } else  {
+						location.reload();
+						// $location.path("/accueil");//si n'est pas packeT                
+						$window.location.href = '/population';
+                    }
+				} else {
+                    $mdDialog.show({
+                      controller         : function ($scope, $mdDialog)
+                      {
+                        $scope.closeDialog = function ()
+                        {
+                          $mdDialog.hide();
+                        }
+                      },
+                      template           : '<md-dialog>' +
+                      '  <md-dialog-content><h1 class="md-warn-fg" translate="LOGIN.error.titre">titre</h1><div><pre translate="LOGIN.error.msg">corps</pre></div></md-dialog-content>' +
+                      '  <md-dialog-actions>' +
+                      '    <md-button ng-click="closeDialog()" class="md-primary" translate="LOGIN.error.quitter">' +
+                      '      Quitter' +
+                      '    </md-button>' +
+                      '  </md-dialog-actions>' +
+                      '</md-dialog>',
+                      parent             : angular.element('body'),
+                      targetEvent        : ev,
+                      clickOutsideToClose: true
+                    });
+                    cookieService.del('id');
+                    cookieService.del('nom');
+                    cookieService.del('prenom');
+                    cookieService.del('email');
+                    cookieService.del('token');
+                    cookieService.del('roles');
+                    cookieService.del('exist');
+                    storageService.del('exist');
+                    storageService.del('enabled');
+                    $location.path("/auth/login");
+				}
+            });			
+		}		
       };
     }
-
 })();

@@ -128,6 +128,16 @@
             titre:"Taux d’atteinte des résultats",
             id:"req34theme2_program_interven_nbrbene_nbrinter_tauxinter_region",
             category:"theme2"
+          },
+          {
+            titre:"Répartition géographique des interventions",
+            id:"req14theme2_interven_nbrinter_budgetinit_peffectif_pcout_region_district",
+            category:"theme2"
+          },
+          {
+            titre:"Proportion des interventions avec critères d'âge",
+            id:"req19theme2_interven_pourcenenfan_pourcensco_pourcentra_pourcenage_pcout",
+            category:"theme2"
           }       
 
         

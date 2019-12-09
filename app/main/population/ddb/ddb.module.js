@@ -10,7 +10,8 @@
             'app.population.ddb.ddbprojet',
             //'app.population.ddb.localisation',
             'app.population.ddb.annuaire',
-            'app.population.ddb.region_district_commune'
+            'app.population.ddb.region_district_commune',
+            'app.population.ddb.ddbvariable',
             ])
         .run(testPermission)
         .config(config);

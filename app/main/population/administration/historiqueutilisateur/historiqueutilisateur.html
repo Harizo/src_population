@@ -36,7 +36,7 @@
 	                            <md-select ng-model="vm.filtre.id_utilisateur" ng-disabled="vm.affiche_load" required>
 	                            	<md-option  value="*">*</md-option>
 	                                <md-option ng-repeat="util in vm.allutilisateur" value="{{util.id}}">
-	                                    {{util.nom}}
+	                                    {{util.prenom}} {{util.nom}}
 	                                </md-option>
 								</md-select>
 							</md-input-container>
@@ -76,7 +76,7 @@
 							</thead>
 							<tbody>
 								<tr ng-repeat="historique in vm.allhistorique">
-									<td>{{historique.user.nom}}</td>
+									<td>{{historique.user.prenom}} {{historique.user.nom}}</td>
 									<td>{{historique.action}}</td>
 									<td>{{vm.converDate(historique.date_action)}}</td>
 								</tr>
