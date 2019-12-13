@@ -14,7 +14,8 @@
                 <div class="title">Annuaire</div>
             </div>
         </div>
-		<!-- Début Masque de saisie -->
+<!-- DEBUT de tous les Masques de saisie -->		
+		<!-- Début Masque de saisie information programme-->
         <md-tabs md-dynamic-height ng-show="vm.affichageMasqueprogramme==1">
 			<md-tab label="{{vm.titreacteur}}">
 				<md-tab-body>
@@ -130,20 +131,6 @@
 									</div>							  
 								</div>
 							</md-input-container>
-							<md-input-container flex="100" flex-gt-xs="15">
-								<label>Type financement</label>
-								<md-select name="id_type_financement" ng-model="vm.programme.id_type_financement" ng-init="vm.programme.id_type_financement=''" ng-change="vm.modifierTypefinancement(vm.programme)">
-									<md-option value=''></md-option>
-									<md-option ng-repeat="ta in vm.allRecordsTypefinancement | orderBy:['intitule']" value='{{ta.id}}'>
-										{{ta.intitule}}
-									</md-option>
-								</md-select>
-								<div ng-messages="programmeform.id_type_financement.$error" role="alert">
-									<div ng-message="required">
-										<span></span>
-									</div>
-								</div>
-							</md-input-container>
 							<md-input-container flex="100" flex-gt-xs="5">
 								<span>Date début</span>
 							</md-input-container>
@@ -184,6 +171,8 @@
 				</md-tab-body>
 			</md-tab>
         </md-tabs>
+		<!-- Fin Masque de saisie information programme-->
+		<!-- Début Masque de saisie financement programme-->
         <md-tabs md-dynamic-height ng-show="vm.affichageMasquefinancementprogramme==1">
 			<md-tab label="{{vm.titrefinancementprogramme}}">
 				<md-tab-body>
@@ -220,14 +209,13 @@
 						</div>
 						<div layout="column" layout-gt-xs="row" flex >
 							<md-input-container flex="100" flex-gt-xs="15">
-								<label>Type secteur</label>
-								<md-select name="id_type_secteur" ng-model="vm.financementprogramme.id_type_secteur" ng-init="vm.financementprogramme.id_type_secteur=''" ng-change="vm.modifierTypesecteurFNP(vm.financementprogramme)">
-									<md-option value=''></md-option>
-									<md-option ng-repeat="ta in vm.allRecordsTypesecteur | orderBy:['nom']" value='{{ta.id}}'>
-										{{ta.nom}}
+								<label>Type financement</label>
+								<md-select name="id_type_financement_prg" ng-model="vm.financementprogramme.id_type_financement" ng-init="vm.financementprogramme.id_type_financement=''" ng-change="vm.modifierTypefinancementFNP(vm.financementprogramme)">
+									<md-option ng-repeat="tf in vm.allRecordsTypefinancement | orderBy:['intitule']" value='{{tf.id}}'>
+										{{tf.intitule}}
 									</md-option>
 								</md-select>
-								<div ng-messages="financementprogrammeform.id_type_secteur.$error" role="alert">
+								<div ng-messages="financementprogrammeform.id_type_financement_prg.$error" role="alert">
 									<div ng-message="required">
 										<span></span>
 									</div>
@@ -266,6 +254,20 @@
 								</div>
 							</md-input-container>
 						</div>
+						<div layout="column" layout-gt-xs="row" flex >
+							<div flex="30">							
+								<fieldset class="standard" >
+									<legend class="md-grey-800-bg">Secteur concerné(s)</legend>
+									<div layout="row" layout-wrap flex>                              
+										<div flex="50" ng-repeat="item in vm.allRecordsTypesecteur">
+											<md-checkbox ng-checked="exists(item.id, vm.tab_reponse_type_secteur)" ng-click="vm.toggle(item.id, vm.tab_reponse_type_secteur)">
+												{{item.nom}}
+											</md-checkbox>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
 						<md-button type="submit" class="md-raised md-accent" aria-label="Enregistrer"
 							ng-disabled="financementprogrammeform.$invalid" ng-click="vm.ajoutFinancementprogramme(vm.financementprogramme,0)">
 							Enregistrer
@@ -277,6 +279,8 @@
 				</md-tab-body>
 			</md-tab>
         </md-tabs>
+		<!-- Fin Masque de saisie financement programme-->
+		<!-- Début Masque de saisie intervention-->
         <md-tabs md-dynamic-height ng-show="vm.affichageMasqueintervention==1">
 			<md-tab label="{{vm.titreintervention}}">
 				<md-tab-body>
@@ -516,6 +520,8 @@
 				</md-tab-body>
 			</md-tab>
         </md-tabs>
+		<!-- Fin Masque de saisie intervention-->
+		<!-- Début Masque de saisie financement intervention-->
         <md-tabs md-dynamic-height ng-show="vm.affichageMasquefinancementintervention==1">
 			<md-tab label="{{vm.titrefinancementintervention}}">
 				<md-tab-body>
@@ -609,12 +615,15 @@
 				</md-tab-body>
 			</md-tab>
         </md-tabs>
-		<!-- FIN Masque de saisie -->		
+		<!-- Début Masque de saisie financement intervention-->
+<!-- FIN de tous les Masques de saisie -->		
+<!-- Début affichage de tous les onglets  -->		
         <div class="content" layout="column">
             <div class="form-wrapper">
                 <md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
                 <div style="clear:both;"></div>
                 <md-tabs md-dynamic-height>
+					<!-- Début Onglet  programme-->		
                     <md-tab label="Programme">
                         <md-tab-body>
                             <fieldset>
@@ -672,6 +681,8 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>
+					<!-- Fin Onglet  programme-->		
+					<!-- Début Onglet Zone d'intervention programme-->		
                     <md-tab label="Zone d'intervention programme">
                         <md-tab-body>
                             <fieldset>
@@ -757,6 +768,8 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>		
+					<!-- Fin Onglet Zone d'intervention programme-->		
+					<!-- Début Onglet Financement programme-->		
                     <md-tab label="Financement Programme">
                         <md-tab-body>
                             <fieldset>
@@ -791,6 +804,9 @@
                                                 <p style="margin:0;"><b>Axe stratég :</b>{{prg.axestrategique[0].description}}</p>
                                             </td>
 											<td>
+                                                <span>{{prg.typefinancement[0].intitule}}</span>
+                                            </td>
+                							<td>
                                                 <span>{{prg.devise[0].description}}</span>
                                             </td>
                                             <td>
@@ -808,6 +824,8 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>
+					<!-- Fin Onglet Financement programme-->		
+					<!-- Début Onglet Intervention-->		
                     <md-tab label="Intervention">
                         <md-tab-body>
                             <fieldset>
@@ -869,6 +887,8 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>
+					<!-- Fin Onglet Intervention-->		
+					<!-- Début Onglet Financement intervention-->		
 					<md-tab label="Financement Intervention">
                         <md-tab-body>
                             <fieldset>
@@ -919,7 +939,9 @@
                                 </table>
                             </fieldset>
                         </md-tab-body>
-                    </md-tab>					
+                    </md-tab>	
+					<!-- Fin Onglet Financement intervention-->		
+					<!-- Début Onglet Zone d'intervention-->		
                     <md-tab label="Zone d'intervention">
                         <md-tab-body>
                             <fieldset>
@@ -1033,10 +1055,12 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>		
-                    <md-tab>
+ 					<!-- Fin Onglet Zone d'intervention-->		
+                   <md-tab>
                     </md-tab>
                 </md-tabs>
             </div>
         </div>
+<!-- Fin affichage de tous les onglets  -->		
     </div>
     

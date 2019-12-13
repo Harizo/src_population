@@ -7,6 +7,7 @@
 
     /** @ngInject */
     function AnnuaireController(apiFactory, $state, $mdDialog, $scope,$cookieStore) {
+		// Déclaration variable
 		var vm = this;
 		vm.titrepage ="Ajout Tutelle";
 		vm.ajoutProgramme = ajoutProgramme ;
@@ -96,6 +97,9 @@
 		vm.filtre.id_district ={};
 		vm.filtre.id_commune ={};
 		vm.affiche_load=false;
+		// Tableau type secteur concerné
+        vm.tab_reponse_type_secteur = [] ;
+		
 		// Récupérer via cookies id utilisateur
 		vm.id_utilisateur =$cookieStore.get('id');
 		//style
@@ -105,14 +109,16 @@
 		autoWidth: false,
 		responsive: true
 		};
-		//col table
+		//col affiché des table
 		vm.programme_column = [{titre:"Contact Informateur"},{titre:"Identifiant"},{titre:"Bénéficiaire"},{titre:"Action"},{titre:"Intitulé"},{titre:"Début-Fin"}];
 		vm.ziprg_column = [{titre:"Région"},{titre:"District"},{titre:"Ménage prévu"},{titre:"Indiv prévu"},{titre:"Actions"}];
-		vm.financementprogramme_column = [{titre:"Programme/Src-finance/Axe stratégique"},{titre:"Devise"},{titre:"Secteur"},{titre:"Budget initial"},{titre:"Budget modif"}];
+		vm.financementprogramme_column = [{titre:"Programme/Src-finance/Axe stratégique"},{titre:"Type finance"},{titre:"Devise"},{titre:"Secteur"},{titre:"Budget initial"},{titre:"Budget modif"}];
 		vm.intervention_column = [{titre:"Contact Informateur"},{titre:"Ident/Intitulé/Comment"},{titre:"Acteur/Catég int/Action"},{titre:"Action"},{titre:"Intitulé"}];
 		vm.financementintervention_column = [{titre:"Programme/Src-finance/Axe stratégique"},{titre:"Devise"},{titre:"Secteur"},{titre:"Budget initial"},{titre:"Budget modif"}];
 		vm.zone_column = [{titre:"Région"},{titre:"District"},{titre:"Commune"},{titre:"Fokontany"},{titre:"Ménage prévu"},{titre:"Indiv prévu"},{titre:"Actions"}];
 		vm.detailtypetransfert_column = [{titre:"Choix"},{titre:"Descript°"},{titre:"Qté/Val"},{titre:"Unité"}];
+		vm.detailtypesecteur_column = [{titre:"Choix"},{titre:"Descript°"}];
+		// Début Récupération des données référetielles
 		apiFactory.getAll("region/index").then(function(result){
 			vm.all_region = result.data.response;
 			vm.allRecordsRegion = result.data.response;
@@ -165,6 +171,7 @@
 		apiFactory.getAll("tutelle/index").then(function(result){
 			vm.allRecordsTutelle = result.data.response;
 		});    
+		// Fin Récupération des données référetielles
 		//add historique : consultation DDB annuaire d'intervention
 		var config = {
 			headers : {
@@ -175,9 +182,9 @@
 			action:"Consultation DDB : Annuaire d'intervention",
 			id_utilisateur:vm.id_utilisateur
 		});
-		//factory
 		apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-		});				
+		});	
+		// Choix région pour filtrer les districts correspondant au région choisi	
 		vm.filtre_region = function() {
 			apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",vm.filtre.id_region).then(function(result) { 
 				vm.all_district = result.data.response;   
@@ -186,6 +193,7 @@
 				vm.programme.id_fokontany = null ; 
 			});
 		}
+		// Choix district pour filtrer les communes correspondant au district choisi	
 		vm.filtre_commune = function() {
 			apiFactory.getAPIgeneraliserREST("commune/index","cle_etrangere",vm.filtre.id_district).then(function(result)  { 
 				vm.all_commune = result.data.response; 
@@ -193,12 +201,14 @@
 				vm.programme.id_fokontany = null ;           
 			});
 		}
+		// Choix commune pour filtrer les fokontany correspondant au commune choisi	
 		vm.filtre_fokontany = function() {
 			apiFactory.getAPIgeneraliserREST("fokontany/index","cle_etrangere",vm.filtre.id_commune).then(function(result) { 
 				vm.all_fokontany = result.data.response;    
 				vm.programme.id_fokontany = null ; 
 			});
 		}
+		// Fonction pour formater une date au format YYYY/MM/DD
         function formatDate(date) {
             if (date) {
                 var mois = date.getMonth()+1;
@@ -206,12 +216,12 @@
                 return dateSQL;
             };
         }
-		// DEBUT PROGRAMME	
+		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE PROGRAMME	
 		function ajoutProgramme(entite,suppression) {
             test_existenceProgramme (entite,suppression);
         }
+		// Fonction Insertion,modif,suppression table programme
         function insert_in_baseProgramme(entite,suppression) {  
-			//add
 			var config = {
 				headers : {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -231,7 +241,6 @@
 				id_tutelle: entite.id_tutelle,
 				intitule: entite.intitule,
 				situation_intervention: entite.situation_intervention,
-				id_type_financement: entite.id_type_financement,
 				date_debut: formatDate(entite.date_debut),
 				date_fin: formatDate(entite.date_fin),
 				description: entite.description,
@@ -243,7 +252,7 @@
 				identifiant: entite.identifiant,
 				inscription_budgetaire: entite.inscription_budgetaire,
 			});       
-			//factory
+			//factory table programme
 			apiFactory.add("programme/index",datas, config).success(function (data) {
 				if (NouvelItemProgramme == false) {
 					// Update or delete: id exclu                   
@@ -257,8 +266,6 @@
 					  vm.selectedItemProgramme.tutelle = entite.tutelle;
 					  vm.selectedItemProgramme.intitule = entite.intitule;
 					  vm.selectedItemProgramme.situation_intervention = entite.situation_intervention;
-					  vm.selectedItemProgramme.id_type_financement = entite.id_type_financement;
-					  vm.selectedItemProgramme.typefinancement = entite.typefinancement;
 					  vm.selectedItemProgramme.date_debut = entite.date_debut;
 					  vm.selectedItemProgramme.date_fin = entite.date_fin;
 					  vm.selectedItemProgramme.description = entite.description;
@@ -271,17 +278,18 @@
 					  vm.selectedItemProgramme.inscription_budgetaire = entite.inscription_budgetaire;
 					  vm.selectedItemProgramme.$selected = false;
 					  vm.selectedItemProgramme.$edit = false;
-					  // vm.selectedItemProgramme ={};
 						vm.afficherboutonModifSuprprogramme = 0 ;
 						vm.afficherboutonnouveauprogramme = 1 ;
 					  vm.action="Modification d'un enregistrement de DDB (Annuaire): Programme" + " ("+ entite.intitule + ")";
-					} else {    
+					} else {  
+						// Enlever de la liste d'affichage l'enregistrement supprimé
 						vm.allRecordsProgramme = vm.allRecordsProgramme.filter(function(obj) {
 							return obj.id !== vm.selectedItemProgramme.id;
 						});
 						vm.action="Suppression d'un enregistrement de DDB (Annuaire): Programme" + " ("+ entite.intitule + ")";
 					}
 				} else {
+					// Nouvel enregistrement table programme : push pour affichage
                     var item = {
 						id:String(data.response) ,
 						nom: entite.nom,
@@ -291,8 +299,6 @@
 						id_tutelle: entite.id_tutelle,
 						intitule: entite.intitule,
 						situation_intervention: entite.situation_intervention,
-						id_type_financement: entite.id_type_financement,
-						typefinancement: entite.typefinancement,
 						date_debut: entite.date_debut,
 						date_fin: entite.date_fin,
 						description: entite.description,
@@ -328,7 +334,9 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
-        vm.selectionProgramme= function (item) {     
+		// Clic sur un enregistrement de programme
+        vm.selectionProgramme= function (item) {  
+			// Pour chaque selection d'un programme
             vm.selectedItemProgramme = item;
 			console.log(vm.selectedItemProgramme);
             currentItemProgramme = angular.copy(vm.selectedItemProgramme);       
@@ -339,6 +347,7 @@
 			if(parseInt(vm.selectedItemProgramme.detail_charge)==0) {
 				var inb_rien =0;
 				vm.affiche_load=true;
+				// Récupérer détail zone d'intervention
 				apiFactory.getAPIgeneraliserREST("zone_intervention_programme/index","cle_etrangere",vm.selectedItemProgramme.id).then(function(result) { 				
 					item.detail_zone_intervention_programme = []; 
 					if(result.data.response.length >0) {
@@ -347,14 +356,17 @@
 					} else {
 						inb_rien =1;
 					}			
+					// Récupérer détail finencement programme
 					apiFactory.getAPIgeneraliserREST("financement_programme/index","cle_etrangere",vm.selectedItemProgramme.id).then(function(result) { 				
 						item.detail_financement_programme = []; 
 						if(result.data.response.length >0) {
 							item.detail_financement_programme = result.data.response; 
 							vm.selectedItemProgramme.detail_financement_programme = result.data.response; 
+							console.log(result.data.response);
 						} else {
 							inb_rien =2;							
 						}
+						// Récupérer détail des interventions
 						apiFactory.getAPIgeneraliserREST("intervention/index","cle_etrangere",vm.selectedItemProgramme.id).then(function(result) { 				
 							item.detail_intervention = []; 
 							if(result.data.response.length >0) {
@@ -363,7 +375,7 @@
 							} else {
 								inb_rien =3;							
 							}
-							if(inb_rien==2) {
+							if(inb_rien==3) {
 								vm.showAlert("INFORMATION","Aucun détail d'enregistrement trouvé !");
 							}	
 							item.detail_charge=1;
@@ -373,6 +385,7 @@
 				});
 			}			
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item du programme
         $scope.$watch('vm.selectedItemProgramme', function() {
 			if (!vm.allRecordsProgramme) return;
 			vm.allRecordsProgramme.forEach(function(item) {
@@ -380,6 +393,7 @@
 			});
 			vm.selectedItemProgramme.$selected = true;
         });
+		// Ajout d'un nouvel item de programme
         vm.ajouterProgramme = function () {
 			vm.titreacteur="Ajout Programme";
 			vm.selectedItemProgramme.$selected = false;
@@ -393,8 +407,6 @@
 			vm.programme.tutelle=[];
 			vm.programme.intitule=null;
 			vm.programme.situation_intervention=null;
-			vm.programme.id_type_financement=null;
-			vm.programme.typefinancement=[];
 			vm.programme.date_debut=null;
 			vm.programme.date_fin=null;
 			vm.programme.description=null;
@@ -411,6 +423,7 @@
 			NouvelItemProgramme = true ;			
             vm.selectedItemProgramme.$selected = false;
         };
+		// Annulation modification d'un item de programme
         vm.annulerProgramme = function(item) {
 			vm.selectedItemProgramme = {} ;
 			vm.selectedItemProgramme.$selected = false;
@@ -419,6 +432,7 @@
 			vm.afficherboutonModifSuprprogramme = 0 ;
 			NouvelItemProgramme = false;
        };
+	   // Modification d'un item de programme
         vm.modifierProgramme = function(item) {
 			vm.titreacteur="Modification Programme";
 			NouvelItemProgramme = false ;
@@ -433,10 +447,10 @@
 			if(vm.selectedItemProgramme.id_tutelle) {
 				vm.programme.id_tutelle = parseInt(vm.selectedItemProgramme.id_tutelle);
 			} else vm.programme.id_tutelle = null;
-			if(vm.selectedItemProgramme.id_type_financement) {
+		/*	if(vm.selectedItemProgramme.id_type_financement) {
 				vm.programme.id_type_financement = parseInt(vm.selectedItemProgramme.id_type_financement);
 			} else vm.programme.id_type_financement = null;
-			vm.programme.typefinancement = vm.selectedItemProgramme.typefinancement ;
+			vm.programme.typefinancement = vm.selectedItemProgramme.typefinancement ;*/
 			if(vm.selectedItemProgramme.date_debut) {
 				vm.programme.date_debut=new Date(vm.selectedItemProgramme.date_debut);
 			} else vm.programme.date_debut =null;
@@ -457,6 +471,7 @@
 			vm.afficherboutonModifSuprprogramme = 0;
 			vm.afficherboutonnouveauprogramme = 0;  
         };
+		// Suppression d'un item programme
         vm.supprimerProgramme = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -471,6 +486,7 @@
 			}, function() {
 			});
         }
+		// Test existence doublon intitulé du programme
         function test_existenceProgramme (item,suppression) {    
 			if(item.intitule.length > 0) {
 				var doublon = 0;
@@ -540,8 +556,6 @@
 					vm.programme.typeacteurs=[];
 			}
 		}	
-
-		
         vm.modifierRegion = function (item) { 
 			vm.all_region.forEach(function(prg) {
 				if(prg.id==item.id_region) {
@@ -596,11 +610,12 @@
 					vm.programme.fokontany=[];
 			}
 		}
-		// FIN PROGRAMME
-		// DEBUT ZONE D'INTERVENTION PROGRAMME	
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE PROGRAMME	
+		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE ZONE D'INTERVENTION PROGRAMME	
 		function ajoutZoneinterventionprogramme(zoneprg,suppression) {
             test_existence_ziprg (zoneprg,suppression);
         }
+		// Fonction Insertion,modif,suppression table zone intervention programme
         function insert_in_base_ziprg(zoneprg,suppression) {  
 			//add
 			var config = {
@@ -621,7 +636,7 @@
 				menage_beneficiaire_prevu: zoneprg.menage_beneficiaire_prevu,
 				individu_beneficiaire_prevu: zoneprg.individu_beneficiaire_prevu,
 			});       
-			//factory
+			//factory table zone_intervention_programme
 			apiFactory.add("zone_intervention_programme/index",datas, config).success(function (data) {
 				if (NouvelItemZoneinterventionprogramme == false) {
 					// Update or delete: id exclu                   
@@ -665,6 +680,7 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Fonction : boite de dialogue pour information à l'utilisateur
 		vm.showAlert = function(titre,textcontent) {
 			$mdDialog.show(
 			  $mdDialog.alert()
@@ -678,9 +694,11 @@
 				.targetEvent()
 			);
 		} 
+		// Clic sur un enregistrement de zone intervention programme
         vm.selectionZoneinterventionprogramme= function (item) {     
             vm.selectedItemZoneinterventionprogramme = item;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item du zone_intervention_programme
         $scope.$watch('vm.selectedItemZoneinterventionprogramme', function() {
 			if (!vm.selectedItemProgramme) return;
 			vm.selectedItemProgramme.detail_zone_intervention_programme.forEach(function(item) {
@@ -688,7 +706,7 @@
 			});
 			vm.selectedItemZoneinterventionprogramme.$selected = true;
         });
-        //function cache masque de saisie
+		// Ajout d'un nouvel item de zone_intervention_programme
         vm.ajouterZoneinterventionprogramme = function () {
             vm.selectedItemZoneinterventionprogramme.$selected = false;
             NouvelItemZoneinterventionprogramme = true ;
@@ -712,6 +730,7 @@
 				}
 			});			
         };
+		// Annulation modification d'un item de zone_intervention_programme
         vm.annulerZoneinterventionprogramme = function(item) {
 			if (!item.id) {
 				vm.selectedItemProgramme.detail_zone_intervention_programme.pop();
@@ -748,6 +767,7 @@
 			} else vm.selectedItemZoneinterventionprogramme.individu_beneficiaire_prevu = null;
 			vm.selectedItemZoneinterventionprogramme.$edit = true;	
         };
+		// Suppression d'un item zone_intervention_programme
         vm.supprimerZoneinterventionprogramme = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -815,11 +835,12 @@
 					item.district=[];
 			}
 		}
-		// FIN ZONE D'INTERVENTION PROGRAMME	
-		// DEBUT FINANCEMENT PROGRAMME	
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE  ZONE D'INTERVENTION PROGRAMME	
+		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE  FINANCEMENT PROGRAMME	
 		function ajoutFinancementprogramme(entite,suppression) {
 			insert_in_baseFinancementprogramme(entite,suppression);
         }
+		// Fonction Insertion,modif,suppression table financement programme
         function insert_in_baseFinancementprogramme(entite,suppression) {  
 			//add
 			var config = {
@@ -836,61 +857,82 @@
 				id:getId,      
 				id_programme: entite.id_programme,
 				id_source_financement: entite.id_source_financement,
+				id_type_financement: entite.id_type_financement,
 				id_axe_strategique: entite.id_axe_strategique,
 				id_devise: entite.id_devise,
-				id_type_secteur: entite.id_type_secteur,
 				budget_initial: entite.budget_initial,
 				budget_modifie: entite.budget_modifie,
-			});       
-			//factory
-			apiFactory.add("financement_programme/index",datas, config).success(function (data) {
+			}); 
+			var txtTmp="";
+			txtTmp += "supprimer" +":\"" + suppression + "\",";	
+			txtTmp += "id" +":\"" + getId + "\",";	
+			txtTmp += "id_programme" +":\"" + entite.id_programme + "\",";	
+			txtTmp += "id_source_financement" +":\"" + entite.id_source_financement + "\",";	
+			txtTmp += "id_type_financement" +":\"" + entite.id_type_financement + "\",";	
+			txtTmp += "id_axe_strategique" +":\"" + entite.id_axe_strategique + "\",";	
+			txtTmp += "id_devise" +":\"" + entite.id_devise + "\",";	
+			txtTmp += "budget_initial" +":\"" + entite.budget_initial + "\",";	
+			txtTmp += "budget_modifie" +":\"" + entite.budget_modifie + "\",";	
+			txtTmp += "nombre_detail_type_secteur" +":\"" + vm.tab_reponse_type_secteur.length + "\",";	
+			for (var i = 0; i < vm.tab_reponse_type_secteur.length; i++) {
+				txtTmp += "id_type_secteur_" + i +":\"" + vm.tab_reponse_type_secteur[i] + "\",";	
+			}	
+			txtTmp = txtTmp.replace(new RegExp('\'', 'g'),'\\\'');
+			txtTmp = txtTmp.replace(new RegExp('(\r\n|\r|\n)', 'g'),'');
+			var donnees = $.param(eval('({' + txtTmp + '})'));
+			
+			//factory table financement_programme
+			apiFactory.add("financement_programme/index",donnees, config).success(function (data) {
 				if (NouvelItemFinancementprogramme == false) {
 					// Update or delete: id exclu                   
 					if(suppression==0) {
 					  vm.selectedItemFinancementprogramme.id = entite.id;
 					  vm.selectedItemFinancementprogramme.id_programme = entite.id_programme;
 					  vm.selectedItemFinancementprogramme.programme = entite.programme;
+					  vm.selectedItemFinancementprogramme.id_type_financement = entite.id_type_financement;
+					  vm.selectedItemFinancementprogramme.typefinancement = entite.typefinancement;
 					  vm.selectedItemFinancementprogramme.id_source_financement = entite.id_source_financement;
 					  vm.selectedItemFinancementprogramme.sourcefinancement = entite.sourcefinancement;
 					  vm.selectedItemFinancementprogramme.id_axe_strategique = entite.id_axe_strategique;
 					  vm.selectedItemFinancementprogramme.axestrategique = entite.axestrategique;
+					  vm.selectedItemFinancementprogramme.typesecteur = vm.tab_reponse_type_secteur;
 					  vm.selectedItemFinancementprogramme.id_devise = entite.id_devise;
 					  vm.selectedItemFinancementprogramme.devise = entite.devise;
-					  vm.selectedItemFinancementprogramme.id_type_secteur = entite.id_type_secteur;
-					  vm.selectedItemFinancementprogramme.typesecteur = entite.typesecteur;
 					  vm.selectedItemFinancementprogramme.budget_initial = entite.budget_initial;
 					  vm.selectedItemFinancementprogramme.budget_modifie = entite.budget_modifie;
 					  vm.selectedItemFinancementprogramme.$selected = false;
 					  vm.selectedItemFinancementprogramme.$edit = false;
-					  // vm.selectedItemFinancementprogramme ={};
 						vm.afficherboutonModifSuprfinancementprogramme = 0 ;
 						vm.afficherboutonnouveaufinancementprogramme = 1 ;
-					  vm.action="Modification d'un enregistrement de DDB (Annuaire): Source de finacement";
+					  vm.action="Modification d'un enregistrement de DDB (Annuaire): Source de financement";
 					} else {    
 						vm.selectedItemProgramme.detail_financement_programme = vm.selectedItemProgramme.detail_financement_programme.filter(function(obj) {
 							return obj.id !== vm.selectedItemFinancementprogramme.id;
 						});
-					  vm.action="Suppression d'un enregistrement de DDB (Annuaire): Source de finacement";
+					  vm.action="Suppression d'un enregistrement de DDB (Annuaire): Source de financement";
 					}
 				} else {
-                    var item = {
+ 					// Nouvel enregistrement financement programme : push pour affichage
+                   var item = {
 						id:String(data.response) ,
 						id_programme: entite.id_programme,
 						programme: entite.programme,
+						id_type_financement:entite.id_type_financement,
+						typefinancement:entite.typefinancement,
 						id_source_financement:entite.id_source_financement,
 						sourcefinancement:entite.sourcefinancement,
 						id_axe_strategique: entite.id_axe_strategique,
 						axestrategique: entite.axestrategique,
+						typesecteur: vm.tab_reponse_type_secteur,
 						id_devise: entite.id_devise,
 						devise: entite.devise,
-						id_type_secteur: entite.id_type_secteur,
-						typesecteur: entite.typesecteur,
 						budget_initial: entite.budget_initial,
 						budget_modifie: entite.budget_modifie,
 					};
+					entite.id=String(data.response);
 					vm.selectedItemProgramme.detail_financement_programme.push(item); 
 					NouvelItemFinancementprogramme=false;
-					  vm.action="Ajout d'un enregistrement de DDB (Annuaire): Source de finacement";
+					  vm.action="Ajout d'un enregistrement de DDB (Annuaire): Source de financement";
 				}
 				entite.$selected=false;
 				entite.$edit=false;
@@ -912,12 +954,19 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Clic sur un enregistrement de financement_programme
         vm.selectionFinancementprogramme= function (item) {     
             vm.selectedItemFinancementprogramme = item;
+			// Récupérer détail type secteur pour chaque financement
+			vm.tab_reponse_type_secteur =[];
+			vm.tab_reponse_type_secteur =item.typesecteur; 
+			console.log(vm.tab_reponse_type_secteur);
+			console.log(vm.tab_reponse_type_secteur.length);			
             vm.afficherboutonModifSuprfinancementprogramme = 1 ;
             vm.affichageMasquefinancementprogramme = 0 ;
             vm.afficherboutonnouveaufinancementprogramme = 1 ;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item du financement_programme
         $scope.$watch('vm.selectedItemFinancementprogramme', function() {
 			if (vm.selectedItemProgramme.length==0) return;
 			vm.selectedItemProgramme.detail_financement_programme.forEach(function(item) {
@@ -925,6 +974,7 @@
 			});
 			vm.selectedItemFinancementprogramme.$selected = true;
         });
+		// Ajout d'un nouvel item de financement_programme
         vm.ajouterFinancementprogramme = function () {
 			vm.titrefinancementprogramme="Ajout Financement programme";
 			vm.affichageMasquefinancementprogramme = 1 ;
@@ -933,6 +983,8 @@
 			vm.financementprogramme.programme=null;
 			vm.financementprogramme.id_source_financement=null;
 			vm.financementprogramme.sourcefinancement=null;
+			vm.financementprogramme.id_type_financement=null;
+			vm.financementprogramme.typefinancement=null;
 			vm.financementprogramme.id_axe_strategique=null;
 			vm.financementprogramme.axestrategique=null;
 			vm.financementprogramme.id_devise=null;
@@ -944,6 +996,7 @@
 			vm.financementprogramme.detail_charge=1;
 			NouvelItemFinancementprogramme = true ;			
         };
+		// Annulation modification d'un item de financement_programme
         vm.annulerFinancementprogramme = function(item) {
 			vm.selectedItemFinancementprogramme = {} ;
 			vm.selectedItemFinancementprogramme.$selected = false;
@@ -952,6 +1005,7 @@
 			vm.afficherboutonModifSuprfinancementprogramme = 0 ;
 			NouvelItemFinancementprogramme = false;
        };
+	   // Modification d'un item de financement_programme
         vm.modifierFinancementprogramme = function(item) {
 			vm.titrefinancementprogramme="Modification Financement programme";
 			NouvelItemFinancementprogramme = false ;
@@ -961,6 +1015,9 @@
 			if(vm.selectedItemFinancementprogramme.id_source_financement) {
 				vm.financementprogramme.id_source_financement = parseInt(vm.selectedItemFinancementprogramme.id_source_financement);
 			} else vm.financementprogramme.id_source_financement = null;
+			if(vm.selectedItemFinancementprogramme.id_type_financement) {
+				vm.financementprogramme.id_type_financement = parseInt(vm.selectedItemFinancementprogramme.id_type_financement);
+			} else vm.financementprogramme.id_type_financement = null;
 			if(vm.selectedItemFinancementprogramme.id_axe_strategique) {
 				vm.financementprogramme.id_axe_strategique = parseInt(vm.selectedItemFinancementprogramme.id_axe_strategique);
 			} else vm.financementprogramme.id_axe_strategique = null;
@@ -979,11 +1036,13 @@
 			vm.financementprogramme.programme = vm.selectedItemFinancementprogramme.programme ;
 			vm.financementprogramme.sourcefinancement = vm.selectedItemFinancementprogramme.sourcefinancement;
 			vm.financementprogramme.axestrategique = vm.selectedItemFinancementprogramme.axestrategique;
+			vm.financementprogramme.typefinancement = vm.selectedItemFinancementprogramme.typefinancement;
 			vm.financementprogramme.devise = vm.selectedItemFinancementprogramme.devise;
 			vm.financementprogramme.typesecteur = vm.selectedItemFinancementprogramme.typesecteur;
 			vm.afficherboutonModifSuprfinancementprogramme = 0;
 			vm.afficherboutonnouveaufinancementprogramme = 0;  
         };
+		// Suppression d'un item financement_programme
         vm.supprimerFinancementprogramme = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -1046,6 +1105,22 @@
 					vm.financementprogramme.axestrategique=[];
 			}
 		}	
+        vm.modifierTypefinancementFNP = function (item) { 
+			vm.nontrouvee=true;
+			vm.allRecordsTypefinancement.forEach(function(prg) {
+				if(parseInt(prg.id)==parseInt(item.id_type_financement)) {
+					vm.nontrouvee=false;
+					vm.financementprogramme.id_type_financement=prg.id;
+					item.id_type_financement=prg.id;
+					vm.financementprogramme.typefinancement=[];
+					vm.financementprogramme.typefinancement.push(prg);
+				}
+			});
+			if(vm.nontrouvee==true) {				
+					vm.financementprogramme.id_type_financement = null; 
+					vm.financementprogramme.typefinancement=[];
+			}
+		}	
         vm.modifierTypesecteurFNP = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsTypesecteur.forEach(function(prg) {
@@ -1078,11 +1153,24 @@
 					vm.financementprogramme.devise=[];
 			}
 		}	
-		// FIN FINANCEMENT PROGRAMME
-		// DEBUT INTERVENTION	
+			//CHECK BOK MULTISELECT TYPE SECTEUR
+			vm.toggle = function (item, list) {
+			  var idx = list.indexOf(item);
+			  if (idx > -1) list.splice(idx, 1);
+			  else list.push(item);        
+			};
+			$scope.exists = function (item, list) {
+			  if (list) {
+				return list.indexOf(item) > -1;
+			  }         
+			};
+			//FIN CHECK BOK MULTISELECT
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE FINANCEMENT PROGRAMME
+		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE INTERVENTION	
 		function ajoutIntervention(entite,suppression) {
 			insert_in_baseIntervention(entite,suppression);
         }
+		// Fonction Insertion,modif,suppression table intervention
         function insert_in_baseIntervention(entite,suppression) {  
 			//add
 			var config = {
@@ -1130,7 +1218,7 @@
 						txtTmp += "valeur_quantite_" + i +":\"" + det.valeur_quantite + "\",";	
 						i=i + 1;
 					}
-				});	
+				});
 				vm.allRecordsDetailtypetransfert.forEach(function(det) {	
 					// Enlever l'ancien choix type transfert
 					if(parseInt(entite.id_type_transfert) != det.id_type_transfert && parseFloat(det.valeur_quantite) >0) {
@@ -1142,7 +1230,7 @@
 				vm.ListeDetailtypetransfert.forEach(function(det) {
 					if(parseInt(det.id_detail_type_transfert) >0 && parseFloat(det.valeur_quantite) >0) {
 						vm.allRecordsDetailtypetransfert.forEach(function(obj) {	
-							// Ajouter le nouveau choix type transfert
+							// Ajouter le nouveau choix type transfert pour affichage
 							if(parseInt(obj.id) == det.id_detail_type_transfert) {
 								obj.valeur_quantite=det.valeur_quantite;
 								obj.id_detail_type_transfert=det.id_detail_type_transfert;
@@ -1152,8 +1240,7 @@
 					}	
 				});	
 			}			
-			txtTmp += "nombre_detail_type_transfert" +":\"" + i + "\"";	
-
+			txtTmp += "nombre_detail_type_transfert" +":\"" + i + "\"";
 			txtTmp = txtTmp.replace(new RegExp('\'', 'g'),'\\\'');
 			txtTmp = txtTmp.replace(new RegExp('(\r\n|\r|\n)', 'g'),'');
 			var donnees = $.param(eval('({' + txtTmp + '})'));
@@ -1183,8 +1270,7 @@
 				id_frequence_transfert: entite.id_frequence_transfert,				
 				nombre_detail_type_transfert: i,
 			});       
-			//factory
-			// apiFactory.add("intervention/index",datas, config).success(function (data) {
+			//factory table intervention
 			apiFactory.add("intervention/index",donnees, config).success(function (data) {
 				if (NouvelItemIntervention == false) {
 					// Update or delete: id exclu  
@@ -1228,6 +1314,7 @@
 					  vm.action="Suppression d'un enregistrement de DDB (Annuaire): Intervention";
 					}
 				} else {
+					// Nouvel enregistrement table intervention : push pour affichage
                     var item = {
 						id:String(data.response) ,
 						id_programme: entite.id_programme,
@@ -1282,6 +1369,7 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Clic sur un enregistrement de intervention
         vm.selectionIntervention= function (item) {     
             vm.selectedItemIntervention = item;
             currentItemIntervention = angular.copy(vm.selectedItemIntervention);       
@@ -1333,6 +1421,7 @@
 				});
 			}			
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item d'intervention
         $scope.$watch('vm.selectedItemIntervention', function() {
 			if (vm.selectedItemProgramme.length==0) return;
 			vm.selectedItemProgramme.detail_intervention.forEach(function(item) {
@@ -1340,6 +1429,7 @@
 			});
 			vm.selectedItemIntervention.$selected = true;
         });
+		// Ajout d'un nouvel item d'intervention
         vm.ajouterIntervention = function () {
 			vm.titreintervention="Ajout Intervention";
 			vm.affichageMasqueintervention = 1 ;
@@ -1373,6 +1463,7 @@
 			vm.intervention.detail_charge=1;
 			NouvelItemIntervention = true ;			
         };
+		// Annulation modification d'un item d'intervention
         vm.annulerIntervention = function(item) {
 			vm.selectedItemIntervention = {} ;
 			vm.selectedItemIntervention.$selected = false;
@@ -1381,6 +1472,7 @@
 			vm.afficherboutonModifSuprintervention = 0 ;
 			NouvelItemIntervention = false;
        };
+	   // Modification d'un item d'intervention
         vm.modifierIntervention = function(item) {
 			vm.titreintervention="Modification Intervention";
 			NouvelItemIntervention = false ;
@@ -1445,6 +1537,7 @@
 			vm.afficherboutonnouveauintervention = 0;  
 			console.log(vm.intervention);
         };
+		// Suppression d'un item intervention
         vm.supprimerIntervention = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -1529,11 +1622,12 @@
 					vm.intervention.frequencetransfert=[];
 			}
 		}	
-		// FIN INTERVENTION
-	// DEBUT FINANCEMENT INTERVENTION	
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE INTERVENTION
+	// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE FINANCEMENT INTERVENTION	
 		function ajoutFinancementintervention(entite,suppression) {
 			insert_in_baseFinancementintervention(entite,suppression);
         }
+		// Fonction Insertion,modif,suppression table financement intervention
         function insert_in_baseFinancementintervention(entite,suppression) {  
 			//add
 			var config = {
@@ -1556,7 +1650,7 @@
 				budget_initial: entite.budget_initial,
 				budget_modifie: entite.budget_modifie,
 			});       
-			//factory
+			//factory table financement_intervention
 			apiFactory.add("financement_intervention/index",datas, config).success(function (data) {
 				if (NouvelItemFinancementintervention == false) {
 					// Update or delete: id exclu                   
@@ -1587,6 +1681,7 @@
 					  vm.action="Suppression d'un enregistrement de DDB (Annuaire): Financement Intervention";
 					}
 				} else {
+					// Nouvel enregistrement table financement_intervention : push pour affichage
                     var item = {
 						id:String(data.response) ,
 						id_intervention: entite.id_intervention,
@@ -1626,12 +1721,14 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Clic sur un enregistrement de financement_intervention
         vm.selectionFinancementintervention= function (item) {     
             vm.selectedItemFinancementintervention = item;
             vm.afficherboutonModifSuprfinancementintervention = 1 ;
             vm.affichageMasquefinancementintervention = 0 ;
             vm.afficherboutonnouveaufinancementintervention = 1 ;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item du financement_intervention
         $scope.$watch('vm.selectedItemFinancementintervention', function() {
 			if (vm.selectedItemIntervention.length==0) return;
 			vm.selectedItemIntervention.detail_financement_intervention.forEach(function(item) {
@@ -1639,6 +1736,7 @@
 			});
 			vm.selectedItemFinancementintervention.$selected = true;
         });
+		// Ajout d'un nouvel item de financement_intervention
         vm.ajouterFinancementintervention = function () {
 			vm.titrefinancementintervention="Ajout Financement intervention";
 			vm.affichageMasquefinancementintervention = 1 ;
@@ -1658,6 +1756,7 @@
 			vm.financementintervention.detail_charge=1;
 			NouvelItemFinancementintervention = true ;			
         };
+		// Annulation modification d'un item de financement_intervention
         vm.annulerFinancementintervention = function(item) {
 			vm.selectedItemFinancementintervention = {} ;
 			vm.selectedItemFinancementintervention.$selected = false;
@@ -1666,6 +1765,7 @@
 			vm.afficherboutonModifSuprfinancementintervention = 0 ;
 			NouvelItemFinancementintervention = false;
        };
+	   // Modification d'un item de financement_intervention
         vm.modifierFinancementintervention = function(item) {
 			vm.titrefinancementintervention="Modification Financement intervention";
 			NouvelItemFinancementintervention = false ;
@@ -1698,6 +1798,7 @@
 			vm.afficherboutonModifSuprfinancementintervention = 0;
 			vm.afficherboutonnouveaufinancementintervention = 0;  
         };
+		// Suppression d'un item financement_intervention
         vm.supprimerFinancementintervention = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -1792,11 +1893,12 @@
 					vm.financementintervention.devise=[];
 			}
 		}	
-		// FIN FINANCEMENT INTERVENTION		
-		// DEBUT ZONE D'INTERVENTION 	
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE FINANCEMENT INTERVENTION		
+		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE ZONE D'INTERVENTION 	
 		function ajoutZoneintervention(zoneint,suppression) {
             test_existence_zoneint (zoneint,suppression);
         }
+		// Fonction Insertion,modif,suppression table zone intervention
         function insert_in_base_zoneint(zoneint,suppression) {  
 			//add
 			var config = {
@@ -1816,7 +1918,7 @@
 				menage_beneficiaire_prevu: zoneint.menage_beneficiaire_prevu,
 				individu_beneficiaire_prevu: zoneint.individu_beneficiaire_prevu,
 			});       
-			//factory
+			//factory table zone_intervention
 			apiFactory.add("zone_intervention/index",datas, config).success(function (data) {
 				if (NouvelItemZoneintervention == false) {
 					// Update or delete: id exclu                   
@@ -1866,23 +1968,12 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
-		vm.showAlert = function(titre,textcontent) {
-			$mdDialog.show(
-			  $mdDialog.alert()
-				.parent(angular.element(document.querySelector('#popupContainer')))
-				.clickOutsideToClose(false)
-				.parent(angular.element(document.body))
-				.title(titre)
-				.textContent(textcontent)
-				.ariaLabel('Alert Dialog Demo')
-				.ok('Fermer')
-				.targetEvent()
-			);
-		} 
+		// Clic sur un enregistrement de zone_intervention
         vm.selectionZoneintervention= function (item) {     
             vm.selectedItemZoneintervention = item;
 			console.log(item);
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item de zone_intervention
         $scope.$watch('vm.selectedItemZoneintervention', function() {
 			if (!vm.selectedItemIntervention) return;
 			vm.selectedItemIntervention.detail_zone_intervention.forEach(function(item) {
@@ -1891,6 +1982,7 @@
 			vm.selectedItemZoneintervention.$selected = true;
         });
         //function cache masque de saisie
+		// Ajout d'un nouvel item de zone_intervention
         vm.ajouterZoneintervention = function () {
             vm.selectedItemZoneintervention.$selected = false;
             NouvelItemZoneintervention = true ;
@@ -1918,6 +2010,7 @@
 				}
 			});			
         };
+		// Annulation modification d'un item de zone_intervention
         vm.annulerZoneintervention = function(item) {
 			if (!item.id) {
 				vm.selectedItemIntervention.detail_zone_intervention.pop();
@@ -1930,6 +2023,7 @@
 			vm.selectedItemZoneintervention = {} ;
 			vm.selectedItemZoneintervention.$selected = false;
        };
+	   // Modification d'un item de zone_intervention
         vm.modifierZoneintervention = function(item) {
 			vm.affiche_load=true;
 			NouvelItemZoneintervention = false ;
@@ -1977,6 +2071,7 @@
 			
 			vm.selectedItemZoneintervention.$edit = true;	
         };
+		// Suppression d'un item de zone_intervention
         vm.supprimerZoneintervention = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -2091,11 +2186,13 @@
 					vm.allRecordsFokontany =vm.all_fokontany;
 			}
 		}
-		// FIN ZONE D'INTERVENTION 	
-		// DEBUT DETAIL TYPE TRANSFERT
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE ZONE D'INTERVENTION 	
+		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE DETAIL TYPE TRANSFERT
+		// Clic sur un enregistrement de type de transfert
         vm.selectionDetailtypetransfert= function (item) {     
             vm.selectedItemDetailtypetransfert = item;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item de type de transfert
         $scope.$watch('vm.selectedItemDetailtypetransfert', function() {
 			if (!vm.selectedItemDetailtypetransfert) return;
 			vm.ListeDetailtypetransfert.forEach(function(item) {
@@ -2115,6 +2212,6 @@
 				enreg.valeur_quantite=null;
 			}
 		}
-		// FIN DETAIL TYPE TRANSFERT
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE DETAIL TYPE TRANSFERT
     }
   })();
