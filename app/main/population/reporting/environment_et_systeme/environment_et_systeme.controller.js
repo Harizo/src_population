@@ -176,6 +176,8 @@
 
         vm.max_date = new Date();
 
+        vm.filtre.date_fin = vm.max_date ;
+
         //recuperation region
         apiFactory.getAll("region/index").then(function(result)
         {
