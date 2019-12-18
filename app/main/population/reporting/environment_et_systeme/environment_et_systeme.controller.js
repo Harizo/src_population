@@ -102,7 +102,8 @@
           }      
 
           //FIN CODE HARIZO       
-
+          
+          //Debut Bruce
           ,
           {
             titre:"Répartition financement par programme",
@@ -138,8 +139,13 @@
             titre:"Proportion des interventions avec critères d'âge",
             id:"req19theme2_interven_pourcenenfan_pourcensco_pourcentra_pourcenage_pcout",
             category:"theme2"
+          },
+          {
+            titre:"Proportion des interventions avec critères de sexe",
+            id:"req20theme2_interven_pourcenfille_pourcenhomme_pcout",
+            category:"theme2"
           }       
-
+          //Fin Bruce
         
         ];
 
@@ -299,7 +305,7 @@
         //nombre après virgul = 0
         vm.nombre_apre_virgul = function(val)
         {
-            var nbr=parseFloat(val).toFixed(0);
+            var nbr=parseFloat(val).toFixed(3);
 
             return nbr;
          
