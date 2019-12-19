@@ -1,7 +1,7 @@
 (function ()
 {
     'use strict';
-
+	// Historique de navigation de chaque utilisateur
     angular
         .module('app.population.administration.historiqueutilisateur')
         .controller('HistoriqueutilisateurController', HistoriqueutilisateurController);

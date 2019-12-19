@@ -3,6 +3,7 @@
     'use strict';
     angular
         .module('app.population.recommandation')
+		// Directive et service pour upload fichier excel intervention
         .directive('customOnChange', function() {
 			return {
 				restrict: 'A',
@@ -46,13 +47,14 @@
         .controller('RecommandationController', RecommandationController);
     /** @ngInject */
     function RecommandationController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlrecommandation)  {
+		// Déclaration variable
         var vm = this;
         var NouvelItem=false;
         var currentItem;
         var typeact="";
         var NouveldepenseItem=false;
         var  currentdepenseItem;
-        vm.selecteddepenseItem={};
+        vm.selectedDocumentItem={};
         vm.myFile={};
         vm.parent_courant={};
         vm.etat="";
@@ -65,9 +67,6 @@
         //variale affichage bouton nouveau
         vm.afficherboutonnouveau = 1 ;
         //variable cache masque de saisie
-        vm.affichageMasque = 0 ;
-        //pour les sous tâches
-        vm.affichageMasquestache = 0 ;
         //fin pour les sous tâches
         vm.allActivite = [] ;
         vm.allRecommandation = [] ;
@@ -85,12 +84,15 @@
         var id_user = $cookieStore.get('id');
 		vm.utilisateur_id = id_user;
 		console.log(vm.utilisateur_id);
+		// Début Récupération données référentielles
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			apiFactory.getAll("listerecommandation/index").then(function(result) {
 				vm.allRecommandation = result.data.response;
 			});               
         });     
+		// Fin Récupération données référentielles
+		// Message box : alert, information
         vm.showAlert = function(titre,textcontent) {
             $mdDialog.show(
               $mdDialog.alert()
@@ -104,22 +106,13 @@
                 .targetEvent()
             );
         } 
+		// Fonction Insertion,modif,suppression table liste_validation_beneficiaire
         function ajout(activite,suppression) {
             if (NouvelItem==false) {
-               // test_existance (activite,suppression);
                 insert_in_base(activite,suppression); 
             } else {
                 insert_in_base(activite,suppression);
             }
-        }
-		vm.changerdepense = function (item) {
-            vm.depenses.forEach(function(lig) {
-                if(lig.id==item.lignebudgetaire) {
-                    item.lignebudgetaire = lig.id; 
-                    item.lignebudgetaire_id = lig.id; 
-                    item.libelledepense = lig.libelle ;
-                }
-            });
         }
         function insert_in_base(activite,suppression) {         
             //add
@@ -165,95 +158,33 @@
                     vm.activite.objectif='';
                     vm.activite.date_tdr='';                    
                 }
-                  vm.affichageMasque = 0 ;
               }
             }).error(function (data) {                  
                 vm.showAlert('Erreur de saisie','Veuillez saisir les champs manquants !');
             });              
         }  
       //*****************************************************************     
-        vm.selection= function (item) {             
-            vm.selectedItem = item;
-            currentItem = JSON.parse(JSON.stringify(vm.selectedItem));
-            vm.afficherboutonModifSupr = 1;
-            vm.afficherboutonnouveau = 1; 
-        };
-        $scope.$watch('vm.selectedItem', function() {
-            if (!vm.allActivite) return;
-            vm.allActivite.forEach(function(item) {
-                item.$selected = false;
-            });
-            vm.selectedItem.$selected = true;
-        });
-        //function cache masque de saisie
-        vm.ajouter = function () {
-            vm.affichageMasque = 0 ;
-            NouvelItem = true ;
-		    var items = {
-				$edit: true,
-				$selected:true,
-				supprimer:0,
-				id:0,
-				libelle: '',
-				utilisateur_id:id_user
-			};
-			vm.allActivite.push(items);
-        };
-        vm.annuler = function() {            
-			vm.selectedItem.$selected = false;
-			vm.affichageMasque = 0 ;
-			vm.afficherboutonnouveau = 1 ;
-			vm.afficherboutonModifSupr = 0 ;
-			if (!item.id) {
-				vm.selectedItem.depense.pop();
-				return;
-			}          
-			item.$selected=false; 
-			item.$edit=false; 
-			NouvelItem = false;            
-			// Restaurer les valeurs
-			item.libelle = currentItem.libelle;
-        };
-        vm.modifier = function(item) {                    
-                NouvelItem = false ;
-				item.$selected=true,
-				item.$edit=true;
-        };
-        vm.supprimer = function() {
-            // Attention : suppression tache  nom de fonction à revoir ???
-            vm.afficherboutonModifSupr = 0 ;
-            vm.affichageMasque = 0 ;
-			var rep = response.data;                
-			var confirm = $mdDialog.confirm()
-				.title('Confirmation de suppression')
-				.textContent(vm.qui)
-				.ariaLabel('Lucky day')
-				.clickOutsideToClose(false)
-				.parent(angular.element(document.body))
-				.ok('supprimer')
-				.cancel('annuler');
-			$mdDialog.show(confirm).then(function() {
-				   ajout(vm.selectedItem,1);
-			}, function() {
-			});
-        };          
+		// Clic sur un item recommandation
         vm.selectionDocument= function (item) {
-            vm.selecteddepenseItem = item;
-            currentdepenseItem = JSON.parse(JSON.stringify(vm.selecteddepenseItem));
+            vm.selectedDocumentItem = item;
+            currentdepenseItem = JSON.parse(JSON.stringify(vm.selectedDocumentItem));
         };
-        $scope.$watch('vm.selecteddepenseItem', function() {
+		// $watch pour sélectionner ou désélectionner automatiquement un item recommandation
+        $scope.$watch('vm.selectedDocumentItem', function() {
 			if (!vm.selectedItem.document) return;
 			vm.allRecommandation.forEach(function(item) {
 				item.$selected = false;
 			});
-			vm.selecteddepenseItem.$selected = true;
+			vm.selectedDocumentItem.$selected = true;
         });
+		// Upload fichier attaché envoyé par l'utilisateur
 		$scope.uploadFile = function(event){
 			var files = event.target.files;
 			vm.myFile=files;               
 		};
+		// Ajout d'un nouvel item recommandation
         vm.ajouterDocument = function () {
-            vm.selecteddepenseItem.$selected = false;
+            vm.selectedDocumentItem.$selected = false;
             NouveldepenseItem = true ;
 			var items = {
 				$edit: true,
@@ -272,22 +203,24 @@
 			};
 			vm.allRecommandation.push(items);
 		}
+		// Annulation modification d'un item  recommandation
 		vm.annulerDocument = function(item) {
 			if (!item.id) {
 				vm.allRecommandation.pop();
 				return;
 			}          
-			vm.selecteddepenseItem.resume=vm.resume;
-			vm.selecteddepenseItem.url=vm.url;
-			vm.selecteddepenseItem.validation=vm.validation;
-			vm.selecteddepenseItem.nom_fichier=vm.fichier;
-			vm.selecteddepenseItem.date_upload=vm.date_upload;
-			vm.selecteddepenseItem.fait=vm.fait;
-			vm.selecteddepenseItem.$selected = false;
+			vm.selectedDocumentItem.resume=vm.resume;
+			vm.selectedDocumentItem.url=vm.url;
+			vm.selectedDocumentItem.validation=vm.validation;
+			vm.selectedDocumentItem.nom_fichier=vm.fichier;
+			vm.selectedDocumentItem.date_upload=vm.date_upload;
+			vm.selectedDocumentItem.fait=vm.fait;
+			vm.selectedDocumentItem.$selected = false;
 			NouveldepenseItem = false;
 			item.$edit=false; 
 			vm.disable=false;
         };
+		// Suppression d'un item recommandation
 		vm.supprimerDocument = function(item) {
             if(id_user!=item.utilisateur_id && parseInt(id_user)!=1) {
                 vm.showAlert("Information","Vous n'avez pas le droit de supprimer ce document !. Merci");
@@ -303,11 +236,12 @@
                 .ok('ok')
                 .cancel('annuler');
             $mdDialog.show(confirm).then(function() {
-				vm.sauverDocument(vm.selecteddepenseItem,1);
+				vm.sauverDocument(vm.selectedDocumentItem,1);
             }, function() {
              //alert('rien');
             });
         };
+		// Modification d'un item recommandation
 		vm.modifierDocument = function(item) {
             if(id_user!=item.utilisateur_id && parseInt(id_user)!=1) {
                 vm.showAlert("Information","Vous n'avez pas le droit de modifier ce document !. Merci");
@@ -319,21 +253,22 @@
             vm.fichier=item.nom_fichier;
             vm.date_upload=item.date_upload;
             vm.fait=item.fait;
-			currentdepenseItem = JSON.parse(JSON.stringify(vm.selecteddepenseItem));
+			currentdepenseItem = JSON.parse(JSON.stringify(vm.selectedDocumentItem));
 			item.date_upload = new Date(item.date_upload);
 			vm.allRecommandation.forEach(function(it) {
 				it.$selected = false;
 				it.$edit = false;
 			});
             NouveldepenseItem = false ;
-			vm.selecteddepenseItem.$selected = true;             
+			vm.selectedDocumentItem.$selected = true;             
             item.$edit = true;  
 			item.$selected = true; 
-			vm.selecteddepenseItem = item;     
-			vm.selecteddepenseItem.$edit = true;                  
+			vm.selectedDocumentItem = item;     
+			vm.selectedDocumentItem.$edit = true;                  
         };
+		// Sauvegarde dans la BDD la liste des documents
 		vm.sauverDocument = function (item,suppression) {
-			console.log(JSON.stringify(vm.selecteddepenseItem));
+			console.log(JSON.stringify(vm.selectedDocumentItem));
 			var config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -341,7 +276,7 @@
             };
             var getId = 0;
             if (NouveldepenseItem==false) {
-               getId = vm.selecteddepenseItem.id; 
+               getId = vm.selectedDocumentItem.id; 
             } 
 			
 			// var rep = apiUrlbase + apiUrlrecommandation + vm.site.toLowerCase()  ;
@@ -350,12 +285,12 @@
             var datas = $.param({
                 supprimer:suppression,
                 id:getId,
-                resume: vm.selecteddepenseItem.resume,
-                url: vm.selecteddepenseItem.url,            
-                validation: vm.selecteddepenseItem.validation,            
-                fait: vm.selecteddepenseItem.fait,            
+                resume: vm.selectedDocumentItem.resume,
+                url: vm.selectedDocumentItem.url,            
+                validation: vm.selectedDocumentItem.validation,            
+                fait: vm.selectedDocumentItem.fait,            
                 nom_fichier: vm.fichier,
-                date_upload: vm.selecteddepenseItem.date_upload,
+                date_upload: vm.selectedDocumentItem.date_upload,
                 repertoire: rep,
                 site_id:null,
                 utilisateur_id:id_user
@@ -363,14 +298,14 @@
             apiFactory.add("listerecommandation/index",datas, config).success(function (data) {
                 if (NouveldepenseItem == false) {
                     console.log('modifier');
-                    console.log(vm.selecteddepenseItem.date_upoload);
-                    vm.selecteddepenseItem.nom_fichier=vm.fichier;
+                    console.log(vm.selectedDocumentItem.date_upoload);
+                    vm.selectedDocumentItem.nom_fichier=vm.fichier;
                     if(suppression==0) {
-                      vm.selecteddepenseItem.$selected = false;
-					  vm.selecteddepenseItem.$edit=false;
+                      vm.selectedDocumentItem.$selected = false;
+					  vm.selectedDocumentItem.$edit=false;
 					  // repertoire : à écraser chaque fois au cas où l'utilisateur change le nom du type de document dans DDB type document
-					  vm.selecteddepenseItem.repertoire=vm.directoryName;
-                      vm.selecteddepenseItem ={};
+					  vm.selectedDocumentItem.repertoire=vm.directoryName;
+                      vm.selectedDocumentItem ={};
                     } else {    
 						vm.allRecommandation = vm.allRecommandation.filter(function(obj) {
 							return obj.id !== currentdepenseItem.id;
@@ -378,39 +313,28 @@
                     }
                 } else {
                     NouveldepenseItem=false;
-					vm.selecteddepenseItem.id=data.response;
-					vm.selecteddepenseItem.nom_fichier=vm.fichier;
+					vm.selectedDocumentItem.id=data.response;
+					vm.selectedDocumentItem.nom_fichier=vm.fichier;
                 }
 				// vm.item.$selected=false;
 				// vm.item.$edit=false;
-				vm.selecteddepenseItem.$edit=false;
-				vm.selecteddepenseItem.$selected=false;
+				vm.selectedDocumentItem.$edit=false;
+				vm.selectedDocumentItem.$selected=false;
 				vm.disable=false;
             }).error(function (data) {
                 alert('Erreur');
             }); 
         }      
-        function test_existance (item,suppression) {          
-            if (suppression!=1) {
-                insert_in_base(item,suppression);                                   
-            } else {
-              insert_in_base(item,suppression);
-            }  
-        } 
+		// Upload fichier
  		vm.uploadFile = function (item,suppression) {
 			console.log(JSON.stringify(item));
 			var file =vm.myFile[0];
-			console.log('file is ' );
-			console.dir(file);
 			var repertoire = apiUrlrecommandation;
-			// var bt = vm.site.toLowerCase() + '/';
 			var uploadUrl = apiUrl + "uploadfichier/save_recommandation";
 			var name = $scope.name;
-			console.log(name);
 			var fd = new FormData();
 			fd.append('file', file);
 			fd.append('repertoire',repertoire);
-			// fd.append('site',bt);
 			if(file) { 
 				var upl=   $http.post(uploadUrl, fd, {
 					transformRequest: angular.identity,
@@ -421,12 +345,12 @@
 					vm.fichier=data[1];
 					vm.sauverDocument(item,0);
 				}).error(function(){
-					console.log("Rivotra");
 				});
 			} else {
 				vm.sauverDocument(item,0);
 			}
 		}
+		// Récupération fichier dans le serveur
 		vm.exportfichier = function(item) {
 			var bla = $.post(apiUrl + "Uploadfichier/prendre_fichier",{
 						nom_fichier : item.nom_fichier,

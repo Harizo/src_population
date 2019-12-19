@@ -15,6 +15,7 @@
 
       function reinit(utilisateur)
       {
+		// Réinitialisation mot de passe  
         apiFactory.getAll('utilisateurs/index?courriel='+utilisateur.email+'&reinitpwd='+utilisateur.passwordConfirm+'&reinitpwdtoken='+$stateParams.token)
           .success(function() {
             $location.path('/auth/login');
