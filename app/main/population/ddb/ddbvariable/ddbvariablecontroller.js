@@ -70,7 +70,7 @@
                 destroy: function (e)
                 {    // ETO O               
 					var confirm = $mdDialog.confirm()
-						.title("Vous-êtes en train d'importer cet enregistrement.Continuer ?")
+						.title("Vous-êtes en train de supprimer cet enregistrement.Continuer ?")
 						.textContent('')
 						.ariaLabel('Lucky day')
 						.clickOutsideToClose(true)
@@ -146,7 +146,7 @@
                     }
                 }
             },
-            pageSize: 10//nbr affichage
+            pageSize: 8 //nbr affichage
             //serverPaging: true,
             //serverSorting: true
           }),         
@@ -239,7 +239,7 @@
                           id:        e.data.models[0].id,      
                           code:      e.data.models[0].code,
                           description:       e.data.models[0].description,
-                          id_liste_variable: e.data.models[0].id_liste_variable               
+                          id_liste_variable: id_liste_variable               
                       });
                   apiFactory.add("variable/index",datas, config).success(function (data)
                   {                
@@ -258,7 +258,7 @@
 
                   }).error(function (data)
                     {
-                      vm.showAlert('Erreur','Erreur lors de l\'insertion de donnée');
+                      vm.showAlert('Erreur','Erreur lors de la modification de donnée');
                     });       
               },
               //supression variable
@@ -295,7 +295,7 @@
 				}, function() {
 				});				  
               },
-              //creation district
+              //creation détail variable
               create : function (e)
               {                  
                   var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};                

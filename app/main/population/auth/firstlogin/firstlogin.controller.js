@@ -1,7 +1,7 @@
 (function ()
 {
     'use strict';
-
+	// Premier login d'un utilisateur
     angular
         .module('app.population.auth.firstlogin')
         .controller('FirstloginController', FirstloginController);

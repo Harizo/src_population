@@ -33,6 +33,7 @@
 			autoWidth : false,
 			responsive: true
 		};
+		// Récupération des données référentielles
 		apiFactory.getAll("utilisateurs/index").then(function(result) {
 			vm.listes_utilisateurs = result.data.response;
 		});
@@ -56,6 +57,7 @@
 		apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
 		});				
 		vm.formatMillier = function (nombre) {
+			// Fonction de formatage millier
             if (typeof nombre != 'undefined' && parseInt(nombre) >= 0) {
                 nombre += '';
                 var sep = ' ';
@@ -86,6 +88,7 @@
 			}
 		}
 		vm.filtre_region = function() {
+			// Récupération des districts correspondant à une région donnée (id_region passée en paramètre)
 			apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",vm.user.id_region).then(function(result) { 
 				vm.all_district = result.data.response;   
 				vm.user.id_district = null ; 
@@ -94,6 +97,7 @@
 			});
 		}
 		vm.filtre_commune = function() {
+			// Récupération des  communes correspondant à un district donnée (id_district passée en paramètre)
 			apiFactory.getAPIgeneraliserREST("commune/index","cle_etrangere",vm.user.id_district).then(function(result) { 
 				vm.all_commune = result.data.response; 
 				vm.user.id_commune = null ; 
@@ -101,26 +105,28 @@
 			});
 		}
 		vm.filtre_fokontany = function() {
+			// Récupération des  fokontany correspondant à un commune donnée (id_commune passée en paramètre)
 			apiFactory.getAPIgeneraliserREST("fokontany/index","cle_etrangere",vm.user.id_commune).then(function(result) { 
 				vm.all_fokontany = result.data.response;    
 				vm.user.id_fokontany = null ;          
 			});
 		}
-		vm.selection = function (item) {        
+		vm.selection = function (item) {   
+			// Clis sur un enregistrement
 			vm.selectedItem = item; 
-			// vm.nouvelItem = item;
-			//currentItem = JSON.parse(JSON.stringify(vm.selectedItem));
 			vm.afficherboutonModifSupr = 1 ;
 			vm.user = {} ;
 			vm.affichageMasque = 0 ;       
 		};
 		$scope.$watch('vm.selectedItem', function() {
+			// Fonction selection et déselection d'un enregistrement
 			if (!vm.listes_utilisateurs) return;
 			vm.listes_utilisateurs.forEach(function(item) {
 				item.$selected = false;
 			});
 			vm.selectedItem.$selected = true;
 		});
+		// Annulation modification
 		vm.annuler = function()  {
 			vm.user = {} ;
 			vm.affichageMasque = 0 ;
@@ -144,12 +150,6 @@
 				return repo;
 			});
 		}
-		vm.changerAssujettis = function (item) {
-			vm.infoAssuj = item ;
-		}
-      vm.changerPers = function (item) {
-          vm.pers = item ;
-      }
         // Fonction utilisées par balise autocomplete
         vm.querySearch = function  (query) {
             vm.repos = loadAll();
@@ -201,6 +201,7 @@
               }
           }
 		}
+		// Ajout d'un nouvel utilisateur
         vm.ajouterUtilisateur = function () {
 			vm.titre="Nouveau utilisateur";
 			vm.affichageMasquefinancementprogramme = 1 ;
@@ -244,6 +245,7 @@
 			vm.user.vld=false;
 			vm.NouvelItem = true ;			
         };
+		// Modification d'un utilisateur
 		vm.modifier = function()   {
 			vm.NouvelItem = false ;	
 			vm.titre="Modification utilisateur";
@@ -343,6 +345,7 @@
 				}  
           });
 		}
+		// Suppression d'un utilisateur
 		vm.supprimer = function() {
 			vm.affichageMasque = 0 ;
 			vm.afficherboutonModifSupr = 0 ;
@@ -360,6 +363,7 @@
 				//alert('rien');
 			});
 		}
+		// Enregistrement dans la BDD
 		vm.ajout = function(user,suppression)  {
 			var tab = [] ;         
 			angular.forEach(user, function(value, key)  {        
@@ -429,7 +433,8 @@
 					description_hote: user.description_hote,                 
 				});
 				apiFactory.add("utilisateurs/index",datas, config).success(function (data) {
-					if (getId==0) {                 
+					if (getId==0) { 
+						// Nouvel utilisateur	
 					   var itemss = {
 							id:String(data.response),
 							nom:user.nom,
@@ -461,6 +466,7 @@
 						vm.action="Ajout compte utilisateur ("+ user.raison_sociale + ") au nom de : " + user.prenom + " " + user.nom + "("+ user.email + ")";
 						// Envoi e-mail pour signaler que le compte utilisateur a été ouvert
 					} else {
+						// Mise à jour d'un utlisateur
 						vm.selectedItem.roles = tab ;
 						vm.selectedItem.nom = user.nom;
 						vm.selectedItem.email = user.email;

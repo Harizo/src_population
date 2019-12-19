@@ -1,5 +1,5 @@
 <div id="forms" class="page-layout simple fullwidth doc-page" layout="column">
-        <!-- HEADER -->
+        <!-- VIEW SAISIE ACTEUR  -->
         <div class="header md-accent-bg" layout="row" layout-align="space-between">
             <div layout="column" layout-align="space-between">
                 <div class="breadcrumb" layout="row" layout-align="start center">
@@ -14,6 +14,7 @@
                 <div class="title">Acteurs</div>
             </div>
         </div>
+		<!-- Début masque de saisie acteur-->
         <md-tabs md-dynamic-height ng-show="vm.affichageMasque==1">
 			<md-tab label="{{vm.titreacteur}}">
 				<md-tab-body>
@@ -188,6 +189,8 @@
 				</md-tab-body>
 			</md-tab>
         </md-tabs>
+		<!-- Fin masque de saisie acteur-->
+		<!-- Début masque de saisie type acteur-->
         <div class="content" layout="column">
             <div class="form-wrapper">
                 <div style="clear:both;"></div>
@@ -240,12 +243,13 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>		
-                    <md-tab label="Acteurs" ng-click="vm.Select_table(2)">
+					<!-- Fin masque de saisie type acteur-->
+					<!-- Début Affichage liste acteur-->
+                   <md-tab label="Acteurs" ng-click="vm.Select_table(2)">
                         <md-tab-body>
                             <fieldset>
                                 <legend>
                                         Acteurs
-                                    <!--button ng-click="vm.ajouterActeur()" title="Ajouter un Acteur" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button-->
                                 </legend>
 								<div style="widht:100%;">    
 									<md-button type="submit" ng-show="vm.afficherboutonnouveau==1" class="md-raised md-accent" aria-label="Nouveau" ng-click="vm.ajouterActeur()" style="width:10%;">
@@ -326,26 +330,14 @@
                                                 </span>
                                                 <span ng-if="!presta.$edit">{{presta.fokontany[0].nom}}</span>
                                             </td>
-                                            <!--td>
-                                                <a ng-if="!presta.$edit" ng-click="vm.modifierActeur(presta)" title="Modifier">
-                                                    <span class="icon-table-edit"></span>
-                                                </a>
-                                                <a ng-if="!presta.$edit" ng-click="vm.supprimerActeur(presta)" title="Supprimer">
-                                                    <span class="icon-delete"></span>
-                                                </a>
-                                                <a ng-if="presta.$edit" ng-click="vm.annulerActeur(presta)" title="Annuler modification">
-                                                    <span class="icon-cancel"></span>
-                                                </a>
-                                                <a ng-if="presta.$edit && presta.nom >'' && presta.id_type_acteur >0" ng-click="vm.ajoutActeur(presta,0)" title="Sauvegarder">
-                                                    <span class="icon-content-save"></span>
-                                                </a>
-                                            </td-->
                                         </tr>
                                     </tbody>
                                 </table>
                             </fieldset>
                         </md-tab-body>
                     </md-tab>
+					<!-- Fin Affichage liste acteur-->
+					<!-- Début Saisie unité de mesure-->
                     <md-tab label="Unité de mésure">
                         <md-tab-body>
                             <fieldset>
@@ -394,6 +386,8 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>		
+					<!-- Fin Saisie unité de mesure-->
+					<!-- Début Saisie type de transfert-->
                     <md-tab label="Type de transfert">
                         <md-tab-body>
 							<div layout="row">
@@ -527,6 +521,8 @@
 							</div>						
                         </md-tab-body>
                     </md-tab>		
+					<!-- Fin Saisie type de transfert-->
+					<!-- Début Saisie fréquence de transfert-->
                     <md-tab label="Fréquence de transfert">
                         <md-tab-body>
 							<fieldset>
@@ -584,102 +580,7 @@
 							</fieldset>
                         </md-tab-body>
                     </md-tab>						
-                    <!--md-tab label="Acteurs régional" ng-click="vm.Select_table(3)">
-                        <md-tab-body>
-                            <fieldset>
-                                <legend>
-                                        Acteurs régional
-                                    <button ng-click="vm.ajouterActeurregional()" title="Ajouter un Acteur régional" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
-                                </legend>
-                                <table ng-table="tablePrestataireActeurregional" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
-                                    <thead>
-                                        <tr>
-                                            <th class="secondary-text" ng-repeat="c in ::vm.acteurregional_column">
-                                                <div class="table-header">
-                                                    <span class="column-title">{{c.titre}}</span>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="presta in vm.allRecordsActeurregional"  ng-class="{selected: presta.$selected}" ng-click="vm.selectionActeurregional(presta)">										
-                                            <td>
-                                                <span ng-if="presta.$edit">
-													<md-select style="width:100%;" name="id_type_acteur_reg" ng-model="presta.id_type_acteur"  ng-change="vm.modifierTypeacteur(presta)" required>
-														<md-option value=''>&nbsp;</md-option>
-														<md-option ng-repeat="tar in vm.allRecordsTypeacteur" value='{{tar.id}}'>
-															{{tar.description}}
-														</md-option>
-													</md-select>
-                                                </span>
-                                                <span ng-if="!presta.$edit">{{presta.typeacteur[0].description}}</span>
-                                            </td>
-                                            <td>
-                                                <span ng-if="presta.$edit">
-                                                    <md-input-container style="width:100%;">
-                                                        <label>Nom</label>
-                                                        <input name="nom" type="text" ng-model="presta.nom" required/>
-                                                    </md-input-container>	
-                                                </span>
-                                                <span ng-if="!presta.$edit">{{presta.nom}}</span>
-                                            </td>
-                                            <td>
-                                                <span ng-if="presta.$edit">
-													<md-select style="width:100%;" name="id_region" ng-model="presta.id_region"  ng-change="vm.modifierRegion(presta)" required>
-														<md-option ng-repeat="co in vm.allregion" value='{{co.id}}'>
-															{{co.nom}}
-														</md-option>
-													</md-select>
-                                                </span>
-                                                <span ng-if="!presta.$edit">{{presta.region[0].nom}}</span>
-                                            </td>
-                                            <td>
-                                                <span ng-if="presta.$edit">
-                                                    <md-input-container style="width:100%;">
-                                                        <label>Représentant</label>
-                                                        <input name="representant" type="text" ng-model="presta.representant"/>
-                                                    </md-input-container>	
-                                                </span>
-                                                <span ng-if="!presta.$edit">{{presta.representant}}</span>
-                                            </td>
-                                            <td>
-                                                <span ng-if="presta.$edit">
-                                                    <md-input-container style="width:100%;">
-                                                        <label>Contact</label>
-                                                        <input name="contact" type="text" ng-model="presta.contact"/>
-                                                    </md-input-container>	
-                                                </span>
-                                                <span ng-if="!presta.$edit">{{presta.contact}}</span>
-                                            </td>
-                                            <td>
-                                                <span ng-if="presta.$edit">
-                                                    <md-input-container style="width:100%;">
-                                                        <label>Adresse</label>
-                                                        <input name="adresse" type="text" ng-model="presta.adresse"/>
-                                                    </md-input-container>	
-                                                </span>
-                                                <span ng-if="!presta.$edit">{{presta.adresse}}</span>
-                                            </td>
-                                            <td>
-                                                <a ng-if="!presta.$edit" ng-click="vm.modifierActeurregional(presta)" title="Modifier">
-                                                    <span class="icon-table-edit"></span>
-                                                </a>
-                                                <a ng-if="!presta.$edit" ng-click="vm.supprimerActeurregional(presta)" title="Supprimer">
-                                                    <span class="icon-delete"></span>
-                                                </a>
-                                                <a ng-if="presta.$edit" ng-click="vm.annulerActeurregional(presta)" title="Annuler modification">
-                                                    <span class="icon-cancel"></span>
-                                                </a>
-                                                <a ng-if="presta.$edit && presta.nom >'' && presta.id_type_acteur >0" ng-click="vm.ajoutActeurregional(presta,0)" title="Sauvegarder">
-                                                    <span class="icon-content-save"></span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </fieldset>
-                        </md-tab-body> 
-                    </md-tab-->		
+					<!-- Fin Saisie fréquence de transfert-->
                 </md-tabs>
             </div>
         </div>

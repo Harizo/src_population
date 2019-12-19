@@ -3,6 +3,7 @@
     'use strict';
     angular
         .module('app.population.importationdonnees.importationbeneficiaire')
+		// Directive et service pour upload fichier excel bénéficiaire
         .directive('customOnChange', function() {
 			return {
 				restrict: 'A',
@@ -32,21 +33,19 @@
 				var fd = new FormData();
 				var rep='test';
 				fd.append('file', file);
-				// console.log(file);
 				$http.post(uploadUrl, fd,{
 					transformRequest: angular.identity,
 					headers: {'Content-Type': undefined}
 				}).success(function(){
-					// console.log('tafa');
 				}).error(function(){
-					// console.log('Rivotra');
 				});
 			}
 		}])
         .controller('ImportationbeneficiaireController', ImportationbeneficiaireController);
     /** @ngInject */
     function ImportationbeneficiaireController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlvalidationbeneficiaire)  {
-        var vm = this;
+		// Déclaration variable
+		var vm = this;
         var NouvelItem=false;
         var currentItem;
         var typeact="";
@@ -84,12 +83,12 @@
         autoWidth : false,
         responsive: true
         };
-        // vm.activite_col = [{"titre":"Type de document"}];
         vm.colonne_validation = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Action"}];           
         vm.colonne_donnees_validees = [{"titre":"Acteur"},{"titre":"Fichier"},{"titre":"Date d'envoi"},{"titre":"Utilisateur"},{"titre":"Date intégration"},{"titre":"Validateur"}];           
         var id_user = $cookieStore.get('id');
 		vm.id_utilisateur = id_user;
 		vm.adresse_mail =$cookieStore.get('email');
+		// Début Récupération données référentielles
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			vm.raisonsociale = result.data.response.raison_sociale;
@@ -100,6 +99,7 @@
 				vm.Listebeneficiairevalidees = result.data.response;
 			});               
         });     
+		// Fin Récupération données référentielles
 			//add historique : Consultation menu importation bénéficiaire
 			var config = {
 				headers : {
@@ -112,18 +112,20 @@
 			});
 			//factory
 			apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-			});									
+			});	
+		// Formatage affichage date		
 		function formatDate(date) {
 			var mois = date.getMonth()+1;
 			var dateSQL = (date.getFullYear()+ "/"+ mois + "/" + date.getDate());
-			// var dateSQL = (date.getFullYear()+"-"+mois+"-"+date.getDate() + ' ' + date.getHours + ':' + date.getMinutes + ':' + date.getSeconds );
 			return dateSQL;
 
 		}
+		// Parsing date pour la BDD
 		function parseDate(date) {
 			var d = moment(date, 'YYYY-MM-DD', true);
 			return d.isValid() ? d.toDate() : new Date(NaN);
 		}
+		// Message box : alert, information
         vm.showAlert = function(titre,textcontent) {
             $mdDialog.show(
               $mdDialog.alert()
@@ -137,22 +139,13 @@
                 .targetEvent()
             );
         } 
+		// Fonction Insertion,modif,suppression table liste_validation_beneficiaire
         function ajout(activite,suppression) {
             if (NouvelItem==false) {
-               // test_existance (activite,suppression);
                 insert_in_base(activite,suppression); 
             } else {
                 insert_in_base(activite,suppression);
             }
-        }
-		vm.changerdepense = function (item) {
-            vm.depenses.forEach(function(lig) {
-                if(lig.id==item.lignebudgetaire) {
-                    item.lignebudgetaire = lig.id; 
-                    item.lignebudgetaire_id = lig.id; 
-                    item.libelledepense = lig.libelle ;
-                }
-            });
         }
         function insert_in_base(activite,suppression) {         
             //add
@@ -206,23 +199,12 @@
                 vm.showAlert('Erreur de saisie','Veuillez saisir les champs manquants !');
             });              
         }  
-      //*****************************************************************     
-        vm.selection= function (item) {             
-            vm.selectedItem = item;
-            currentItem = JSON.parse(JSON.stringify(vm.selectedItem));
-            vm.afficherboutonModifSupr = 1;
-            vm.afficherboutonnouveau = 1; 
-        };
-        $scope.$watch('vm.selectedItem', function() {
-            if (!vm.allActivite) return;
-            vm.allActivite.forEach(function(item) {
-                item.$selected = false;
-            });
-            vm.selectedItem.$selected = true;
-        });
+      //*****************************************************************   
+		// Clic sur un item liste_validation_beneficiaire déjà validés
         vm.selectionBeneficiaireValidees= function (item) {             
             vm.selectedItemBeneficiaireValidees = item;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item liste_validation_beneficiaire déjà validés
         $scope.$watch('vm.selectedItemBeneficiaireValidees', function() {
             if (!vm.Listebeneficiairevalidees) return;
             vm.Listebeneficiairevalidees.forEach(function(item) {
@@ -230,7 +212,7 @@
             });
             vm.selectedItemBeneficiaireValidees.$selected = true;
         });
-        //function cache masque de saisie
+        // Ajout d'un nouvel item liste_validation_beneficiaire
         vm.ajouter = function () {
             vm.affichageMasque = 0 ;
             NouvelItem = true ;
@@ -244,6 +226,7 @@
 			};
 			vm.allActivite.push(items);
         };
+		// Annulation modification d'un item liste_validation_beneficiaire
         vm.annuler = function() {            
 			vm.selectedItem.$selected = false;
 			vm.affichageMasque = 0 ;
@@ -259,13 +242,14 @@
 			// Restaurer les valeurs
 			item.libelle = currentItem.libelle;
         };
+		// Modification d'un item liste_validation_beneficiaire
         vm.modifier = function(item) {                    
                 NouvelItem = false ;
 				item.$selected=true,
 				item.$edit=true;
         };
+		// Suppression d'un item liste_validation_beneficiaire
         vm.supprimer = function() {
-            // Attention : suppression tache  nom de fonction à revoir ???
             vm.afficherboutonModifSupr = 0 ;
             vm.affichageMasque = 0 ;
 			var rep = response.data;                
@@ -281,11 +265,13 @@
 				   ajout(vm.selectedItem,1);
 			}, function() {
 			});
-        };          
-        vm.selectionDocument= function (item) {
+        };  
+		// Clic sur un item liste_validation_beneficiaire   données déjà vlidées     
+        vm.selectionListedonneesavalider= function (item) {
             vm.selectedListedonneesavaliderItem = item;
             currentdepenseItem = JSON.parse(JSON.stringify(vm.selectedListedonneesavaliderItem));
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item liste_validation_beneficiaire
         $scope.$watch('vm.selectedListedonneesavaliderItem', function() {
 			if (!vm.selectedListedonneesavaliderItem) return;
 			vm.Listevalidationbeneficiaire.forEach(function(item) {
@@ -293,173 +279,18 @@
 			});
 			vm.selectedListedonneesavaliderItem.$selected = true;
         });
+		// Upload fichier excel bénéficiaire
 		$scope.uploadFile = function(event){
 			var files = event.target.files;
 			vm.myFile=files;  
-			// console.log(vm.myFile[0].name);	
 			vm.monfichier = vm.myFile[0].name;
 		};
-        vm.ajouterDocument = function () {
-            vm.selectedListedonneesavaliderItem.$selected = false;
-            NouveldonneesavaliderItem = 1 ;
-			var items = {
-				$edit: true,
-				$selected:true,
-				supprimer:0,
-				resume:'',
-				url:'',
-				validation:0,
-				fait:0,
-				date_reception:new Date,
-				date_validation:null,
-				nom_fichier:'',
-                id_utilisateur:id_user,
-                id_utilisateur_validation:null,
-                donnees_validees:0,
-				id:0,
-				nomutilisateur:vm.nomutilisateur,		
-				raisonsociale:vm.raisonsociale		
-			};
-			vm.Listevalidationbeneficiaire.push(items);
-			vm.afficherboutonnouveau=0;
-		}
-		vm.annulerDocument = function(item) {
-			vm.afficherboutonnouveau=1;
-			if (!item.id) {
-				vm.Listevalidationbeneficiaire.pop();
-				return;
-			}          
-			vm.selectedListedonneesavaliderItem.resume=vm.resume;
-			vm.selectedListedonneesavaliderItem.url=vm.url;
-			vm.selectedListedonneesavaliderItem.validation=vm.validation;
-			vm.selectedListedonneesavaliderItem.nom_fichier=vm.fichier;
-			vm.selectedListedonneesavaliderItem.date_reception=vm.date_reception;
-			vm.selectedListedonneesavaliderItem.$selected = false;
-			NouveldonneesavaliderItem = 0;
-			item.$edit=false; 
-			vm.disable=false;
-        };
-		vm.supprimerDocument = function(item) {
-            if(id_user!=item.id_utilisateur && parseInt(id_user)!=1) {
-                vm.showAlert("Information","Vous n'avez pas le droit de supprimer ce document !. Merci");
-                return;
-            }
-            vm.selectedptaItem=item;
-            var confirm = $mdDialog.confirm()
-                .title('Etes-vous sûr de supprimer cet enregistrement ?')
-                .textContent('')
-                .ariaLabel('Lucky day')
-                .clickOutsideToClose(true)
-                .parent(angular.element(document.body))
-                .ok('ok')
-                .cancel('annuler');
-            $mdDialog.show(confirm).then(function() {
-				vm.sauverDocument(vm.selectedListedonneesavaliderItem,1);
-            }, function() {
-             //alert('rien');
-            });
-        };
-		vm.modifierDocument = function(item) {
-            if(id_user!=item.id_utilisateur && parseInt(id_user)!=1) {
-                vm.showAlert("Information","Vous n'avez pas le droit de modifier ce document !. Merci");
-                return;
-            }   
-            vm.resume=item.resume;
-            vm.url=item.url;
-            vm.validation=item.validation;
-            vm.fichier=item.nom_fichier;
-            vm.date_reception=item.date_reception;
-            vm.fait=item.fait;
-			currentdepenseItem = JSON.parse(JSON.stringify(vm.selectedListedonneesavaliderItem));
-			item.date_reception = new Date(item.date_reception);
-			vm.Listevalidationbeneficiaire.forEach(function(it) {
-				it.$selected = false;
-				it.$edit = false;
-			});
-            NouveldonneesavaliderItem = 0 ;
-			vm.selectedListedonneesavaliderItem.$selected = true;             
-            item.$edit = true;  
-			item.$selected = true; 
-			vm.selectedListedonneesavaliderItem = item;     
-			vm.selectedListedonneesavaliderItem.$edit = true;                  
-			vm.afficherboutonnouveau=0;
-        };
-		vm.sauverDocument = function (item,suppression) {
-			var config = {
-                headers : {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                }
-            };
-            var getId = 0;
-            if (NouveldonneesavaliderItem==0) {
-               getId = vm.selectedListedonneesavaliderItem.id; 
-            } 
-			if(suppression==1) {
-				var date_temporaire = vm.selectedListedonneesavaliderItem.date_reception;
-			} else {
-				var date_temporaire = formatDate(vm.selectedListedonneesavaliderItem.date_reception);
-			}
-			// var rep = apiUrlbase + apiUrlvalidationbeneficiaire + vm.site.toLowerCase()  ;
-			var rep = apiUrlbase + apiUrlvalidationbeneficiaire ;
-			vm.directoryName=rep;
-            var datas = $.param({
-                supprimer:suppression,
-                id:getId,
-                donnees_validees: 0,            
-                nom_fichier: vm.fichier,
-                repertoire: vm.repertoire,
-                date_reception: date_temporaire,
-                date_validation: null,
-                id_utilisateur:id_user,
-                id_utlisateur_validation:null
-            });
-            apiFactory.add("listevalidationbeneficiaire/index",datas, config).success(function (data) {
-                if (NouveldonneesavaliderItem == 0) {
-                    vm.selectedListedonneesavaliderItem.nom_fichier=vm.fichier;
-                    vm.selectedListedonneesavaliderItem.repertoire=vm.repertoire;
-                    if(suppression==0) {
-                      vm.selectedListedonneesavaliderItem.$selected = false;
-					  vm.selectedListedonneesavaliderItem.$edit=false;
-					  // repertoire : à écraser chaque fois au cas où l'utilisateur change le nom du type de document dans DDB type document
-                      vm.selectedListedonneesavaliderItem ={};
-                    } else {    
-						vm.Listevalidationbeneficiaire = vm.Listevalidationbeneficiaire.filter(function(obj) {
-							return obj.id !== currentdepenseItem.id;
-						});         
-                    }
-                } else {
-                    NouveldonneesavaliderItem=0;
-					vm.selectedListedonneesavaliderItem.id=data.response[0].id;
-					vm.selectedListedonneesavaliderItem.date_reception=data.response[0].date_reception;
-					vm.selectedListedonneesavaliderItem.nom_fichier=vm.fichier;
-					vm.selectedListedonneesavaliderItem.repertoire=vm.repertoire;
-                }
-				// vm.item.$selected=false;
-				// vm.item.$edit=false;
-				vm.selectedListedonneesavaliderItem.$edit=false;
-				vm.selectedListedonneesavaliderItem.$selected=false;
-				vm.afficherboutonnouveau=1;
-				vm.disable=false;
-            }).error(function (data) {
-                alert('Erreur');
-            }); 
-        }      
-        function test_existance (item,suppression) {          
-            if (suppression!=1) {
-                insert_in_base(item,suppression);                                   
-            } else {
-              insert_in_base(item,suppression);
-            }  
-        } 
+		// Upload fichier excel bénéficiaire
  		vm.uploadFile = function (item,suppression) {
 			var file =vm.myFile[0];
-			// console.log('file is ' );
-			// console.dir(file);
 			var repertoire = apiUrlvalidationbeneficiaire;
-			// var bt = vm.site.toLowerCase() + '/';
 			var uploadUrl = apiUrl + "validationbeneficiaire/upload_validationdonneesbeneficiaire";
 			var name = $scope.name;
-			// console.log(name);
 			var fd = new FormData();
 			fd.append('file', file);
 			fd.append('repertoire',repertoire);
@@ -469,8 +300,6 @@
 					transformRequest: angular.identity,
 					headers: {'Content-Type': undefined}
 				}).success(function(data){
-					// console.log('upload success');
-					// console.log(data);
 					vm.fichier=data["nom_fichier"];
 					vm.repertoire=data["repertoire"];
 					if(data["reponse"]!="OK") {
@@ -491,6 +320,7 @@
 				vm.sauverDocument(item,0);
 			}
 		}
+		// Boite de dialogue pour confirmer si l'utilisateur veut importer le fichier excel
         vm.ConfirmerImportBeneficiaire = function(donnees) {
 			var confirm = $mdDialog.confirm()
                 .title("Vous-êtes en train d'importer cet enregistrement.Continuer ?")
@@ -505,7 +335,7 @@
 			}, function() {
 			});
         }
-
+		// Importation fichier excel bénéficiaire dans la BDD
 		vm.importerbeneficiaire = function(item) {
 			var bla = $.post(apiUrl + "importationbeneficiaire/importer_donnees_beneficiaire",{
 						nom_fichier : item.nom_fichier,
@@ -541,7 +371,6 @@
 						}).error(function(){
 							vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers l'acteur.Veuillez vérifier l'adresse e-mail si correct.Merci");
 						});
-						// window.location = data;
 						// Actualisation liste validation bénéficiaire
 						vm.Listevalidationbeneficiaire =[];
 						vm.Listebeneficiairevalidees =[];

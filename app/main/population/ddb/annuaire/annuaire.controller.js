@@ -70,7 +70,7 @@
 		vm.ListeDetailtypetransfert = [] ;
 		vm.allRecordsFrequencetransfert = [] ;
 		vm.allRecordsTutelle = [] ;
-		
+		vm.allRecordsNomenclatureintervention =[];
         vm.afficherboutonnouveauprogramme = 1 ;
 		vm.afficherboutonModifSuprprogramme = 0 ;
         vm.affichageMasqueprogramme = 0 ;
@@ -170,6 +170,10 @@
 		});    
 		apiFactory.getAll("tutelle/index").then(function(result){
 			vm.allRecordsTutelle = result.data.response;
+		});    
+		apiFactory.getAll("nomenclature_intervention4/index").then(function(result){
+			vm.allRecordsNomenclatureintervention = result.data.response;
+			console.log(vm.allRecordsNomenclatureintervention);
 		});    
 		// Fin Récupération des données référetielles
 		//add historique : consultation DDB annuaire d'intervention
@@ -1206,6 +1210,8 @@
 			txtTmp += "commentaire" +":\"" + entite.commentaire + "\",";	
 			txtTmp += "id_type_action" +":\"" + entite.id_type_action + "\",";	
 			txtTmp += "id_frequence_transfert" +":\"" + entite.id_frequence_transfert + "\",";	
+			txtTmp += "montant_transfert" +":\"" + entite.montant_transfert + "\",";	
+			txtTmp += "id_nomenclature_intervention" +":\"" + entite.id_nomenclature_intervention + "\",";	
 			var i=0;
 			if(vm.nombre >0) {
 				vm.txt="";
@@ -1269,6 +1275,8 @@
 				id_type_action: entite.id_type_action,				
 				id_frequence_transfert: entite.id_frequence_transfert,				
 				nombre_detail_type_transfert: i,
+				montant_transfert: entite.montant_transfert,
+				id_nomenclature_intervention: entite.id_nomenclature_intervention,
 			});       
 			//factory table intervention
 			apiFactory.add("intervention/index",donnees, config).success(function (data) {
@@ -1300,8 +1308,11 @@
 					  vm.selectedItemIntervention.id_type_action = entite.id_type_action;
 					  vm.selectedItemIntervention.typeaction = entite.typeaction;
 					  vm.selectedItemIntervention.id_frequence_transfert = entite.id_frequence_transfert;
+					  vm.selectedItemIntervention.montant_transfert = entite.montant_transfert;
 					  vm.selectedItemIntervention.frequencetransfert = entite.frequencetransfert;
 					  vm.selectedItemIntervention.detail_transfert = vm.detail_transfert;
+					  vm.selectedItemIntervention.id_nomenclature_intervention = vm.id_nomenclature_intervention;
+					  vm.selectedItemIntervention.nomenclatureintervention = vm.nomenclatureintervention;
 					  vm.selectedItemIntervention.$selected = false;
 					  vm.selectedItemIntervention.$edit = false;
 						vm.afficherboutonModifSuprintervention = 0 ;
@@ -1341,7 +1352,9 @@
 						typeaction: entite.typeaction,
 						id_frequence_transfert: entite.id_frequence_transfert,
 						frequencetransfert: entite.frequencetransfert,
+						montant_transfert: entite.montant_transfert,
 						detail_transfert: vm.detail_transfert,
+						id_nomenclature_intervention: vm.id_nomenclature_intervention,
 					};
 					vm.selectedItemProgramme.detail_intervention.push(item); 
 					NouvelItemIntervention=false;
@@ -1451,12 +1464,15 @@
 			vm.intervention.unite_duree=null;
 			vm.intervention.id_type_transfert=null;
 			vm.intervention.typetransfert=[];
+			vm.intervention.id_nomenclature_intervention=null;
+			vm.intervention.nomenclatureintervention=[];
 			vm.intervention.flag_integration_donnees=null;
 			vm.intervention.nouvelle_integration=null;
 			vm.intervention.commentaire=null;
 			vm.intervention.id_type_action=null;
 			vm.intervention.typeaction=[];
 			vm.intervention.id_frequence_transfert=null;
+			vm.intervention.montant_transfert=null;
 			vm.intervention.frequencetransfert=[];
 			vm.intervention.flag_integration_donnees=false;
 			vm.intervention.nouvelle_integration=false;
@@ -1508,6 +1524,9 @@
 				vm.intervention.id_type_action=parseInt(vm.selectedItemIntervention.id_type_action);
 			} else vm.intervention.id_type_action=null;
 			vm.intervention.typeaction=vm.selectedItemIntervention.typeaction;			
+			if(vm.selectedItemIntervention.montant_transfert) {
+				vm.intervention.montant_transfert=parseFloat(vm.selectedItemIntervention.montant_transfert);
+			} else vm.intervention.montant_transfert=null;			
 			if(vm.intervention.id_type_transfert) {
 				console.log(vm.intervention.id_type_transfert);
 				if(vm.selectedItemIntervention.detail_type_transfert_intervention) {
@@ -1529,6 +1548,10 @@
 					});
 				}	
 			}	
+			if(vm.selectedItemIntervention.id_nomenclature_intervention) {
+				vm.intervention.id_nomenclature_intervention=parseInt(vm.selectedItemIntervention.id_nomenclature_intervention);
+			} else vm.intervention.id_nomenclature_intervention=null;
+			vm.intervention.nomenclatureintervention=vm.selectedItemIntervention.nomenclatureintervention;
 			if(vm.selectedItemIntervention.id_frequence_transfert) {
 				vm.intervention.id_frequence_transfert=parseInt(vm.selectedItemIntervention.id_frequence_transfert);
 			} else vm.intervention.id_frequence_transfert=null;
@@ -1552,6 +1575,7 @@
 			}, function() {
 			});
         }
+		// Controle modification Acteur
         vm.modifierActeur = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsActeur.forEach(function(prg) {
@@ -1568,6 +1592,7 @@
 					vm.intervention.acteur=[];
 			}
 		}	
+		// Controle modification type transfert
         vm.modifierTypetransfert = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsTypetransfert.forEach(function(prg) {
@@ -1590,6 +1615,7 @@
 				});
 			}
 		}	
+		// Controle modification type action intervention
         vm.modifierTypeactionIntervention = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsTypeaction.forEach(function(prg) {
@@ -1605,7 +1631,8 @@
 					vm.intervention.id_type_action = null; 
 					vm.intervention.typeaction=[];
 			}
-		}	
+		}
+	// Controle modification fréquence de transfert	
         vm.modifierFrequencetransfert = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsFrequencetransfert.forEach(function(prg) {
@@ -1620,6 +1647,23 @@
 			if(vm.nontrouvee==true) {				
 					vm.intervention.id_frequence_transfert = null; 
 					vm.intervention.frequencetransfert=[];
+			}
+		}	
+	// Controle modification nomenvlature intervention
+        vm.modifierNomenclatureIntervention = function (item) { 
+			vm.nontrouvee=true;
+			vm.allRecordsNomenclatureintervention.forEach(function(prg) {
+				if(parseInt(prg.id)==parseInt(item.id_nomenclature_intervention)) {
+					vm.nontrouvee=false;
+					vm.intervention.id_nomenclature_intervention=prg.id;
+					item.id_nomenclature_intervention=prg.id;
+					vm.intervention.nomenclatureintervention=[];
+					vm.intervention.nomenclatureintervention.push(prg);
+				}
+			});
+			if(vm.nontrouvee==true) {				
+					vm.intervention.id_nomenclature_intervention = null; 
+					vm.intervention.nomenclatureintervention=[];
 			}
 		}	
 		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE INTERVENTION
@@ -1813,6 +1857,7 @@
 			}, function() {
 			});
         }
+		// Controle modification programme
         vm.modifierProgrammeINTV = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsProgramme.forEach(function(prg) {
@@ -1828,7 +1873,8 @@
 					vm.financementintervention.id_intervention = null; 
 					vm.financementintervention.intervention=[];
 			}
-		}	
+		}
+		// Controle modification source de financement	
         vm.modifierSourcefinancementINTV = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsSourcefinancement.forEach(function(prg) {
@@ -1845,6 +1891,7 @@
 					vm.financementintervention.sourcefinancement=[];
 			}
 		}	
+		// Controle modification action stratégique
         vm.modifierActionstrategiqueINTV = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsActionstrategique.forEach(function(prg) {
@@ -1861,6 +1908,7 @@
 					vm.financementintervention.actionstrategique=[];
 			}
 		}	
+		// Controle modification type secteur intervention
         vm.modifierTypesecteurINTV = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsTypesecteur.forEach(function(prg) {
@@ -1877,6 +1925,7 @@
 					vm.financementintervention.typesecteur=[];
 			}
 		}	
+		// Controle modification devise
         vm.modifierDeviseINTV = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsDevise.forEach(function(prg) {
@@ -2089,6 +2138,7 @@
         function test_existence_zoneint (item,suppression) {    
 			insert_in_base_zoneint(item,suppression);
         }
+		// Controle modification zone d'intervention
         vm.modifierInterventionZONEINT = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsIntervention.forEach(function(ax) {
@@ -2104,6 +2154,7 @@
 					item.intervention=[];
 			}
 		}
+		// Controle modification région
         vm.modifierRegionZONEINT = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsRegion.forEach(function(ax) {
@@ -2127,6 +2178,7 @@
 					vm.allRecordsDistrict =vm.all_district;
 			}
 		}
+		// Controle modification district
         vm.modifierDistrictZONEINT = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsDistrict.forEach(function(ax) {
@@ -2149,6 +2201,7 @@
 					vm.allRecordsCommune =vm.all_commune;
 			}
 		}
+		// Controle modification commune
         vm.modifierCommuneZONEINT = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsCommune.forEach(function(ax) {
@@ -2157,6 +2210,7 @@
 					item.commune=[];
 					item.commune.push(ax);
 					vm.nontrouvee=false;
+					console.log(vm.allRecordsFokontany);
 					apiFactory.getAPIgeneraliserREST("fokontany/index","cle_etrangere",item.id_commune).then(function(result) { 
 						vm.allRecordsFokontany = result.data.response;    
 						vm.all_fokontany = result.data.response;    
@@ -2170,6 +2224,7 @@
 					vm.allRecordsFokontany =vm.all_fokontany;
 			}
 		}
+		// Controle modification fokontany
         vm.modifierFokontanyZONEINT = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsFokontany.forEach(function(ax) {

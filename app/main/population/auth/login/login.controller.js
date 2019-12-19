@@ -18,6 +18,7 @@
 
       function enregistrer(data)
       {
+		  // Connexion à l'application
         loginService.sing_in(data);
       }
 

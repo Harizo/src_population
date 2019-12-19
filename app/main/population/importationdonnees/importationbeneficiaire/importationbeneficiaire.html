@@ -15,13 +15,13 @@
     </div>
     <div class="content"layout="column">
 		<div class="form-wrapper"> 
+			<!-- Début Liste fichier excel en attente d'intégration dans la BDD -->
 			<md-tabs md-dynamic-height>
 				<md-tab label="Bénéficiaires en attente d'importation vers BDD">
 					<md-tab-body>
 						<fieldset>
 							<legend>
 								Importation des bénéficiaires
-								<!--button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button-->
 							</legend>
 							<div style="clear:both;"></div>
 							<table ng-table="tablelistevalidationbeneficiaire" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
@@ -35,7 +35,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr  ng-repeat="lstvld in vm.Listevalidationbeneficiaire"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionDocument(lstvld)">
+									<tr  ng-repeat="lstvld in vm.Listevalidationbeneficiaire"  ng-class="{selected: lstvld.$selected}" ng-click="vm.selectionListedonneesavalider(lstvld)">
 										<td>
 											<span ng-if="lstvld.$edit">
 												<md-input-container>
@@ -102,12 +102,13 @@ height:30px;">Upload me</button>
 						</fieldset>
 					</md-tab-body>
 				</md-tab> 
+				<!-- Fin Liste fichier excel en attente d'intégration dans la BDD -->
+				<!-- Début Liste fichier excel déja intégrés dans la BDD -->
 				<md-tab label="Bénéficiaires importés">
 					<md-tab-body>
 						<fieldset>
 							<legend>
 								Liste des données bénéficiaires importés
-								<!--button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button-->
 							</legend>
 							<div style="clear:both;"></div>
 							<table ng-table="tablelistebeneficiairevalidees" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
@@ -148,6 +149,7 @@ height:30px;">Upload me</button>
 				</md-tab> 
 				<md-tab> 
 				</md-tab> 
+				<!-- Fin Liste fichier excel déja intégrés dans la BDD -->
 			</md-tabs>
 		</div>
     </div>
