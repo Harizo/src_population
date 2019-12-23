@@ -99,6 +99,11 @@
             titre:"Taux de décaissement par intervention",
             id:"req36_theme2",
             category:"theme2"
+          },
+          {
+            titre:"Proportion des interventions par type de cible",
+            id:"req18_theme2",
+            category:"theme2"
           }      
 
           //FIN CODE HARIZO       
