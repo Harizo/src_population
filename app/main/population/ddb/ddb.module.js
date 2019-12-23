@@ -12,6 +12,7 @@
             'app.population.ddb.annuaire',
             'app.population.ddb.region_district_commune',
             'app.population.ddb.ddbvariable',
+            'app.population.ddb.nomenclatureintervention',
             ])
         .run(testPermission)
         .config(config);

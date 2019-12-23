@@ -7,6 +7,7 @@
 
     /** @ngInject */
     function ActeursController(apiFactory, $state, $mdDialog, $scope,$cookieStore) {
+		// Déclaration des variables et fonctions
 		var vm = this;
 		vm.titrepage ="Ajout Tutelle";
 		vm.ajout = ajout ;
@@ -15,7 +16,6 @@
 		vm.ajoutUnitemesure = ajoutUnitemesure ;
 		vm.ajoutDetailtypetransfert = ajoutDetailtypetransfert ;
 		vm.ajoutFrequencetransfert = ajoutFrequencetransfert ;
-		vm.ajoutActeurregional = ajoutActeurregional ;
 		var NouvelItem=false;
 		var NouvelItemActeur=false;
 		var NouvelItemActeurregional=false;
@@ -67,6 +67,7 @@
 		vm.typetransfert_column = [{titre:"Code"},{titre:"Description"},{titre:"Actions"}];
 		vm.acteur_column = [{titre:"Type Act"},{titre:"Nom"},{titre:"Représentant"},{titre:"Tél"},{titre:"Adresse"},{titre:"Fokontany"}];
 		vm.acteurregional_column = [{titre:"Type Act"},{titre:"Nom"},{titre:"Région"},{titre:"Représentant"},{titre:"Contact"},{titre:"Adresse"},{titre:"Actions"}];
+		// Récupération données référentielles
 		apiFactory.getAll("region/index").then(function(result){
 			vm.all_region = result.data.response;
 		});    
@@ -74,9 +75,6 @@
 			vm.allRecordsTypeacteur = result.data.response;
 			apiFactory.getAll("acteur/index").then(function(result){
 				vm.allRecordsActeur = result.data.response;
-				/*apiFactory.getAll("acteur_regional/index").then(function(result){
-					vm.allRecordsActeurregional = result.data.response;
-				});*/    
 			});    
 		});    
 		apiFactory.getAll("type_transfert/index").then(function(result){
@@ -107,6 +105,7 @@
 		});				
 		
       vm.filtre_region = function() {
+		  // Récupération des districts correspondant à une région donnée (id_region passée en paramètre)
         apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",vm.filtre.id_region).then(function(result) { 
           vm.all_district = result.data.response;   
           vm.filtre.id_district = null ; 
@@ -116,6 +115,7 @@
 
       }
       vm.filtre_commune = function() {
+		  // Récupération des  communes correspondant à un district donnée (id_district passée en paramètre)
         apiFactory.getAPIgeneraliserREST("commune/index","cle_etrangere",vm.filtre.id_district).then(function(result)  { 
           vm.all_commune = result.data.response; 
           vm.filtre.id_commune = null ; 
@@ -123,6 +123,7 @@
         });
       }
       vm.filtre_fokontany = function() {
+		  // Récupération des  fokontany correspondant à un commune donnée (id_commune passée en paramètre)
         apiFactory.getAPIgeneraliserREST("fokontany/index","cle_etrangere",vm.filtre.id_commune).then(function(result) { 
           vm.all_fokontany = result.data.response;    
           vm.acteur.id_fokontany = null ; 
@@ -147,7 +148,7 @@
 				id:getId,      
 				description: typeact.description,
 			});       
-			//factory
+			//factory type_acteur
 			apiFactory.add("type_acteur/index",datas, config).success(function (data) {
 				if (NouvelItem == false) {
 					// Update or delete: id exclu                   
@@ -158,6 +159,7 @@
 					  vm.selectedItem ={};
 					  vm.action="Modification d'un enregistrement de DDB : Type acteur" + " ("+ entite.description + ")";
 					} else {    
+						// Suppression type acteur
 						vm.allRecordsTypeacteur = vm.allRecordsTypeacteur.filter(function(obj) {
 							return obj.id !== vm.selectedItem.id;
 						});
@@ -204,9 +206,11 @@
 			);
 		} 
 		// DEBUT TYPE ACTEUR
+		// Clic sur un enregistrement type acteur
         vm.selectionTypeacteur= function (item) {     
             vm.selectedItemTypeacteur = item;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item du type acteur
         $scope.$watch('vm.selectedItemTypeacteur', function() {
 			if (!vm.allRecordsTypeacteur) return;
 			vm.allRecordsTypeacteur.forEach(function(item) {
@@ -214,7 +218,7 @@
 			});
 			vm.selectedItemTypeacteur.$selected = true;
         });
-        //function cache masque de saisie
+        // Ajout d'un nouvel item type acteur
         vm.ajouterTypeacteur = function () {
             vm.selectedItemTypeacteur.$selected = false;
             NouvelItem = true ;
@@ -231,6 +235,7 @@
 				}
 			});			
         };
+		// Annulation modification d'un item type acteur
         vm.annulerTypeacteur = function(item) {
 			if (!item.id) {
 				vm.allRecordsTypeacteur.pop();
@@ -243,6 +248,7 @@
 			vm.selectedItemTypeacteur = {} ;
 			vm.selectedItemTypeacteur.$selected = false;
        };
+	   // Modification d'un item type acteur
         vm.modifierTypeacteur = function(item) {
 			NouvelItem = false ;
 			vm.selectedItemTypeacteur = item;
@@ -255,6 +261,7 @@
 			vm.selectedItemTypeacteur.description = vm.selectedItemTypeacteur.description;
 			vm.selectedItemTypeacteur.$edit = true;	
         };
+		// Suppression d'un item type acteur
         vm.supprimerTypeacteur = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -269,6 +276,7 @@
 			}, function() {
 			});
         }
+		// Test existence doublon description
         function test_existence (item,suppression) {    
 			if(item.description.length > 0) {
 				var doublon = 0;
@@ -295,6 +303,7 @@
 		function ajoutActeur(entite,suppression) {
             test_existenceActeur (entite,suppression);
         }
+		// Fonction Insertion,modif,suppression table acteur
         function insert_in_baseActeur(entite,suppression) {  
 			//add
 			var config = {
@@ -347,13 +356,15 @@
 						vm.afficherboutonModifSupr = 0 ;
 						vm.afficherboutonnouveau = 1 ;
 						vm.action="Modification d'un enregistrement de DDB : Acteur" + " ("+ entite.nom + ")";
-					} else {    
+					} else {  
+						// Suppression acteur
 						vm.allRecordsActeur = vm.allRecordsActeur.filter(function(obj) {
 							return obj.id !== vm.selectedItemActeur.id;
 						});
 						vm.action="Suppression d'un enregistrement de DDB : Acteur" + " ("+ entite.nom + ")";
 					}
 				} else {
+					// Nouvel item
                     var item = {
 						id:String(data.response) ,
 						nom: entite.nom,
@@ -394,6 +405,7 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Clic sur un enregistrement acteur
         vm.selectionActeur= function (item) {     
             vm.selectedItemActeur = item;
             currentItem = JSON.parse(JSON.stringify(vm.selectedItemActeur));       
@@ -402,6 +414,7 @@
             vm.afficherboutonnouveau = 1 ;
             NouvelItemActeur=false;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item acteur
         $scope.$watch('vm.selectedItemActeur', function() {
 			if (!vm.allRecordsActeur) return;
 			vm.allRecordsActeur.forEach(function(item) {
@@ -409,6 +422,7 @@
 			});
 			vm.selectedItemActeur.$selected = true;
         });
+		// Ajout d'un nouvel item acteur
         vm.ajouterActeur = function () {
 			vm.titreacteur="Ajout Acteur";
 			vm.selectedItemActeur.$selected = false;
@@ -429,6 +443,7 @@
 			NouvelItemActeur = true ;			
             vm.selectedItemActeur.$selected = false;
         };
+		// Annulation modification d'un item acteur
         vm.annulerActeur = function(item) {
 			vm.selectedItemActeur = {} ;
 			vm.selectedItemActeur.$selected = false;
@@ -437,6 +452,7 @@
 			vm.afficherboutonModifSupr = 0 ;
 			NouvelItemActeur = false;
        };
+	   // Modification d'un item de acteur
         vm.modifierActeur = function(item) {
 			vm.titreacteur="Modification Acteur";
 			NouvelItemActeur = false ;
@@ -488,6 +504,7 @@
 			vm.afficherboutonModifSupr = 0;
 			vm.afficherboutonnouveau = 0;  
         };
+		// Suppression d'un item acteur
         vm.supprimerActeur = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -502,6 +519,7 @@
 			}, function() {
 			});
         }
+		// Test existence doublon nom acteur
         function test_existenceActeur (item,suppression) {    
 			if(item.nom.length > 0) {
 				var doublon = 0;
@@ -525,6 +543,7 @@
         }	
 	// FIN ACTEUR	
 		// DEBUT UNITE DE MESURE
+		// Fonction Insertion,modif,suppression table unite_mesure
 		function ajoutUnitemesure(typeact,suppression) {
             test_existenceUnitemesure (typeact,suppression);
         }
@@ -584,9 +603,11 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Clic sur un enregistrement unité de mesure
         vm.selectionUnitemesure= function (item) {     
             vm.selectedItemUnitemesure = item;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item unité de mesure
         $scope.$watch('vm.selectedItemUnitemesure', function() {
 			if (!vm.allRecordsUnitemesure) return;
 			vm.allRecordsUnitemesure.forEach(function(item) {
@@ -594,7 +615,7 @@
 			});
 			vm.selectedItemUnitemesure.$selected = true;
         });
-        //function cache masque de saisie
+        // Ajout d'un nouvel item unité de mesure
         vm.ajouterUnitemesure = function () {
             vm.selectedItemUnitemesure.$selected = false;
             NouvelItem = true ;
@@ -611,6 +632,7 @@
 				}
 			});			
         };
+		// Annulation modification d'un item  unité de mesure
         vm.annulerUnitemesure = function(item) {
 			if (!item.id) {
 				vm.allRecordsUnitemesure.pop();
@@ -623,6 +645,7 @@
 			vm.selectedItemUnitemesure = {} ;
 			vm.selectedItemUnitemesure.$selected = false;
        };
+	   // Modification d'un item d'unité de mesure
         vm.modifierUnitemesure = function(item) {
 			NouvelItem = false ;
 			vm.selectedItemUnitemesure = item;
@@ -635,6 +658,7 @@
 			vm.selectedItemUnitemesure.description = vm.selectedItemUnitemesure.description;
 			vm.selectedItemUnitemesure.$edit = true;	
         };
+		// Suppression d'un item unité de mesure
         vm.supprimerUnitemesure = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -649,6 +673,7 @@
 			}, function() {
 			});
         }
+		// Test doublon description unité de mesure
         function test_existenceUnitemesure (item,suppression) {    
 			if(item.description.length > 0) {
 				var doublon = 0;
@@ -672,6 +697,7 @@
         }
 	// FIN UNITE DE MESURE	
 		// DEBUT TYPE TRANSFERT
+		// Fonction Insertion,modif,suppression table type_transfert
 		function ajoutTypetransfert(typeact,suppression) {
             test_existenceTypetransfert (typeact,suppression);
         }
@@ -711,7 +737,8 @@
 						});	
 						vm.action="Modification d'un enregistrement DDB : Type de transfert" + " ("+ entite.description + ")";		
 						vm.selectedItemTypetransfert ={};
-					} else {    
+					} else {  
+						// Suppression type_transfert
 						vm.allRecordsTypetransfert = vm.allRecordsTypetransfert.filter(function(obj) {
 							return obj.id !== vm.selectedItemTypetransfert.id;
 						});
@@ -741,6 +768,7 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Clic sur un item type_transfert
         vm.selectionTypetransfert= function (item) {     
             vm.selectedItemTypetransfert = item;
 			if(item.detail_charge==0) {
@@ -753,6 +781,7 @@
 				},600);	
 			} 		
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item type_transfert
         $scope.$watch('vm.selectedItemTypetransfert', function() {
 			if (!vm.allRecordsTypetransfert) return;
 			vm.allRecordsTypetransfert.forEach(function(item) {
@@ -760,7 +789,7 @@
 			});
 			vm.selectedItemTypetransfert.$selected = true;
         });
-        //function cache masque de saisie
+        // Ajout d'un nouvel item type_transfert
         vm.ajouterTypetransfert = function () {
             vm.selectedItemTypetransfert.$selected = false;
             NouvelItem = true ;
@@ -778,6 +807,7 @@
 				}
 			});			
         };
+		// Annulation modification d'un item type_transfert
         vm.annulerTypetransfert = function(item) {
 			if (!item.id) {
 				vm.allRecordsTypetransfert.pop();
@@ -791,6 +821,7 @@
 			vm.selectedItemTypetransfert = {} ;
 			vm.selectedItemTypetransfert.$selected = false;
        };
+	   // Modification d'un item type_transfert
         vm.modifierTypetransfert = function(item) {
 			NouvelItem = false ;
 			vm.selectedItemTypetransfert = item;
@@ -804,6 +835,7 @@
 			vm.selectedItemTypetransfert.description = vm.selectedItemTypetransfert.description;
 			vm.selectedItemTypetransfert.$edit = true;	
         };
+		// Suppression d'un item type_transfert
         vm.supprimerTypetransfert = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -818,6 +850,7 @@
 			}, function() {
 			});
         }
+		// Test doublon description type_transfert
         function test_existenceTypetransfert (item,suppression) {    
 			if(item.description.length > 0) {
 				var doublon = 0;
@@ -841,6 +874,7 @@
         }
 		// FIN TYPE TRANSFERT	
 		// DEBUT DETAIL TYPE TRANSFERT
+		// Fonction Insertion,modif,suppression table detail_type_transfert
 		function ajoutDetailtypetransfert(typeact,suppression) {
             test_existenceDetailtypetransfert (typeact,suppression);
         }
@@ -911,9 +945,11 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Clic sur un item detail_type_transfert
         vm.selectionDetailtypetransfert= function (item) {     
             vm.selectedItemDetailtypetransfert = item;
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item  detail_type_transfert
         $scope.$watch('vm.selectedItemDetailtypetransfert', function() {
 			if (!vm.selectedItemDetailtypetransfert) return;
 			vm.selectedItemTypetransfert.detail_type_transfert.forEach(function(it) {
@@ -921,7 +957,7 @@
 			});			
 			vm.selectedItemDetailtypetransfert.$selected = true;
         });
-        //function cache masque de saisie
+        // Ajout d'un nouvel item detail_type_transfert
         vm.ajouterDetailtypetransfert = function () {
             // vm.selectedItemDetailtypetransfert.$selected = false;
 			var xx={description:vm.selectedItemTypetransfert.description};
@@ -946,6 +982,7 @@
 				}
 			});			
         };
+		// Annulation modification d'un item detail_type_transfert
         vm.annulerDetailtypetransfert = function(item) {
 			if (!item.id) {
 				vm.selectedItemTypetransfert.detail_type_transfert = vm.selectedItemTypetransfert.detail_type_transfert.filter(function(obj) {
@@ -961,6 +998,7 @@
 			vm.selectedItemDetailtypetransfert = {} ;
 			vm.selectedItemDetailtypetransfert.$selected = false;
        };
+	   // Modification d'un item  detail_type_transfert
         vm.modifierDetailtypetransfert = function(item) {
 			NouvelItem = false ;
 			vm.selectedItemDetailtypetransfert = item;
@@ -974,6 +1012,7 @@
 			vm.selectedItemDetailtypetransfert.description = vm.selectedItemDetailtypetransfert.description;
 			vm.selectedItemDetailtypetransfert.$edit = true;	
         };
+		// Suppression d'un item detail_type_transfert
         vm.supprimerDetailtypetransfert = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -988,6 +1027,7 @@
 			}, function() {
 			});
         }
+		// Test doublon detail_type_transfert
         function test_existenceDetailtypetransfert (item,suppression) {    
 			if(item.description.length > 0) {
 				var doublon = 0;
@@ -1027,6 +1067,7 @@
 		}
 	// FIN DETAIL TYPE TRANSFERT	
 		// DEBUT FREQUENCE TRANSFERT
+		// Fonction Insertion,modif,suppression table frequence_transfert
 		function ajoutFrequencetransfert(typeact,suppression) {
             test_existenceFrequencetransfert (typeact,suppression);
         }
@@ -1058,13 +1099,15 @@
 						vm.selectedItemFrequencetransfert.$edit = false;
 						vm.selectedItemFrequencetransfert ={};
 						vm.action="Modification d'un enregistrement de DDB : Fréquence de transfert" + " ("+ typeact.description + ")";
-					} else {    
+					} else { 
+						// Suppression
 						vm.allRecordsFrequencetransfert = vm.allRecordsFrequencetransfert.filter(function(obj) {
 							return obj.id !== vm.selectedItemFrequencetransfert.id;
 						});
 						vm.action="Suppression d'un enregistrement de DDB : Fréquence de transfert" + " ("+ typeact.description + ")";
 					}
 				} else {
+					// Nouvel item
 					typeact.id=data.response;	
 					NouvelItem=false;
 					vm.action="Ajout d'un enregistrement de DDB : Fréquence de transfert" + " ("+ typeact.description + ")";
@@ -1088,6 +1131,7 @@
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
+		// Clic sur un item frequence_transfert
         vm.selectionFrequencetransfert= function (item) {     
             vm.selectedItemFrequencetransfert = item;
 			if(item.detail_charge==0) {
@@ -1100,6 +1144,7 @@
 				},600);	
 			} 		
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item frequence_transfert
         $scope.$watch('vm.selectedItemFrequencetransfert', function() {
 			if (!vm.allRecordsFrequencetransfert) return;
 			vm.allRecordsFrequencetransfert.forEach(function(item) {
@@ -1107,7 +1152,7 @@
 			});
 			vm.selectedItemFrequencetransfert.$selected = true;
         });
-        //function cache masque de saisie
+        // Ajout d'un nouvel item frequence_transfert
         vm.ajouterFrequencetransfert = function () {
             vm.selectedItemFrequencetransfert.$selected = false;
             NouvelItem = true ;
@@ -1125,6 +1170,7 @@
 				}
 			});			
         };
+		// Annulation modification d'un item frequence_transfert
         vm.annulerFrequencetransfert = function(item) {
 			if (!item.id) {
 				vm.allRecordsFrequencetransfert.pop();
@@ -1138,6 +1184,7 @@
 			vm.selectedItemFrequencetransfert = {} ;
 			vm.selectedItemFrequencetransfert.$selected = false;
        };
+	   // Modification d'un item frequence_transfert
         vm.modifierFrequencetransfert = function(item) {
 			NouvelItem = false ;
 			vm.selectedItemFrequencetransfert = item;
@@ -1151,6 +1198,7 @@
 			vm.selectedItemFrequencetransfert.description = vm.selectedItemFrequencetransfert.description;
 			vm.selectedItemFrequencetransfert.$edit = true;	
         };
+		// Suppression d'un item frequence_transfert
         vm.supprimerFrequencetransfert = function() {
 			var confirm = $mdDialog.confirm()
                 .title('Etes-vous sûr de supprimer cet enregistrement ?')
@@ -1165,6 +1213,7 @@
 			}, function() {
 			});
         }
+		// Test doublon description frequence_transfert
         function test_existenceFrequencetransfert (item,suppression) {    
 			if(item.description.length > 0) {
 				var doublon = 0;
@@ -1187,169 +1236,6 @@
 			}		
         }
 		// FIN FREQUENCE TRANSFERT	
-	// ACTEURS REGIONAL	
-		function ajoutActeurregional(entite,suppression) {
-            test_existenceActeurregional (entite,suppression); 
-        }
-        function insert_in_baseActeurregional(entite,suppression) {  
-			//add
-			var config = {
-				headers : {
-					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-				}
-			};
-			var getId = 0;
-			if (NouvelItemActeurregional==false) {
-			   getId = vm.selectedItemActeurregional.id; 
-			} 
-			var datas = $.param({
-				supprimer:suppression,
-				id:getId,      
-				nom: entite.nom,
-				representant: entite.representant,
-				contact: entite.contact,
-				adresse: entite.adresse,
-				id_type_acteur: entite.id_type_acteur,
-				id_region: entite.id_region,
-			});       
-			//factory
-			apiFactory.add("acteur_regional/index",datas, config).success(function (data) {
-				if (NouvelItemActeurregional == false) {
-					// Update or delete: id exclu                   
-					if(suppression==0) {
-					  vm.selectedItemActeurregional.nom = entite.nom;
-					  vm.selectedItemActeurregional.representant = entite.representant;
-					  vm.selectedItemActeurregional.contact = entite.contact;
-					  vm.selectedItemActeurregional.adresse = entite.adresse;
-					  vm.selectedItemActeurregional.id_region = entite.id_region;
-					  vm.selectedItemActeurregional.region = entite.region;
-					  vm.selectedItemActeurregional.id_type_acteur = entite.id_type_acteur;
-					  vm.selectedItemActeurregional.typeacteur = entite.typeacteur;
-					  vm.selectedItemActeurregional.$selected = false;
-					  vm.selectedItemActeurregional.$edit = false;
-					  vm.selectedItemActeurregional ={};
-					} else {    
-						vm.allRecordsActeurregional = vm.allRecordsActeurregional.filter(function(obj) {
-							return obj.id !== vm.selectedItemActeurregional.id;
-						});
-					}
-				} else {
-					entite.id=data.response;	
-					NouvelItemActeurregional=false;
-				}
-				entite.$selected=false;
-				entite.$edit=false;
-			}).error(function (data) {
-				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
-			});  
-        }
-        vm.selectionActeurregional= function (item) {     
-            vm.selectedItemActeurregional = item;
-        };
-        $scope.$watch('vm.selectedItemActeurregional', function() {
-			if (!vm.allRecordsActeurregional) return;
-			vm.allRecordsActeurregional.forEach(function(item) {
-				item.$selected = false;
-			});
-			vm.selectedItemActeurregional.$selected = true;
-        });
-        //function cache masque de saisie
-        vm.ajouterActeurregional = function () {
-            vm.selectedItemActeurregional.$selected = false;
-            NouvelItemActeurregional = true ;
-		    var items = {
-				$edit: true,
-				$selected: true,
-				supprimer:0,
-                nom: '',
-                representant: '',
-                contact: '',
-                adresse: '',
-			};
-			vm.allRecordsActeurregional.push(items);
-		    vm.allRecordsActeurregional.forEach(function(it) {
-				if(it.$selected==true) {
-					vm.selectedItemActeurregional = it;
-				}
-			});			
-        };
-        vm.annulerActeurregional = function(item) {
-			if (!item.id) {
-				vm.allRecordsActeurregional.pop();
-				return;
-			}          
-			item.$selected=false;
-			item.$edit=false;
-			NouvelItemActeurregional = false;
-			 item.nom = currentItem.nom;
-			 item.representant = currentItem.representant;
-			 item.contact = currentItem.contact;
-			 item.adresse = currentItem.adresse;
-			 item.id_type_acteur = currentItem.id_type_acteur;
-			 item.typeacteur = currentItem.typeacteur;
-			 item.region = currentItem.region;
-			 item.id_region = currentItem.id_region;
-			vm.selectedItemActeurregional = {} ;
-			vm.selectedItemActeurregional.$selected = false;
-       };
-        vm.modifierActeurregional = function(item) {
-			NouvelItemActeurregional = false ;
-			vm.selectedItemActeurregional = item;
-			currentItem = angular.copy(vm.selectedItemActeurregional);
-			$scope.vm.allRecordsActeurregional.forEach(function(it) {
-				it.$edit = false;
-			});        
-			item.$edit = true;	
-			item.$selected = true;	
-			item.nom = vm.selectedItemActeurregional.nom;
-			item.representant = vm.selectedItemActeurregional.representant;
-			item.contact = vm.selectedItemActeurregional.contact;
-			item.adresse = vm.selectedItemActeurregional.adresse;
-			if(vm.selectedItemActeurregional.id_type_acteur) {
-				item.id_type_acteur = parseInt(vm.selectedItemActeurregional.id_type_acteur);
-			}
-			item.typeacteur = vm.selectedItemActeurregional.typeacteur;
-			if(vm.selectedItemActeurregional.id_region) {
-				item.id_region = parseInt(vm.selectedItemActeurregional.id_region);
-			}
-			item.region = parseInt(vm.selectedItemActeurregional.region);
-			vm.selectedItemActeurregional.$edit = true;	
-        };
-        vm.supprimerActeurregional = function() {
-			var confirm = $mdDialog.confirm()
-                .title('Etes-vous sûr de supprimer cet enregistrement ?')
-                .textContent('')
-                .ariaLabel('Lucky day')
-                .clickOutsideToClose(true)
-                .parent(angular.element(document.body))
-                .ok('supprimer')
-                .cancel('annuler');
-			$mdDialog.show(confirm).then(function() {          
-				ajoutActeurregional(vm.selectedItemActeurregional,1);
-			}, function() {
-			});
-        }
-        function test_existenceActeurregional (item,suppression) {    
-			if(item.nom.length > 0) {
-				var doublon = 0;
-				if (suppression!=1) {
-					vm.allRecordsActeurregional.forEach(function(dispo) {   
-						if((dispo.nom==item.nom) && dispo.id!=item.id) {
-							doublon=1;	
-						} 
-					});
-					if(doublon==1) {
-						vm.showAlert('Information !','ERREUR ! : Nom déjà utilisé')
-					} else {
-						insert_in_baseActeurregional(item,0);
-					}
-				} else {
-				  insert_in_baseActeurregional(item,suppression);
-				}  
-			} else {
-				vm.showAlert('Erreur',"Veuillez saisir le nom de l'AGEX !");
-			}		
-        }
         vm.modifierRegion = function (item) { 
 			vm.all_region.forEach(function(prg) {
 				if(prg.id==item.id_region) {
@@ -1363,6 +1249,7 @@
 				}
 			});
 		}	
+		// Controle modif type acteur
         vm.modifierTypeacteurActeur = function (item) { 
 			vm.nontrouvee=true;
 			vm.allRecordsTypeacteur.forEach(function(prg) {
@@ -1382,7 +1269,8 @@
 					vm.acteur.id_type_acteur = null; 
 					vm.acteur.typeacteurs=[];
 			}
-		}	
+		}
+		// Controle modif fokontany	
         vm.modifierFokontany = function (item) { 
 			vm.nontrouvee=true;
 			vm.all_fokontany.forEach(function(fkt) {

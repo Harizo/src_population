@@ -328,7 +328,7 @@
 							</md-input-container>
 						</div>
 						<div layout="column" layout-gt-xs="row" flex>
-							<md-input-container flex="100" flex-gt-xs="40">
+							<md-input-container flex="100" flex-gt-xs="35">
 								<input type="text" name="ministere_tutelle" ng-model="vm.intervention.ministere_tutelle" placeholder="Ministère tutelle" ng-init="vm.intervention.ministere_tutelle=''" >
 								<div ng-messages="interventionform.ministere_tutelle.$error" role="alert">
 									<div ng-message="required">
@@ -336,12 +336,21 @@
 									</div>							  
 								</div>
 							</md-input-container>
-							<md-input-container flex="100" flex-gt-xs="60">
+							<md-input-container flex="100" flex-gt-xs="50">
 								<label>Intitulé</label>
 								<input type="text" name="intitule" ng-model="vm.intervention.intitule" placeholder="Intitulé de l'intervention" ng-init="vm.intervention.intitule=''" >
 								<div ng-messages="interventionform.intitule.$error" role="alert">
 									<div ng-message="required">
 										<span>Intitulé de l'intervention obligatoire</span>
+									</div>							  
+								</div>
+							</md-input-container>
+							<md-input-container flex="100" flex-gt-xs="15">
+								<label>Valeur transfert</label>
+								<input type="number" name="montant_transfert" ng-model="vm.intervention.montant_transfert" placeholder="Contre valeur en Ar" ng-init="vm.intervention.intitule=''" >
+								<div ng-messages="interventionform.montant_transfert.$error" role="alert">
+									<div ng-message="required">
+										<span>Valeur transfert obligatoire</span>
 									</div>							  
 								</div>
 							</md-input-container>
@@ -361,7 +370,7 @@
 									</div>
 								</div>
 							</md-input-container>
-							<md-input-container flex="100" flex-gt-xs="15">
+							<!--md-input-container flex="100" flex-gt-xs="15">
 								<label>Catégorie intervention</label>
 								<md-select name="categorie_intervention" ng-model="vm.intervention.categorie_intervention" ng-init="vm.intervention.categorie_intervention=''">
 									<md-option value=""></md-option>
@@ -373,7 +382,7 @@
 										<span></span>
 									</div>
 								</div>
-							</md-input-container>
+							</md-input-container-->
 							<md-input-container flex="100" flex-gt-xs="15">
 								<label>Action</label>
 								<md-select name="id_type_action" ng-model="vm.intervention.id_type_action" ng-init="vm.intervention.id_type_action=''" ng-change="vm.modifierTypeactionIntervention(vm.intervention)">
@@ -438,6 +447,22 @@
 									<div ng-message="required">
 										<span>Unité durée obligatoire</span>
 									</div>							  
+								</div>
+							</md-input-container>
+						</div>
+						<div layout="column" layout-gt-xs="row" flex >
+							<md-input-container flex="100" flex-gt-xs="15">
+								<label>Type intervention</label>
+								<md-select name="id_nomenclature_intervention" ng-model="vm.intervention.id_nomenclature_intervention" ng-init="vm.intervention.id_nomenclature_intervention=''" ng-change="vm.modifierNomenclatureIntervention(vm.intervention)">
+									<md-option value=''></md-option>
+									<md-option ng-repeat="ta in vm.allRecordsNomenclatureintervention | orderBy:['code']" value='{{ta.id}}'>
+										{{ta.description1}} | {{ta.description2}} | {{ta.description3}} | {{ta.description}}
+									</md-option>
+								</md-select>
+								<div ng-messages="interventionform.id_nomenclature_intervention.$error" role="alert">
+									<div ng-message="required">
+										<span></span>
+									</div>
 								</div>
 							</md-input-container>
 						</div>

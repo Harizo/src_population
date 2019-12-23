@@ -1,7 +1,7 @@
 (function ()
 {
     'use strict';
-
+	// Mot de passe oublié : réinitialisation mot de passe
     angular
         .module('app.population.auth.forgot-password')
         .controller('ForgotPasswordController', ForgotPasswordController);
@@ -14,6 +14,7 @@
 
       function send(email, ev)
       {
+		  // Récupération d'un utilisateur par e-mail en entrée
         apiFactory.getAll("utilisateurs/index?courriel="+email)
           .success(function(result) {
 

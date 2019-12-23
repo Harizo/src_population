@@ -13,6 +13,7 @@
     <div class="content"layout="column">
 		<div class="form-wrapper"> 
 			<md-tabs md-dynamic-height>
+				<!-- Début affichage liste recommandantion-->
 				<md-tab label="Liste récommandations">
 					<md-tab-body>
 						<fieldset>
@@ -32,12 +33,12 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr  ng-repeat="avancement in vm.allRecommandation"  ng-class="{selected: avancement.$selected}" ng-click="vm.selectionDocument(avancement)">
+									<tr  ng-repeat="docs in vm.allRecommandation"  ng-class="{selected: docs.$selected}" ng-click="vm.selectionDocument(docs)">
 										<td>
-											<span ng-if="avancement.$edit">
+											<span ng-if="docs.$edit">
 												<md-input-container>
 													<label>Resumé</label>
-													<input type="text" ng-model="avancement.resume"   required/>
+													<input type="text" ng-model="docs.resume"   required/>
 													<div ng-messages="resume.$error"
 														role="alert">
 														<div ng-message="required">
@@ -46,13 +47,13 @@
 													</div>
 												</md-input-container> 
 											</span>
-											<span ng-if="!avancement.$edit">{{avancement.resume}}</span>
+											<span ng-if="!docs.$edit">{{docs.resume}}</span>
 										</td>
 										<td>
-											<span ng-if="avancement.$edit">
+											<span ng-if="docs.$edit">
 												<md-input-container>
 													<label>Url</label>
-													<input type="text" ng-model="avancement.url"   required/>
+													<input type="text" ng-model="docs.url"   required/>
 													<div ng-messages="url.$error"
 														role="alert">
 														<div ng-message="required">
@@ -61,11 +62,11 @@
 													</div>
 												</md-input-container> 
 											</span>
-											<span ng-if="!avancement.$edit">{{avancement.url}}</span>
+											<span ng-if="!docs.$edit">{{docs.url}}</span>
 										</td>
 										<td>
-											<span ng-if="avancement.$edit">
-												<label>{{avancement.nom_fichier}}</label>
+											<span ng-if="docs.$edit">
+												<label>{{docs.nom_fichier}}</label>
 												<div class="file-upload">
 													<input file-uploader id="fichier" name="fichier" type="file" custom-on-change="uploadFile"  ng-multiple="false" />
 													<button ng-click="vm.uploadFile()" style="background: #b4ddb4; /* Old browsers */
@@ -83,57 +84,57 @@ height:30px;">Upload me</button>
 												<div ng-messages="fichier.$error" role="alert"> 
 												</div>
 											</span>
-											<span ng-if="!avancement.$edit">{{avancement.nom_fichier}}</span>
+											<span ng-if="!docs.$edit">{{docs.nom_fichier}}</span>
 										</td>
 										<td>
-											<span ng-if="avancement.$edit">
+											<span ng-if="docs.$edit">
 												<md-input-container>
 													<label>Date upload</label>
-													<input type="date" ng-model="avancement.date_upload" />
+													<input type="date" ng-model="docs.date_upload" />
 													<div ng-messages="date_upload.$error" role="alert">									   
 													</div>
 												</md-input-container> 
 											</span>
-											<span ng-if="!avancement.$edit">{{avancement.date_upload |date:'dd/MM/yyyy'}}</span>
+											<span ng-if="!docs.$edit">{{docs.date_upload |date:'dd/MM/yyyy'}}</span>
 										</td>
 										<td>
-											<span ng-if="avancement.$edit && (vm.utilisateur_id=='1' || vm.utilisateur_id=='3' || vm.utilisateur_id=='5' || vm.utilisateur_id=='8' || vm.utilisateur_id=='40' || vm.utilisateur_id=='41')">
+											<span ng-if="docs.$edit && (vm.utilisateur_id=='1' || vm.utilisateur_id=='3' || vm.utilisateur_id=='5' || vm.utilisateur_id=='8' || vm.utilisateur_id=='40' || vm.utilisateur_id=='41')">
 												<input ng-true-value="1" ng-false-value="0" 
-												ng-checked="avancement.validation==1" style="width:15px;height:12px;"
-												type="checkbox" name="validation" ng-model="avancement.validation"> 
+												ng-checked="docs.validation==1" style="width:15px;height:12px;"
+												type="checkbox" name="validation" ng-model="docs.validation"> 
 											</span>
-											<span ng-if="!avancement.$edit || (vm.utilisateur_id!='1' && vm.utilisateur_id!='3' && vm.utilisateur_id!='5' && vm.utilisateur_id!='8' && vm.utilisateur_id!='40' && vm.utilisateur_id!='41')">
-												<input disabled ng-true-value="1" ng-false-value="0" ng-value="avancement.validation" 
-												ng-checked="avancement.validation==1" style="width:15px;height:12px;"
-												type="checkbox" name="validation" ng-model="avancement.validation"> 
+											<span ng-if="!docs.$edit || (vm.utilisateur_id!='1' && vm.utilisateur_id!='3' && vm.utilisateur_id!='5' && vm.utilisateur_id!='8' && vm.utilisateur_id!='40' && vm.utilisateur_id!='41')">
+												<input disabled ng-true-value="1" ng-false-value="0" ng-value="docs.validation" 
+												ng-checked="docs.validation==1" style="width:15px;height:12px;"
+												type="checkbox" name="validation" ng-model="docs.validation"> 
 											</span>
 										</td>
 										<td>
-											<span ng-if="avancement.$edit && (vm.utilisateur_id=='1' || vm.utilisateur_id=='3' || vm.utilisateur_id=='5' || vm.utilisateur_id=='40' || vm.utilisateur_id=='41')">
+											<span ng-if="docs.$edit && (vm.utilisateur_id=='1' || vm.utilisateur_id=='3' || vm.utilisateur_id=='5' || vm.utilisateur_id=='40' || vm.utilisateur_id=='41')">
 												<input ng-true-value="1" ng-false-value="0"
-												ng-checked="avancement.fait==1" style="width:15px;height:12px;"
-												type="checkbox" name="fait" ng-model="avancement.fait"> 
+												ng-checked="docs.fait==1" style="width:15px;height:12px;"
+												type="checkbox" name="fait" ng-model="docs.fait"> 
 											</span>
-											<span ng-if="!avancement.$edit || (vm.utilisateur_id!='1' && vm.utilisateur_id!='3' && vm.utilisateur_id!='5' && vm.utilisateur_id!='40' && vm.utilisateur_id!='41')">
-												<input disabled ng-true-value="1" ng-false-value="0" ng-value="avancement.fait" 
-												ng-checked="avancement.fait==1" style="width:15px;height:12px;"
-												type="checkbox" name="fait" ng-model="avancement.fait"> 
+											<span ng-if="!docs.$edit || (vm.utilisateur_id!='1' && vm.utilisateur_id!='3' && vm.utilisateur_id!='5' && vm.utilisateur_id!='40' && vm.utilisateur_id!='41')">
+												<input disabled ng-true-value="1" ng-false-value="0" ng-value="docs.fait" 
+												ng-checked="docs.fait==1" style="width:15px;height:12px;"
+												type="checkbox" name="fait" ng-model="docs.fait"> 
 											</span>
 										</td>
 										<td>
-											<a ng-if="!avancement.$edit && (vm.utilisateur_id ==avancement.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.modifierDocument(avancement)" title="Modifier">
+											<a ng-if="!docs.$edit && (vm.utilisateur_id ==docs.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.modifierDocument(docs)" title="Modifier">
 												<span class="icon-table-edit"></span>
 											</a>
-											<a ng-if="!avancement.$edit && (vm.utilisateur_id ==avancement.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.supprimerDocument(avancement)" title="Supprimer">
+											<a ng-if="!docs.$edit && (vm.utilisateur_id ==docs.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.supprimerDocument(docs)" title="Supprimer">
 												<span class="icon-delete"></span>
 											</a>
-											<a ng-if="avancement.$edit" ng-click="vm.annulerDocument(avancement)" title="Annuler modification">
+											<a ng-if="docs.$edit" ng-click="vm.annulerDocument(docs)" title="Annuler modification">
 												<span class="icon-cancel"></span>
 											</a>
-											<a ng-if="avancement.$edit" ng-click="vm.uploadFile(avancement,0)" title="Enregistrer">
+											<a ng-if="docs.$edit" ng-click="vm.uploadFile(docs,0)" title="Enregistrer">
 												<span class="icon-content-save"></span>
 											</a>
-											<a ng-if="!avancement.$edit" ng-click="vm.exportfichier(avancement)" title="Enregistré par : {{avancement.nomutilisateur}} (Download)">
+											<a ng-if="!docs.$edit" ng-click="vm.exportfichier(docs)" title="Enregistré par : {{docs.nomutilisateur}} (Download)">
 												<span class="icon-download"></span>
 											</a>								  
 										</td>
@@ -143,6 +144,7 @@ height:30px;">Upload me</button>
 						</fieldset>
 					</md-tab-body>
 				</md-tab> 
+				<!-- Fin affichage liste recommandantion-->
 			</md-tabs>
 		</div>
     </div>
