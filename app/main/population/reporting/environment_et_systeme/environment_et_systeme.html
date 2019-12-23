@@ -50,7 +50,7 @@
                             <div layout="column" layout-gt-xs="row">       
                                 
 
-                                <md-input-container flex="100" flex-gt-xs="33" ng-if="(vm.filtre.pivot != 'req41_theme2')&&(vm.filtre.pivot != 'req40_theme2')&&(vm.filtre.pivot != 'req42_theme2')&&(vm.filtre.pivot != 'req43_theme2')&&(vm.filtre.pivot != 'req10_theme2')&&(vm.filtre.pivot != 'req11_theme2')&&(vm.filtre.pivot != 'req12_theme2')&&(vm.filtre.pivot != 'req37_theme2')&&(vm.filtre.pivot != 'req36_theme2')">
+                                <md-input-container flex="100" flex-gt-xs="33" ng-if="(vm.filtre.pivot != 'req41_theme2')&&(vm.filtre.pivot != 'req40_theme2')&&(vm.filtre.pivot != 'req42_theme2')&&(vm.filtre.pivot != 'req43_theme2')&&(vm.filtre.pivot != 'req10_theme2')&&(vm.filtre.pivot != 'req11_theme2')&&(vm.filtre.pivot != 'req12_theme2')&&(vm.filtre.pivot != 'req37_theme2')&&(vm.filtre.pivot != 'req36_theme2')&&(vm.filtre.pivot != 'req18_theme2')">
 
                                 
 
@@ -425,6 +425,31 @@
                                     </th>
                                     <!--fin 36-->
 
+                                    <!--18-->
+                                    
+                                    <th class="secondary-text" ng-show="vm.cacher_table('req18_theme2',vm.filtre.pivot)">
+                                        <div class="table-header">
+                                            <span class="column-title text-center">Intervention</span>
+                                        </div>
+                                    </th>
+                                    <th class="secondary-text" ng-show="vm.cacher_table('req18_theme2',vm.filtre.pivot)">
+                                        <div class="table-header">
+                                            <span class="column-title text-center"><u>Ménage:</u><br>- Effectif<br>- Coût</span>
+                                        </div>
+                                    </th>
+                                    <th class="secondary-text" ng-show="vm.cacher_table('req18_theme2',vm.filtre.pivot)">
+                                        <div class="table-header">
+                                            <span class="column-title text-center"><u> Individu:</u><br>- Effectif<br>- Coût</span>
+                                        </div>
+                                    </th>
+
+                                    <th class="secondary-text" ng-show="vm.cacher_table('req18_theme2',vm.filtre.pivot)">
+                                        <div class="table-header">
+                                            <span class="column-title text-center"><u>Groupe:</u><br>- Effectif<br>- Coût</span>
+                                        </div>
+                                    </th>
+                                    <!--fin 18-->
+
                                 <!--FIN CODE HARIZO-->
 
                             <!-- Bruce-->                
@@ -648,6 +673,22 @@
                                     <td ng-show="vm.cacher_table('req36_theme2',vm.filtre.pivot)">{{vm.formatMillier(data.sum_decaissement)}} {{data.devise}}</td>
                                     <td ng-show="vm.cacher_table('req36_theme2',vm.filtre.pivot)">{{vm.parseFloat_0(data.prop)}} %</td>
                                     <!--fin 36-->
+                                     <!--18-->
+                                    
+                                    <td ng-show="vm.cacher_table('req18_theme2',vm.filtre.pivot)">{{data.intitule_intervention}}</td>
+                                    <td ng-show="vm.cacher_table('req18_theme2',vm.filtre.pivot)">
+                                        - {{data.stat_menage}} %<br> 
+                                        - {{data.stat_montant_menage}} %
+                                    </td>
+                                    <td ng-show="vm.cacher_table('req18_theme2',vm.filtre.pivot)">
+                                        - {{data.stat_individu}} %<br> 
+                                        - {{data.stat_montant_individu}} %
+                                    </td>
+                                    <td ng-show="vm.cacher_table('req18_theme2',vm.filtre.pivot)">
+                                        - {{data.stat_groupe}} %<br> 
+                                        - {{data.stat_montant_groupe}} %
+                                    </td>
+                                    <!--fin 18-->
 
                                 <!--FIN CODE HARIZO-->
 
