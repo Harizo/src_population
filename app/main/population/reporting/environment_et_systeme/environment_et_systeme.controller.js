@@ -34,21 +34,21 @@
         vm.pivots = [
           { 
             titre:"Effectif par age/sexe de la population",
-            id:"req1theme1_petitenfan_agesco_agetrava_agee_region_dist_comm",
+            id:"req1_theme1",
             category:"theme1"
           },
           { 
-            titre:"Effectif manage ayant enfant",
+            titre:"* Effectif menage ayant enfant",
             id:"req3theme1_menagenfan_menagscolai_region_dist_comm",
             category:"theme1"
           },
           { 
-            titre:"Répartition par âge et par sexe des bénéficiaires",
+            titre:"* Répartition par âge et par sexe des bénéficiaires",
             id:"req38theme2_interven_petitenfan_agesco_agetrava_agee_region_dist_comm",
             category:"theme2"
           },
           {
-            titre:"Nombre cumulé bénéficiaire",
+            titre:"* Nombre cumulé bénéficiaire",
             id:"req33theme2_interven_nbrbenef_region_dist_comm",
             category:"theme2"
 
@@ -104,57 +104,76 @@
             titre:"Proportion des interventions par type de cible",
             id:"req18_theme2",
             category:"theme2"
-          }      
+          },
+          {
+            titre:"Répartition géographique des interventions",
+            id:"req14_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Proportion des interventions avec critères de sexe",
+            id:"req20_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Proportion des interventions avec critères d'âge",
+            id:"req19_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Nombre de nouveaux bénéficiaires",
+            id:"req32_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Taux d’atteinte des résultats",
+            id:"req34_theme2",
+            category:"theme2"
+          }       
 
           //FIN CODE HARIZO       
           
           //Debut Bruce
           ,
           {
-            titre:"Répartition financement par programme",
+            titre:"* Répartition financement par programme",
             id:"req7theme2_budgetinit_budgetmodif_situation",
             category:"theme2"
           },
           {
-            titre:"Répartition financement par source",
+            titre:"* Répartition financement par source",
             id:"req8theme2_budgetinit_budgetmodif_situation_source",
             category:"theme2"
           },
           {
-            titre:"Répartition financement par tutele",
+            titre:"* Répartition financement par tutele",
             id:"req9theme2_budgetinit_budgetmodif_situation_tutelle",
             category:"theme2"
           },
           {
-            titre:"Nombre des bénéficiaires prévus",
+            titre:"* Nombre des bénéficiaires prévus",
             id:"req31theme2_interven_nbrinter_program_beneparan_beneprevu_region",
             category:"theme2"
-          },
-          {
-            titre:"Taux d’atteinte des résultats",
-            id:"req34theme2_program_interven_nbrbene_nbrinter_tauxinter_region",
-            category:"theme2"
-          },
-          {
-            titre:"Répartition géographique des interventions",
-            id:"req14theme2_interven_nbrinter_budgetinit_peffectif_pcout_region_district",
-            category:"theme2"
-          },
+          }/*,
           {
             titre:"Proportion des interventions avec critères d'âge",
             id:"req19theme2_interven_pourcenenfan_pourcensco_pourcentra_pourcenage_pcout",
             category:"theme2"
-          },
-          {
-            titre:"Proportion des interventions avec critères de sexe",
-            id:"req20theme2_interven_pourcenfille_pourcenhomme_pcout",
-            category:"theme2"
-          }       
+          }*/    
           //Fin Bruce
         
         ];
 
         //  harizo
+        vm.couleur = function(val1, val2)
+        {
+        
+          if ( (val1 >0) || (val2 > 0) ) 
+          {
+            
+            return "#00ad25" ;
+          }
+        }
         vm.formatMillier = function (nombre) 
         {
             if (typeof nombre != 'undefined' && parseInt(nombre) >= 0) {
