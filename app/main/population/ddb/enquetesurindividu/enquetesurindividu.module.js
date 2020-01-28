@@ -22,13 +22,13 @@
             data : {
               authorizer : true,
               permitted : ["USER","PERSONNEL","ADMIN"],
-              page: "Enquête/Individu"
+              page: "Variable/Individu"
             }
         });
 
         // Navigation
         msNavigationServiceProvider.saveItem('population.ddb.enquetesurindividu', {
-            title: 'Enquête/Individu',
+            title: 'Variable/Individu',
             icon  : 'icon-tile-four',
             state: 'app.population_ddb_enquetesurindividu',
 			weight: 2

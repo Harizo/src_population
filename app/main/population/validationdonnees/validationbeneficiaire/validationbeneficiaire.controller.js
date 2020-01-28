@@ -3,6 +3,7 @@
     'use strict';
     angular
         .module('app.population.validationdonnees.validationbeneficiaire')
+		// Directive et service pour upload fichier excel intervention
         .directive('customOnChange', function() {
 			return {
 				restrict: 'A',
@@ -46,6 +47,7 @@
         .controller('ValidationbeneficiaireController', ValidationbeneficiaireController);
     /** @ngInject */
     function ValidationbeneficiaireController(apiFactory, $state, $scope,$cookieStore, $mdDialog,DTOptionsBuilder,apiUrl,$http,fileUpload,apiUrlbase,apiUrlvalidationbeneficiaire)  {
+		// Déclaration variable
         var vm = this;
         var NouvelItem=false;
         var currentItem;
@@ -95,13 +97,15 @@
         var id_user = $cookieStore.get('id');
 		vm.id_utilisateur = id_user;
 		vm.adresse_mail =$cookieStore.get('email');
+		// Début Récupération données référentielles
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			vm.raisonsociale = result.data.response.raison_sociale;
 			apiFactory.getAPIgeneraliser("listevalidationbeneficiaire/index","donnees_validees",0,"id_utilisateur",vm.id_utilisateur).then(function(result) {
 				vm.Listevalidationbeneficiaire = result.data.response;
 			});               
-        });     
+        });   
+		// Fin Récupération données référentielles	
 			//add historique : Consultation menu validation bénéficiaire
 			var config = {
 				headers : {
@@ -114,7 +118,8 @@
 			});
 			//factory
 			apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-			});									
+			});	
+		// Formatage affichage date			
 		function formatDate(date) {
 			var mois = date.getMonth()+1;
 			var dateSQL = (date.getFullYear()+ "/"+ mois + "/" + date.getDate());
@@ -122,10 +127,12 @@
 			return dateSQL;
 
 		}
+		// Parsing date pour la BDD
 		function parseDate(date) {
 			var d = moment(date, 'YYYY-MM-DD', true);
 			return d.isValid() ? d.toDate() : new Date(NaN);
 		}
+		// Message box : alert, information
         vm.showAlert = function(titre,textcontent) {
             $mdDialog.show(
               $mdDialog.alert()
@@ -139,6 +146,7 @@
                 .targetEvent()
             );
         } 
+		// Fonction Insertion,modif,suppression table validation_beneficiaire
         function ajout(activite,suppression) {
             if (NouvelItem==false) {
                // test_existance (activite,suppression);
@@ -146,15 +154,6 @@
             } else {
                 insert_in_base(activite,suppression);
             }
-        }
-		vm.changerdepense = function (item) {
-            vm.depenses.forEach(function(lig) {
-                if(lig.id==item.lignebudgetaire) {
-                    item.lignebudgetaire = lig.id; 
-                    item.lignebudgetaire_id = lig.id; 
-                    item.libelledepense = lig.libelle ;
-                }
-            });
         }
         function insert_in_base(activite,suppression) {         
             //add
@@ -209,75 +208,12 @@
             });              
         }  
       //*****************************************************************     
-        vm.selection= function (item) {             
-            vm.selectedItem = item;
-            currentItem = JSON.parse(JSON.stringify(vm.selectedItem));
-            vm.afficherboutonModifSupr = 1;
-            vm.afficherboutonnouveau = 1; 
-        };
-        $scope.$watch('vm.selectedItem', function() {
-            if (!vm.allActivite) return;
-            vm.allActivite.forEach(function(item) {
-                item.$selected = false;
-            });
-            vm.selectedItem.$selected = true;
-        });
-        //function cache masque de saisie
-        vm.ajouter = function () {
-            vm.affichageMasque = 0 ;
-            NouvelItem = true ;
-		    var items = {
-				$edit: true,
-				$selected:true,
-				supprimer:0,
-				id:0,
-				libelle: '',
-				id_utilisateur:id_user
-			};
-			vm.allActivite.push(items);
-        };
-        vm.annuler = function() {            
-			vm.selectedItem.$selected = false;
-			vm.affichageMasque = 0 ;
-			vm.afficherboutonnouveau = 1 ;
-			vm.afficherboutonModifSupr = 0 ;
-			if (!item.id) {
-				vm.selectedItem.depense.pop();
-				return;
-			}          
-			item.$selected=false; 
-			item.$edit=false; 
-			NouvelItem = false;            
-			// Restaurer les valeurs
-			item.libelle = currentItem.libelle;
-        };
-        vm.modifier = function(item) {                    
-                NouvelItem = false ;
-				item.$selected=true,
-				item.$edit=true;
-        };
-        vm.supprimer = function() {
-            // Attention : suppression tache  nom de fonction à revoir ???
-            vm.afficherboutonModifSupr = 0 ;
-            vm.affichageMasque = 0 ;
-			var rep = response.data;                
-			var confirm = $mdDialog.confirm()
-				.title('Confirmation de suppression')
-				.textContent(vm.qui)
-				.ariaLabel('Lucky day')
-				.clickOutsideToClose(false)
-				.parent(angular.element(document.body))
-				.ok('supprimer')
-				.cancel('annuler');
-			$mdDialog.show(confirm).then(function() {
-				   ajout(vm.selectedItem,1);
-			}, function() {
-			});
-        };          
+		// Clic sur un item 
         vm.selectionDocument= function (item) {
             vm.selectedListedonneesavaliderItem = item;
             currentdepenseItem = JSON.parse(JSON.stringify(vm.selectedListedonneesavaliderItem));
         };
+		// $watch pour sélectionner ou désélectionner automatiquement un item 
         $scope.$watch('vm.selectedListedonneesavaliderItem', function() {
 			if (!vm.selectedListedonneesavaliderItem) return;
 			vm.Listevalidationbeneficiaire.forEach(function(item) {

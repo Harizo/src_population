@@ -28,10 +28,10 @@
 
         // Navigation
         msNavigationServiceProvider.saveItem('population.ddb.ddbvariable', {
-            title: 'Variable',
+            title: 'Variable/Intervention',
             icon  : 'icon-map-marker-circle',
             state: 'app.population_ddb_ddbvariable',
-			weight: 7
+			weight: 6
         });
     }
 
