@@ -32,21 +32,7 @@
         };
 
         vm.pivots = [
-          { 
-            titre:"Effectif par age/sexe de la population",
-            id:"req1_theme1",
-            category:"theme1"
-          },
-          { 
-            titre:"* Effectif menage ayant enfant",
-            id:"req3theme1_menagenfan_menagscolai_region_dist_comm",
-            category:"theme1"
-          },
-          { 
-            titre:"* Répartition par âge et par sexe des bénéficiaires",
-            id:"req38theme2_interven_petitenfan_agesco_agetrava_agee_region_dist_comm",
-            category:"theme2"
-          },
+          
           {
             titre:"* Nombre cumulé bénéficiaire",
             id:"req33theme2_interven_nbrbenef_region_dist_comm",
@@ -129,27 +115,45 @@
             titre:"Taux d’atteinte des résultats",
             id:"req34_theme2",
             category:"theme2"
-          }       
+          },       
 
-          //FIN CODE HARIZO       
+          //FIN CODE HARIZO    
+
+          //code modifier par harizo
+          { 
+            titre:"Effectif par age/sexe de la population",
+            id:"req1_theme1",
+            category:"theme1"
+          },
+          { 
+            titre:" Effectif menage ayant enfant",
+            id:"req3_theme1",
+            category:"theme1"
+          },
+          { 
+            titre:"Répartition par âge et par sexe des bénéficiaires",
+            id:"req38_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Répartition financement par programme",
+            id:"req7_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Répartition financement par source",
+            id:"req8_theme2",
+            category:"theme2"
+          },
+          {
+            titre:"Répartition financement par tutele",
+            id:"req9_theme2",
+            category:"theme2"
+          }   
+          //code modifier par harizo   
           
           //Debut Bruce
           ,
-          {
-            titre:"* Répartition financement par programme",
-            id:"req7theme2_budgetinit_budgetmodif_situation",
-            category:"theme2"
-          },
-          {
-            titre:"* Répartition financement par source",
-            id:"req8theme2_budgetinit_budgetmodif_situation_source",
-            category:"theme2"
-          },
-          {
-            titre:"* Répartition financement par tutele",
-            id:"req9theme2_budgetinit_budgetmodif_situation_tutelle",
-            category:"theme2"
-          },
           {
             titre:"* Nombre des bénéficiaires prévus",
             id:"req31theme2_interven_nbrinter_program_beneparan_beneprevu_region",
@@ -164,6 +168,9 @@
         
         ];
 
+
+
+
         //  harizo
         vm.couleur = function(val1, val2)
         {
@@ -171,7 +178,7 @@
           if ( (val1 >0) || (val2 > 0) ) 
           {
             
-            return "#00ad25" ;
+            return "#cecece" ;
           }
         }
         vm.formatMillier = function (nombre) 
@@ -202,6 +209,44 @@
           var x = vm.replace_point(float.toFixed(3)) ;
           return x ;
         }
+
+        //affichage situtation programme Req7_theme2
+          vm.affichage_situation = function(item)
+          {
+            if (item.etat_nouveau > 0) 
+            {
+              return "Nouveau" ;
+            }
+            else
+            {
+              return "En cours" ;
+            }
+          }
+
+          vm.affichage_budget_initial = function(item)
+          {
+            if (item.etat_nouveau > 0) 
+            {
+              return item.budget_initial_nouveau ;
+            }
+            else
+            {
+              return item.budget_initial_en_cours ;
+            }
+          }
+
+          vm.affichage_budget_modifie = function(item)
+          {
+            if (item.etat_nouveau > 0) 
+            {
+              return item.budget_modifie_nouveau ;
+            }
+            else
+            {
+              return item.budget_modifie_en_cours ;
+            }
+          }
+        //fin affichage situtation programme Req7_theme2
         // fin code harizo
 
         vm.max_date = new Date();
