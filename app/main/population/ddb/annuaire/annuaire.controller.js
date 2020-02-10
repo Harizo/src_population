@@ -1193,6 +1193,14 @@
 			// Tableau détail type transfert : vm.ListeDetailtypetransfert à stocker dans des variables indexées id_detail_type_transfert_(index)
 			// Puis utilise la fonction eval afin que l'on puisse poster normalement txtTmp
 			// C'est une façon de contourner la récupération impossible de variable tableau dans le serveur PHP	
+			var intitule2 =  entite.intitule;
+			intitule2 = intitule2.replace(new RegExp("&eacute;","g"),"e");
+			intitule2 = intitule2.replace(new RegExp("é","g"),"e");
+			intitule2 = intitule2.replace(new RegExp("è","g"),"e");
+			intitule2 = intitule2.replace(new RegExp("à","g"),"a");
+			intitule2 = intitule2.replace(new RegExp("ô","g"),"o");
+			intitule2 = intitule2.replace(new RegExp("Ô","g"),"O");
+			intitule2 = intitule2.replace(new RegExp("ç","g"),"c");
 			var txtTmp="";
 			txtTmp += "supprimer" +":\"" + suppression + "\",";	
 			txtTmp += "id" +":\"" + getId + "\",";	
@@ -1204,6 +1212,7 @@
 			txtTmp += "email_informateur" +":\"" + entite.email_informateur + "\",";	
 			txtTmp += "ministere_tutelle" +":\"" + entite.ministere_tutelle + "\",";	
 			txtTmp += "intitule" +":\"" + entite.intitule + "\",";	
+			txtTmp += "intitule2" +":\"" + intitule2 + "\",";	
 			txtTmp += "id_acteur" +":\"" + entite.id_acteur + "\",";	
 			txtTmp += "categorie_intervention" +":\"" + entite.categorie_intervention + "\",";	
 			txtTmp += "inscription_budgetaire" +":\"" + entite.inscription_budgetaire + "\",";	

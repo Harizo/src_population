@@ -396,12 +396,12 @@
 				}).success(function(data){
 					if(parseInt(data)==1) {
 						// Aucune erreur détectée => Sauvegarde dans la liste de validation bénéficiaire
-						vm.showAlert("INFORMATION","Un email a été envoyé à votre adresse.Merci de votre collaboration.A bientôt");
+						vm.showAlert("INFORMATION","Un email a été envoyé à votre adresse : " + vm.adresse_mail + " .Merci.A bientôt");
 					} else {
-						vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers votre adresse.Veuillez vérifier votre adresse e-mail si correct.Merci");
+						vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers votre adresse : " + vm.adresse_mail + " .Veuillez vérifier votre adresse e-mail si correct.Merci");
 					}						
 				}).error(function(){
-					vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers votre adresse.Veuillez vérifier votre adresse e-mail si correct.Merci");
+					vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers votre adresse : " + vm.adresse_mail + " .Veuillez vérifier votre adresse e-mail si correct.Merci");
 				});
 				vm.selectedListedonneesavaliderItem.$edit=false;
 				vm.selectedListedonneesavaliderItem.$selected=false;

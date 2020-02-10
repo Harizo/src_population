@@ -33,7 +33,8 @@
         msNavigationServiceProvider.saveItem('population.administration.utilisateurs.historiqueutilisateur', {
             title: 'Historique utilisateur',
             icon  : 'icon-package-variant',
-            state: 'app.population_admin_historiqueutilisateur'
+            state: 'app.population_admin_historiqueutilisateur',
+			weight: 2
         });
     }
 

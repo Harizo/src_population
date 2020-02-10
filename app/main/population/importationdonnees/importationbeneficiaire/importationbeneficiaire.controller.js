@@ -362,11 +362,14 @@
 							transformRequest: angular.identity,
 							headers: {'Content-Type': undefined}
 						}).success(function(data){
-							if(parseInt(data)==1) {
+							var reponse =data["reponse"];
+							var adresse_mail_proprietaire =data["email"];
+							var adresse_mail_hote =data["email_hote"];
+							if(parseInt(reponse)==1) {
 								// Aucune erreur détectée => Sauvegarde dans la liste de validation bénéficiaire
-								vm.showAlert("INFORMATION","Un email a été envoyé à votre adresse.Merci de votre collaboration.A bientôt");
+								vm.showAlert("INFORMATION","Un email a été envoyé à l'adresse mail : " + adresse_mail_proprietaire + " .En copie : " + adresse_mail_hote + " .Merci .A bientôt");
 							} else {
-								vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers l'acteur.Veuillez vérifier l'adresse e-mail si correct.Merci");
+								vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers : " + adresse_mail_proprietaire +  " .En copie : " + adresse_mail_hote + " .Veuillez vérifier l'adresse e-mail si correct.Merci");
 							}						
 						}).error(function(){
 							vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers l'acteur.Veuillez vérifier l'adresse e-mail si correct.Merci");

@@ -36,6 +36,7 @@
             title: 'Gestion Utilisateur',
             icon  : 'icon-account-key',
             state: 'app.population_admin_utilisateur',
+			weight: 1,
             badge:vs/*,
             hidden:function()
             {

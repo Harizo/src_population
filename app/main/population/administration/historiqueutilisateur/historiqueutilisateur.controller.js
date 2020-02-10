@@ -74,7 +74,6 @@
 
 	        
 	    }
-	    
 	    //convertion date format
 	    vm.converDate = function(dat)
 	    {
@@ -82,5 +81,37 @@
 	    
 	    	return date_final;	
 	    }
+	    vm.sauvegarde_historique = function(filtre)  {
+			var config = {
+				headers : {
+					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+				}
+			};
+			var datas = $.param({
+				date_debut:moment(filtre.date_debut).format('YYYY-MM-DD'),
+				date_fin:moment(filtre.date_debut).format('YYYY-MM-DD'),
+				id_utilisateur:vm.id_utilisateur,      
+				sauvegarde: 1,
+			});       
+			//factory historique_utilisateur
+			apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+				vm.action="Sauvegarde historique utilisateur du : " + moment(filtre.date_debut).format('DD/MM/YYYY') + " au : " + moment(filtre.date_fin).format('DD/MM/YYYY');
+				//add historique
+				var config = {
+					headers : {
+						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+					}
+				};
+				var datas = $.param({
+					action:vm.action,
+					id_utilisateur:vm.id_utilisateur
+				});
+				//factory
+				apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+				});				
+			}).error(function (data) {
+				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
+			});  
+		}
     }
 })();
