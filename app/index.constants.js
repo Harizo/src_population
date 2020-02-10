@@ -8,7 +8,8 @@
 		.constant("apiUrlbase", "http://localhost/2019/population/")
 		.constant("apiUrlvalidationbeneficiaire", "validationdonnees/beneficiaire/")
 		.constant("apiUrlvalidationintervention", "validationdonnees/intervention/")
-		.constant("apiUrlrecommandation", "recommandation/");
+		.constant("apiUrlrecommandation", "recommandation/")
+		.constant('apiUrlExcel', "http://localhost/2019/population/exportexcel/");
 		
 	/*	.constant("apiUrl", "http://192.168.88.200/2019/population/api/index.php/api/")
 		.constant("apiUrlbase", "http://192.168.88.200/2019/population/")

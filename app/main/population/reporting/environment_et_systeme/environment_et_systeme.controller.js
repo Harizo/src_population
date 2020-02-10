@@ -7,7 +7,7 @@
         .controller('Environment_et_systemeController', Environment_et_systemeController);
 
     /** @ngInject */
-    function Environment_et_systemeController($scope, $mdDialog, apiFactory,$state)
+    function Environment_et_systemeController($scope, $mdDialog, apiFactory,$state, apiUrlExcel)
     {
         /*********DEBUT INITIALISATION *********/
             var vm = this;
@@ -34,7 +34,7 @@
         vm.pivots = [
           
           {
-            titre:"* Nombre cumulé bénéficiaire",
+            titre:"* Nombre cumulé bénéficiaire_33",
             id:"req33theme2_interven_nbrbenef_region_dist_comm",
             category:"theme2"
 
@@ -121,12 +121,12 @@
 
           //code modifier par harizo
           { 
-            titre:"Effectif par age/sexe de la population",
+            titre:"Effectif par age sexe de la population",
             id:"req1_theme1",
             category:"theme1"
           },
           { 
-            titre:" Effectif menage ayant enfant",
+            titre:"Effectif menage ayant enfant",
             id:"req3_theme1",
             category:"theme1"
           },
@@ -155,7 +155,7 @@
           //Debut Bruce
           ,
           {
-            titre:"* Nombre des bénéficiaires prévus",
+            titre:"* Nombre des bénéficiaires prévus_31",
             id:"req31theme2_interven_nbrinter_program_beneparan_beneprevu_region",
             category:"theme2"
           }/*,
@@ -289,8 +289,8 @@
         });
 
 
-        //recuperation effectif population
-        vm.filtrer= function(filtre)
+        
+        vm.filtrer = function(filtre)
         {   
             //var date_d= moment(filtre.date_debut).format('YYYY-MM-DD');
             vm.affiche_load = true ;
@@ -315,6 +315,70 @@
         
             });
 
+          }
+
+          vm.export_excel = function(filtre)
+          {
+            vm.affiche_load = true ;
+
+            var repertoire = "tableau_de_bord/" ;
+
+            var piv = vm.pivots.filter(function(obj) {
+              return obj.id == vm.filtre.pivot;
+            });
+
+            apiFactory.getAPIgeneraliserREST("Export_excel/index",
+                                              "menu",vm.filtre.pivot,
+                                              "id_region",filtre.region_id,
+                                              /*"id_district",filtre.district_id,
+                                              "id_commune",filtre.commune_id,
+                                              "id_intervention",filtre.intervention_id,*/
+                                              "id_type_transfert",filtre.id_type_transfert,
+                                              "date_debut",convertionDate(filtre.date_debut),
+                                              "date_fin",convertionDate(filtre.date_fin),
+                                              "repertoire",repertoire,
+                                              "nom_file",piv[0].titre)
+            .then(function(result)
+            {
+
+              
+              vm.status =  result.data.status ;
+
+              if(vm.status)
+              {
+                var nom_fiche = result.data.nom_file;
+                window.location = apiUrlExcel + repertoire + nom_fiche ;
+                vm.affiche_load =false; 
+
+              }
+              else
+              {
+                vm.affiche_load =false;
+                var message=result.data.message;
+                vm.Alert('Export en excel',message);
+                
+              }
+             
+        
+            });
+
+            
+          }
+
+
+          vm.Alert = function(titre,content) 
+          {
+            $mdDialog.show(
+              $mdDialog.alert()
+              .parent(angular.element(document.querySelector('#popupContainer')))
+              .clickOutsideToClose(false)
+              .parent(angular.element(document.body))
+              .title(titre)
+              .textContent(content)
+              .ariaLabel('Alert')
+              .ok('Fermer')
+              .targetEvent()
+            );
           }
 
         //recuperation district par region
