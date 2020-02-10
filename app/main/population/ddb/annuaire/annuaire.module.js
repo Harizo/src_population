@@ -31,7 +31,7 @@
             title: 'Annuaire Intervention',
             icon  : 'icon-swap-horizontal',
             state: 'app.population_ddb_annuaire',
-			weight: 6
+			weight: 7
         });
     }
 

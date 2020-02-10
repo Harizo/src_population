@@ -63,11 +63,12 @@
 		// Récupération via cookies id utilisateur
         vm.id_utilisateur = $cookieStore.get('id');		
 		vm.detailtypetransfert_column = [{titre:"Type transfert"},{titre:"Code"},{titre:"Description"},{titre:"Unité mésure"},{titre:"Actions"}];
-		vm.typeacteur_column = [{titre:"Description"},{titre:"Actions"}];
+		vm.typeacteur_column = [{titre:"Code"},{titre:"Description"},{titre:"Actions"}];
+		vm.unite_mesure_column = [{titre:"Code"},{titre:"Description"},{titre:"Actions"}];
 		vm.typetransfert_column = [{titre:"Code"},{titre:"Description"},{titre:"Actions"}];
-		vm.acteur_column = [{titre:"Type Act"},{titre:"Nom"},{titre:"Représentant"},{titre:"Tél"},{titre:"Adresse"},{titre:"Fokontany"}];
+		vm.acteur_column = [{titre:"Type Act"},{titre:"Code"},{titre:"Nom"},{titre:"Représentant"},{titre:"Tél"},{titre:"Adresse"},{titre:"Fokontany"}];
 		vm.acteurregional_column = [{titre:"Type Act"},{titre:"Nom"},{titre:"Région"},{titre:"Représentant"},{titre:"Contact"},{titre:"Adresse"},{titre:"Actions"}];
-		// Récupération données référentielles
+		// Début Récupération données référentielles
 		apiFactory.getAll("region/index").then(function(result){
 			vm.all_region = result.data.response;
 		});    
@@ -90,7 +91,8 @@
 		apiFactory.getAll("unite_mesure/index").then(function(result){
 			vm.allRecordsUnitemesure = result.data.response;
 		}); 
-		//add historique : consultation
+		// Fin Récupération données référentielles
+		//add historique utilisateur : consultation
 		var config = {
 			headers : {
 				'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -146,6 +148,7 @@
 			var datas = $.param({
 				supprimer:suppression,
 				id:getId,      
+				code: typeact.code,
 				description: typeact.description,
 			});       
 			//factory type_acteur
@@ -153,22 +156,23 @@
 				if (NouvelItem == false) {
 					// Update or delete: id exclu                   
 					if(suppression==0) {
+					  vm.selectedItem.code = typeact.code;
 					  vm.selectedItem.description = typeact.description;
 					  vm.selectedItem.$selected = false;
 					  vm.selectedItem.$edit = false;
 					  vm.selectedItem ={};
-					  vm.action="Modification d'un enregistrement de DDB : Type acteur" + " ("+ entite.description + ")";
+					  vm.action="Modification d'un enregistrement de DDB : Type acteur" + " ("+ entite.code + " " +  entite.description + ")";
 					} else {    
 						// Suppression type acteur
 						vm.allRecordsTypeacteur = vm.allRecordsTypeacteur.filter(function(obj) {
 							return obj.id !== vm.selectedItem.id;
 						});
-						vm.action="Suppression d'un enregistrement de DDB : Type acteur" + " ("+ entite.description + ")";
+						vm.action="Suppression d'un enregistrement de DDB : Type acteur" + " ("+ entite.code + " " + entite.description + ")";
 					}
 				} else {
 					typeact.id=data.response;	
 					NouvelItem=false;
-					vm.action="Ajout d'un enregistrement de DDB : Type acteur" + " ("+ entite.description + ")";
+					vm.action="Ajout d'un enregistrement de DDB : Type acteur" + " ("+ entite.code + " " + entite.description + ")";
 				}
 				typeact.$selected=false;
 				typeact.$edit=false;
@@ -226,6 +230,7 @@
 				$edit: true,
 				$selected: true,
 				supprimer:0,
+                code: '',
                 description: '',
 			};
 			vm.allRecordsTypeacteur.push(items);
@@ -244,6 +249,7 @@
 			item.$selected=false;
 			item.$edit=false;
 			NouvelItem = false;
+			 item.code = currentItem.code;
 			 item.description = currentItem.description;
 			vm.selectedItemTypeacteur = {} ;
 			vm.selectedItemTypeacteur.$selected = false;
@@ -258,6 +264,7 @@
 			});        
 			item.$edit = true;	
 			item.$selected = true;	
+			vm.selectedItemTypeacteur.code = vm.selectedItemTypeacteur.code;
 			vm.selectedItemTypeacteur.description = vm.selectedItemTypeacteur.description;
 			vm.selectedItemTypeacteur.$edit = true;	
         };
@@ -318,6 +325,7 @@
 			var datas = $.param({
 				supprimer:suppression,
 				id:getId,      
+				code: entite.code,
 				nom: entite.nom,
 				nif: entite.nif,
 				stat: entite.stat,
@@ -337,6 +345,7 @@
 					// Update or delete: id exclu                   
 					if(suppression==0) {
 					  vm.selectedItemActeur.id = entite.id;
+					  vm.selectedItemActeur.code = entite.code;
 					  vm.selectedItemActeur.nom = entite.nom;
 					  vm.selectedItemActeur.nif = entite.nif;
 					  vm.selectedItemActeur.stat = entite.stat;
@@ -364,9 +373,10 @@
 						vm.action="Suppression d'un enregistrement de DDB : Acteur" + " ("+ entite.nom + ")";
 					}
 				} else {
-					// Nouvel item
+					// Nouvel item : ajout sur la liste sur écran
                     var item = {
 						id:String(data.response) ,
+						code: entite.code,
 						nom: entite.nom,
 						nif:entite.nif,
 						stat: entite.stat,
@@ -383,12 +393,12 @@
 					};
 					vm.allRecordsActeur.push(item); 
 					NouvelItemActeur=false;
-					vm.action="Ajout d'un enregistrement de DDB : Acteur" + " ("+ entite.nom + ")";
+					vm.action="Ajout d'un enregistrement de DDB : Acteur" + " (" + entite.code + " " + entite.nom + ")";
 				}
 				entite.$selected=false;
 				entite.$edit=false;
 				vm.affichageMasque =0;
-				//add historique
+				//add historique utilisateur
 				var config = {
 					headers : {
 						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -427,6 +437,7 @@
 			vm.titreacteur="Ajout Acteur";
 			vm.selectedItemActeur.$selected = false;
 			vm.affichageMasque = 1 ;
+			vm.acteur.code=null;
 			vm.acteur.nom=null;
 			vm.acteur.nif=null;
 			vm.acteur.stat=null;
@@ -457,6 +468,7 @@
 			vm.titreacteur="Modification Acteur";
 			NouvelItemActeur = false ;
 			vm.affichageMasque = 1 ;
+			vm.acteur.code = vm.selectedItemActeur.code ;
 			vm.acteur.nom = vm.selectedItemActeur.nom ;
 			vm.acteur.nif=vm.selectedItemActeur.nif;
 			vm.acteur.stat = vm.selectedItemActeur.stat ;
@@ -561,6 +573,7 @@
 			var datas = $.param({
 				supprimer:suppression,
 				id:getId,      
+				code: typeact.code,
 				description: typeact.description,
 			});       
 			//factory
@@ -568,21 +581,22 @@
 				if (NouvelItem == false) {
 					// Update or delete: id exclu                   
 					if(suppression==0) {
+					  vm.selectedItemUnitemesure.code = typeact.code;
 					  vm.selectedItemUnitemesure.description = typeact.description;
 					  vm.selectedItemUnitemesure.$selected = false;
 					  vm.selectedItemUnitemesure.$edit = false;
 					  vm.selectedItemUnitemesure ={};
-					  vm.action="Modification d'un erengistrement de DDB : Unité de mésure" + " ("+ entite.description + ")";
+					  vm.action="Modification d'un erengistrement de DDB : Unité de mésure" + " ("+ typeact.description + ")";
 					} else {    
 						vm.allRecordsUnitemesure = vm.allRecordsUnitemesure.filter(function(obj) {
 							return obj.id !== vm.selectedItemUnitemesure.id;
 						});
-						vm.action="Suppression d'un erengistrement de DDB : Unité de mésure" + " ("+ entite.description + ")";
+						vm.action="Suppression d'un erengistrement de DDB : Unité de mésure" + " ("+ typeact.description + ")";
 					}
 				} else {
 					typeact.id=data.response;	
 					NouvelItem=false;
-					vm.action="Ajout d'un erengistrement de DDB : Unité de mésure" + " ("+ entite.description + ")";
+					vm.action="Ajout d'un erengistrement de DDB : Unité de mésure" + " ("+ typeact.description + ")";
 				}
 				typeact.$selected=false;
 				typeact.$edit=false;
@@ -623,6 +637,7 @@
 				$edit: true,
 				$selected: true,
 				supprimer:0,
+                code: '',
                 description: '',
 			};
 			vm.allRecordsUnitemesure.push(items);
@@ -641,6 +656,7 @@
 			item.$selected=false;
 			item.$edit=false;
 			NouvelItem = false;
+			 item.code = currentItem.code;
 			 item.description = currentItem.description;
 			vm.selectedItemUnitemesure = {} ;
 			vm.selectedItemUnitemesure.$selected = false;
@@ -655,6 +671,7 @@
 			});        
 			item.$edit = true;	
 			item.$selected = true;	
+			vm.selectedItemUnitemesure.code = vm.selectedItemUnitemesure.code;
 			vm.selectedItemUnitemesure.description = vm.selectedItemUnitemesure.description;
 			vm.selectedItemUnitemesure.$edit = true;	
         };

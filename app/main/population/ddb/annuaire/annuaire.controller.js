@@ -16,6 +16,7 @@
 		vm.ajoutIntervention = ajoutIntervention ;
 		vm.ajoutFinancementintervention = ajoutFinancementintervention ;
 		vm.ajoutZoneintervention = ajoutZoneintervention ;
+        vm.tab_reponse_variable = [] ;
 		
 		var NouvelItemProgramme=false;
 		var NouvelItemZoneinterventionprogramme=false;
@@ -71,6 +72,7 @@
 		vm.allRecordsFrequencetransfert = [] ;
 		vm.allRecordsTutelle = [] ;
 		vm.allRecordsNomenclatureintervention =[];
+		vm.allRecordsListevariable =[];
         vm.afficherboutonnouveauprogramme = 1 ;
 		vm.afficherboutonModifSuprprogramme = 0 ;
         vm.affichageMasqueprogramme = 0 ;
@@ -138,7 +140,6 @@
 						apiFactory.getAll("detail_type_transfert/index").then(function(result){
 							vm.allRecordsDetailtypetransfert = result.data.response;
 							vm.ListeDetailtypetransfert = result.data.response;
-							console.log(vm.allRecordsDetailtypetransfert);
 						});    
 					});    
 				});    
@@ -173,7 +174,9 @@
 		});    
 		apiFactory.getAll("nomenclature_intervention4/index").then(function(result){
 			vm.allRecordsNomenclatureintervention = result.data.response;
-			console.log(vm.allRecordsNomenclatureintervention);
+		});    
+		apiFactory.getAll("liste_variable/index").then(function(result){
+			vm.allRecordsListevariable = result.data.response;
 		});    
 		// Fin Récupération des données référetielles
 		//add historique : consultation DDB annuaire d'intervention
@@ -220,6 +223,19 @@
                 return dateSQL;
             };
         }
+		//CHECK BOK MULTISELECT VARIABLE
+        vm.toggle = function (item, list) {
+          var idx = list.indexOf(item);
+          if (idx > -1) list.splice(idx, 1);
+          else list.push(item);    
+        };
+        $scope.exists = function (item, list) {
+          if (list) {
+            return list.indexOf(item) > -1;
+          }         
+        };
+		//FIN CHECK BOK MULTISELECT VARIABLE
+		
 		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE PROGRAMME	
 		function ajoutProgramme(entite,suppression) {
             test_existenceProgramme (entite,suppression);
@@ -342,7 +358,6 @@
         vm.selectionProgramme= function (item) {  
 			// Pour chaque selection d'un programme
             vm.selectedItemProgramme = item;
-			console.log(vm.selectedItemProgramme);
             currentItemProgramme = angular.copy(vm.selectedItemProgramme);       
             vm.afficherboutonModifSuprprogramme = 1 ;
             vm.affichageMasqueprogramme = 0 ;
@@ -366,7 +381,6 @@
 						if(result.data.response.length >0) {
 							item.detail_financement_programme = result.data.response; 
 							vm.selectedItemProgramme.detail_financement_programme = result.data.response; 
-							console.log(result.data.response);
 						} else {
 							inb_rien =2;							
 						}
@@ -1157,18 +1171,6 @@
 					vm.financementprogramme.devise=[];
 			}
 		}	
-			//CHECK BOK MULTISELECT TYPE SECTEUR
-			vm.toggle = function (item, list) {
-			  var idx = list.indexOf(item);
-			  if (idx > -1) list.splice(idx, 1);
-			  else list.push(item);        
-			};
-			$scope.exists = function (item, list) {
-			  if (list) {
-				return list.indexOf(item) > -1;
-			  }         
-			};
-			//FIN CHECK BOK MULTISELECT
 		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE FINANCEMENT PROGRAMME
 		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA TABLE INTERVENTION	
 		function ajoutIntervention(entite,suppression) {
@@ -1187,6 +1189,18 @@
 			   getId = vm.selectedItemIntervention.id; 
 			} 
 			vm.nombre = vm.ListeDetailtypetransfert.length;
+			// Stocker dans variable texte temporaire : txtTmp les valeurs à poster ultérieurement
+			// Tableau détail type transfert : vm.ListeDetailtypetransfert à stocker dans des variables indexées id_detail_type_transfert_(index)
+			// Puis utilise la fonction eval afin que l'on puisse poster normalement txtTmp
+			// C'est une façon de contourner la récupération impossible de variable tableau dans le serveur PHP	
+			var intitule2 =  entite.intitule;
+			intitule2 = intitule2.replace(new RegExp("&eacute;","g"),"e");
+			intitule2 = intitule2.replace(new RegExp("é","g"),"e");
+			intitule2 = intitule2.replace(new RegExp("è","g"),"e");
+			intitule2 = intitule2.replace(new RegExp("à","g"),"a");
+			intitule2 = intitule2.replace(new RegExp("ô","g"),"o");
+			intitule2 = intitule2.replace(new RegExp("Ô","g"),"O");
+			intitule2 = intitule2.replace(new RegExp("ç","g"),"c");
 			var txtTmp="";
 			txtTmp += "supprimer" +":\"" + suppression + "\",";	
 			txtTmp += "id" +":\"" + getId + "\",";	
@@ -1198,6 +1212,7 @@
 			txtTmp += "email_informateur" +":\"" + entite.email_informateur + "\",";	
 			txtTmp += "ministere_tutelle" +":\"" + entite.ministere_tutelle + "\",";	
 			txtTmp += "intitule" +":\"" + entite.intitule + "\",";	
+			txtTmp += "intitule2" +":\"" + intitule2 + "\",";	
 			txtTmp += "id_acteur" +":\"" + entite.id_acteur + "\",";	
 			txtTmp += "categorie_intervention" +":\"" + entite.categorie_intervention + "\",";	
 			txtTmp += "inscription_budgetaire" +":\"" + entite.inscription_budgetaire + "\",";	
@@ -1301,6 +1316,7 @@
 					  vm.selectedItemIntervention.duree = entite.duree;
 					  vm.selectedItemIntervention.unite_duree = entite.unite_duree;
 					  vm.selectedItemIntervention.id_type_transfert = entite.id_type_transfert;
+					  vm.selectedItemIntervention.id_type_transfert_ancien = entite.id_type_transfert;
 					  vm.selectedItemIntervention.typetransfert = entite.typetransfert;
 					  vm.selectedItemIntervention.flag_integration_donnees = entite.flag_integration_donnees;
 					  vm.selectedItemIntervention.nouvelle_integration = entite.nouvelle_integration;
@@ -1311,6 +1327,7 @@
 					  vm.selectedItemIntervention.montant_transfert = entite.montant_transfert;
 					  vm.selectedItemIntervention.frequencetransfert = entite.frequencetransfert;
 					  vm.selectedItemIntervention.detail_transfert = vm.detail_transfert;
+					  vm.selectedItemIntervention.detail_type_transfert = vm.ListeDetailtypetransfert;
 					  vm.selectedItemIntervention.id_nomenclature_intervention = vm.id_nomenclature_intervention;
 					  vm.selectedItemIntervention.nomenclatureintervention = vm.nomenclatureintervention;
 					  vm.selectedItemIntervention.$selected = false;
@@ -1344,6 +1361,7 @@
 						duree: entite.duree,
 						unite_duree: entite.unite_duree,
 						id_type_transfert: entite.id_type_transfert,
+						id_type_transfert_ancien: entite.id_type_transfert,
 						typetransfert: entite.typetransfert,
 						flag_integration_donnees: entite.flag_integration_donnees,
 						nouvelle_integration: entite.nouvelle_integration,
@@ -1354,6 +1372,7 @@
 						frequencetransfert: entite.frequencetransfert,
 						montant_transfert: entite.montant_transfert,
 						detail_transfert: vm.detail_transfert,
+						detail_type_transfert: vm.ListeDetailtypetransfert,
 						id_nomenclature_intervention: vm.id_nomenclature_intervention,
 					};
 					vm.selectedItemProgramme.detail_intervention.push(item); 
@@ -1393,6 +1412,7 @@
 			if(parseInt(vm.selectedItemIntervention.detail_charge)==0) {
 				var inb_rien =0;
 				vm.affiche_load=true;
+				// Récupération détail zone d'intervention par id_intervention
 				apiFactory.getAPIgeneraliserREST("zone_intervention/index","cle_etrangere",vm.selectedItemIntervention.id).then(function(result) { 				
 					item.detail_zone_intervention = []; 
 					if(result.data.response.length >0) {
@@ -1400,7 +1420,8 @@
 						vm.selectedItemIntervention.detail_zone_intervention = result.data.response; 
 					} else {
 						inb_rien =1;
-					}			
+					}	
+					// Récupération détail financement intervention  par id_intervention
 					apiFactory.getAPIgeneraliserREST("financement_intervention/index","cle_etrangere",vm.selectedItemIntervention.id).then(function(result) { 				
 						item.detail_financement_intervention = []; 
 						if(result.data.response.length >0) {
@@ -1408,9 +1429,11 @@
 							vm.selectedItemIntervention.detail_financement_intervention = result.data.response; 
 						} else {
 							inb_rien =2;							
-						}						
+						}	
+						// Récupération détail detail type transfert  par id_intervention	
 						apiFactory.getAPIgeneraliser("detail_type_transfert/index","id_intervetion",vm.selectedItemIntervention.id).then(function(result) {
 							vm.ListeDetailtypetransfert=[];
+							item.detail_type_transfert =[];
 							if(result.data.response.length >0) {
 								vm.ListeDetailtypetransfert = result.data.response; 
 								vm.ListeDetailtypetransfert.forEach(function(it) {
@@ -1419,19 +1442,36 @@
 										it.valeur_quantite = parseFloat(it.valeur_quantite);
 									}
 								});
-								vm.allRecordsDetailtypetransfert=vm.ListeDetailtypetransfert;
+								item.detail_type_transfert = vm.ListeDetailtypetransfert; 
+								vm.selectedItemIntervention.detail_type_transfert = vm.ListeDetailtypetransfert; 
+								console.log(vm.ListeDetailtypetransfert);
 							} else {
 								inb_rien =3;							
 							}
-							console.log(vm.ListeDetailtypetransfert);
+							// Récupération détail variable intervention  par id_intervention	
+							apiFactory.getAPIgeneraliser("variable_intervention/index","cle_etrangere",vm.selectedItemIntervention.id).then(function(result) {
+								item.detail_variable_intervention = result.data.response; 
+								vm.selectedItemIntervention.detail_variable_intervention = result.data.response; 
+								vm.tab_reponse_variable=[];
+								if(result.data.response.length >0) {
+									vm.tab_reponse_variable = result.data.response; 
+								} else {
+									inb_rien =4;							
+								}
+							})
 						})
-						if(inb_rien==3) {
+						if(inb_rien==4) {
 							vm.showAlert("INFORMATION","Aucun détail d'enregistrement trouvé !");
 						}	
 						item.detail_charge=1;
 						vm.affiche_load=false;						
 					});
 				});
+			} else {
+				vm.tab_reponse_variable = [];
+				// vm.ListeDetailtypetransfert=[];
+				vm.tab_reponse_variable = item.detail_variable_intervention;
+				// vm.ListeDetailtypetransfert=item.detail_type_transfert;
 			}			
         };
 		// $watch pour sélectionner ou désélectionner automatiquement un item d'intervention
@@ -1516,6 +1556,8 @@
 			if(vm.selectedItemIntervention.id_type_transfert) {
 				vm.intervention.id_type_transfert=parseInt(vm.selectedItemIntervention.id_type_transfert);
 			} else vm.intervention.id_type_transfert=null;
+			vm.intervention.id_type_transfert_ancien=vm.selectedItemIntervention.id_type_transfert_ancien;
+			console.log(vm.selectedItemIntervention.id_type_transfert_ancien);
 			vm.intervention.typetransfert=vm.selectedItemIntervention.typetransfert;
 			vm.intervention.flag_integration_donnees=vm.selectedItemIntervention.flag_integration_donnees;
 			vm.intervention.nouvelle_integration=vm.selectedItemIntervention.nouvelle_integration;
@@ -1529,19 +1571,21 @@
 			} else vm.intervention.montant_transfert=null;			
 			if(vm.intervention.id_type_transfert) {
 				console.log(vm.intervention.id_type_transfert);
-				if(vm.selectedItemIntervention.detail_type_transfert_intervention) {
-					vm.ListeDetailtypetransfert =vm.allRecordsDetailtypetransfert;
+				if(vm.selectedItemIntervention.detail_type_transfert) {
+					vm.ListeDetailtypetransfert =[];
+					vm.ListeDetailtypetransfert =vm.selectedItemIntervention.detail_type_transfert;
 					console.log(vm.ListeDetailtypetransfert);
 					vm.ListeDetailtypetransfert = vm.ListeDetailtypetransfert.filter(function(obj) {
 						return parseInt(obj.id_type_transfert) == parseInt(vm.intervention.id_type_transfert);
 					});		
 					console.log(vm.ListeDetailtypetransfert);
-					// vm.ListeDetailtypetransfert = vm.selectedItemIntervention.detail_type_transfert_intervention;					
+					// vm.ListeDetailtypetransfert = vm.selectedItemIntervention.detail_type_transfert;					
 					vm.ListeDetailtypetransfert.forEach(function(dt) {
 						dt.valeur_quantite = parseFloat(dt.valeur_quantite);
 						dt.id_detail_type_transfert = parseInt(dt.id_detail_type_transfert);
 					});					
 				} else {	
+					vm.ListeDetailtypetransfert =[];
 					vm.ListeDetailtypetransfert =vm.allRecordsDetailtypetransfert;
 					vm.ListeDetailtypetransfert = vm.ListeDetailtypetransfert.filter(function(obj) {
 						return parseInt(obj.id_type_transfert) == parseInt(vm.intervention.id_type_transfert);
@@ -1609,10 +1653,26 @@
 					vm.intervention.typetransfert=[];
 			} else {
 				// Affichage détail et saisie quantité ou valeur
-				vm.ListeDetailtypetransfert=vm.allRecordsDetailtypetransfert;
-				vm.ListeDetailtypetransfert = vm.allRecordsDetailtypetransfert.filter(function(obj) {
-					return parseInt(obj.id_type_transfert) == parseInt(item.id_type_transfert);
-				});
+				if(item.id_type_transfert==item.id_type_transfert_ancien) {
+					// Aucun changement => affichage liste detail à partir vm.selectedItemIntervention.detail_type_transfert valeur originale
+					console.log("haut");
+					console.log(item.id_type_transfert);
+					console.log(item.id_type_transfert_ancien); 
+					vm.ListeDetailtypetransfert=vm.selectedItemIntervention.detail_type_transfert;
+					vm.ListeDetailtypetransfert = vm.ListeDetailtypetransfert.filter(function(obj) {
+						return parseInt(obj.id_type_transfert) == parseInt(item.id_type_transfert);
+					});					
+					console.log(vm.ListeDetailtypetransfert);
+				} else {
+					// vm.allRecordsDetailtypetransfert = liste par défaut vide de quantite
+					vm.ListeDetailtypetransfert=vm.allRecordsDetailtypetransfert;
+					console.log(item.id_type_transfert);
+					console.log(item.id_type_transfert_ancien);
+					vm.ListeDetailtypetransfert = vm.ListeDetailtypetransfert.filter(function(obj) {
+						return parseInt(obj.id_type_transfert) == parseInt(item.id_type_transfert);
+					});					
+					console.log("bas");
+				}			
 			}
 		}	
 		// Controle modification type action intervention
@@ -2210,7 +2270,6 @@
 					item.commune=[];
 					item.commune.push(ax);
 					vm.nontrouvee=false;
-					console.log(vm.allRecordsFokontany);
 					apiFactory.getAPIgeneraliserREST("fokontany/index","cle_etrangere",item.id_commune).then(function(result) { 
 						vm.allRecordsFokontany = result.data.response;    
 						vm.all_fokontany = result.data.response;    
@@ -2267,6 +2326,126 @@
 				enreg.valeur_quantite=null;
 			}
 		}
-		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE DETAIL TYPE TRANSFERT
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE DETAIL TYPE TRANSFERT	
+		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA SAUVEGARDE VARIABLE INTERVENTION
+		
+		vm.sauvegarder_variable_intervention=function(id_intervention) {
+			if(id_intervention && parseInt(id_intervention) >0) {
+				// Stocker dans une variable texte temporaire : txtTmp les valeurs à poster ultérieurement
+				// Tableau détail variable intervention : vm.tab_reponse_variable à stocker dans des variables indexées id_variable_(index)
+				// Puis on utilise la fonction eval afin que l'on puisse poster normalement txtTmp
+				// C'est une façon de contourner la récupération impossible de variable tableau dans le serveur PHP	
+				vm.nombre_variable_intervention = vm.tab_reponse_variable.length; // nombre valeur selectionnée
+				var intitule_intervention = vm.selectedItemIntervention.intitule;
+				// Trier le tableau
+				for(var i=0;i < vm.nombre_variable_intervention;i++) {
+					if(vm.tab_reponse_variable[i].length==1) {
+						// insérer un ZERO avant pour que le tri soit croissant
+						vm.tab_reponse_variable[i] = '0' + vm.tab_reponse_variable[i];
+					}						
+				}				
+				vm.tab_reponse_variable.sort();
+				var txtTmp="";
+				txtTmp += "id_intervention" +":\"" + id_intervention + "\",";	
+				txtTmp += "intitule_intervention" +":\"" + intitule_intervention + "\",";	
+				txtTmp += "nombre_variable_intervention" +":\"" + vm.nombre_variable_intervention + "\",";	
+				for(var i=0;i < vm.nombre_variable_intervention;i++) {
+					txtTmp += "id_variable_" + (i+1) + ":\"" + vm.tab_reponse_variable[i] + "\",";	
+				}
+				var donnees = $.param(eval('({' + txtTmp + '})'));
+				var config = {
+					headers : {
+						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+					}
+				};
+				console.log(txtTmp);
+				apiFactory.add("variable_intervention/index",donnees, config).success(function (data) {
+					console.log(data.response);	
+					//add historique : suppresion/modifcation/ajout DDB Annuaire : variable d'intervention
+					var datas = $.param({
+						action:data.response,
+						id_utilisateur:vm.id_utilisateur
+					});
+					//factory historique_utilisateur
+					apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+					});							
+				}).error(function (data) {
+					vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
+				});  
+			} else {
+				vm.showAlert("Erreur lors de la sauvegarde","Veuillez choisir l'intervention correspondant aux différents choix !");
+			}	
+		}	
+		// FIN DIFFRENTES FONCTIONS UTILES POUR LA SAUVEGARDE VARIABLE INTERVENTION
+		vm.clickaccordion=function(qui) {
+				var acc = document.getElementsByClassName("accordion");
+				var i;
+				var clic_sur_qui;
+				for (i = 1; i <= acc.length; i++) {	
+					clic_sur_qui = "p" + i;
+					alert(clic_sur_qui);
+					if(clic_sur_qui ===qui) {
+						alert("ATO");
+						if(clic_sur_qui.style.display=="block") {							
+								clic_sur_qui.style.display ="none";								
+						} else {		
+								clic_sur_qui.style.display ="block";
+								alert("TSSSSSSSS");
+						} 
+						/*if($("#"+clic_sur_qui).css("display")=="block") {							
+								$("#"+clic_sur_qui).css("display") ="none";								
+						} else {		
+								$("#"+clic_sur_qui).css("display") ="block";
+								alert("TSSSSSSSS");
+						} */
+						/*if(clic_sur_qui.style.display=="block") {
+							
+								clic_sur_qui.style.display ="none";
+								alert("ATO");
+						} else {		
+								clic_sur_qui.style.display ="block";
+								alert("TSSSSSSSS");
+						} */
+					} else {
+						// clic_sur_qui.style.display ="none";
+						/*acc[i].addEventListener("click", function() {
+							this.classList.toggle("active");
+							var panel = this.nextElementSibling;
+							if (panel.style.display === "block") {
+							  panel.style.display = "none";
+							} else {
+							  panel.style.display = "block";
+							}
+						});*/	
+					}	
+				}
+		};
+			$(document).on("click", "[class*='accordion']", function() {
+				var acc = document.getElementsByClassName("accordion");
+				// var clic_sur_qui = acc.attr("id");
+				// alert(acc.length);
+				var i;
+				for (i = 1; i <= acc.length; i++) {						
+					// alert(clic_sur_qui);	
+					// acc[i].addEventListener("click", function() {
+						/* Toggle between adding and removing the "active" class,
+						to highlight the button that controls the panel */
+						var div1 = document.getElementById("p"+i);
+						// var display = div1.getAttribute("display");
+						var display = div1.style.display;
+						// var display = div1.className;
+						alert(display);
+						this.classList.toggle("active");
+						/* Toggle between hiding and showing the active panel */
+						var panel = this.nextElementSibling;
+						if (panel.style.display === "block") {
+						  panel.style.display = "none";
+						} else {
+						  panel.style.display = "block";
+						}
+					// });
+				}
+			}); 
+		
     }
   })();

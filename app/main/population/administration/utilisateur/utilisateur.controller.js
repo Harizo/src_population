@@ -365,7 +365,8 @@
 		}
 		// Enregistrement dans la BDD
 		vm.ajout = function(user,suppression)  {
-			var tab = [] ;         
+			var tab = [] ;   
+			// PRIVILEGES UTILISATEUR	
 			angular.forEach(user, function(value, key)  {        
               if(key == 'user' && value == true)
                   tab.push(key.toUpperCase());
@@ -435,7 +436,8 @@
 				apiFactory.add("utilisateurs/index",datas, config).success(function (data) {
 					if (getId==0) { 
 						// Nouvel utilisateur	
-					   var itemss = {
+						// Et envoi e-mail pour signaler que le compte utilisateur a été ouvert
+					   var items = {
 							id:String(data.response),
 							nom:user.nom,
 							prenom:user.prenom,
@@ -460,11 +462,17 @@
 							fonction_responsable: user.fonction_responsable,                 
 							email_hote: user.email_hote,                 
 							telephone_hote: user.telephone_hote,                 
-							description_hote: user.description_hote,                 
+							description_hote: user.description_hote, 
+							roles: tab,
 						};
-						vm.listes_utilisateurs.push(itemss); 
+						vm.listes_utilisateurs.push(items); 
 						vm.action="Ajout compte utilisateur ("+ user.raison_sociale + ") au nom de : " + user.prenom + " " + user.nom + "("+ user.email + ")";
-						// Envoi e-mail pour signaler que le compte utilisateur a été ouvert
+						if(data.message=="OK") {
+							var msg ="Un e-mail a été envoyé a l'adresse : " + user.email + " . Et en copie le responsable : " + user.email_hote;
+							vm.showAlert("INFORMATION",msg);
+						} else {
+							vm.showAlert("ERREUR","Une erreur s'est produite lors de l'envoi d'e-mail du titulaire de compte. Veuillez vérifier à nouveau s'il vous plait");
+						}
 					} else {
 						// Mise à jour d'un utlisateur
 						vm.selectedItem.roles = tab ;
@@ -535,5 +543,19 @@
 			vm.afficherliste =1;
 			vm.NouvelItem=false;
 		}
+		// Message box : alert, information
+        vm.showAlert = function(titre,textcontent) {
+            $mdDialog.show(
+              $mdDialog.alert()
+                .parent(angular.element(document.querySelector('#popupContainer')))
+                .clickOutsideToClose(false)
+                .parent(angular.element(document.body))
+                .title(titre)
+                .textContent(textcontent)
+                .ariaLabel('Alert Dialog Demo')
+                .ok('Fermer')
+                .targetEvent()
+            );
+        } 
     }
 })();

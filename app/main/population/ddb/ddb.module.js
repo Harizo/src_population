@@ -4,8 +4,8 @@
 
     angular
         .module('app.population.ddb', [			
-           'app.population.ddb.enquetesurmenage',
-            'app.population.ddb.enquetesurindividu',
+           // 'app.population.ddb.enquetesurmenage',
+           'app.population.ddb.enquetesurindividu',
             'app.population.ddb.acteurs',
             'app.population.ddb.ddbprojet',
             //'app.population.ddb.localisation',

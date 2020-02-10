@@ -58,6 +58,8 @@
 	                    <div>
 	                        <md-button type="submit" class="md-raised md-accent" aria-label="Enregistrer" ng-disabled="filtreform.$invalid || vm.affiche_load" ng-click="vm.analyse_filtre(vm.filtre)"> Actualiser
 	                        </md-button>
+	                        <md-button type="submit" class="md-raised md-accent" aria-label="Sauvegarder historique" ng-disabled="filtreform.$invalid || vm.affiche_load" ng-click="vm.sauvegarde_historique(vm.filtre)"> Vider et sauvegarder historique
+	                        </md-button>
 	                    </div>
 	                </form>
 	                <!--/ Formulaire -->

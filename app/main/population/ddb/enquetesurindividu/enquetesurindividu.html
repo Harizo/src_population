@@ -8,14 +8,15 @@
                     <span class="parent">Données de bases</span>
                     <span class="parent"> </span>
                     <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
-                    <span class="parent" href="javascript:;">Enquête/Individu</span>
+                    <span class="parent" href="javascript:;">Variable/Individu</span>
                 </div>
     
-                <div class="title">Questionnaire d'enquête sur l'individu de chaque ménage</div>
+                <div class="title">Variable sur un individu de chaque ménage</div>
             </div>
         </div>		
         <div class="content" layout="column">
             <div class="form-wrapper">
+                <md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
                 <div style="clear:both;"></div>
                 <md-tabs md-dynamic-height>
                     <md-tab label="Lien de parenté"  ng-click="vm.Select_table(1)">
@@ -75,7 +76,7 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>		
-                    <md-tab label="Handicap visuel"  ng-click="vm.Select_table(2)">
+                    <!--md-tab label="Handicap visuel"  ng-click="vm.Select_table(2)">
                         <md-tab-body>
                             <fieldset>
                                 <legend>
@@ -359,12 +360,12 @@
                                 </table>
                             </fieldset>
                         </md-tab-body>
-                    </md-tab>		
-                    <md-tab label="Type école" ng-click="vm.Select_table(9)">
+                    </md-tab-->		
+                    <md-tab label="Type école fréquenté" ng-click="vm.Select_table(9)">
                         <md-tab-body>
                             <fieldset>
                                 <legend>
-                                        Type école
+                                        Type école fréquenté
                                     <button ng-click="vm.ajouterTypeecole()" title="Ajouter un type d'école" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
                                 </legend>
                                 <table id="tableTypeecole" ng-table="tableTypeecole" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
@@ -531,7 +532,7 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>		
-                    <md-tab label="Groupe d'appartenance" ng-click="vm.Select_table(10)">
+                    <!--md-tab label="Groupe d'appartenance" ng-click="vm.Select_table(10)">
                         <md-tab-body>
                             <fieldset>
                                 <legend>
@@ -587,7 +588,7 @@
                                 </table>
                             </fieldset>
                         </md-tab-body>
-                    </md-tab>		
+                    </md-tab-->		
 					<md-tab label="Situation matrimoniale" ng-click="vm.Select_table(11)">
                         <md-tab-body>
                             <fieldset>
@@ -645,66 +646,8 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab>		
-                    <md-tab label="Test accordion">	
-                        <md-tab-body>
-							<div style="clear:both;"></div>
-							<!--script src="../dist/js/bootstrap.min.js"></script-->
-							<!--link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-							<script src="//code.jquery.com/jquery-1.11.1.min.js"></script-->
-							<!------ Include the above in your HEAD tag ---------->
-							<!--div class="container demo"-->  
-							<div  class="page-layout simple fullwidth doc-page" layout="column">  
-								<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
-									<div class="panel panel-default">
-										<div class="panel-heading" role="tab" id="headingOne">
-											<h4 class="panel-title">
-												<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-													<i class="more-less glyphicon glyphicon-plus"></i>
-													Collapsible Group Item #1
-												</a>
-											</h4>
-										</div>
-										<div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-											<div class="panel-body">
-												  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-											</div>
-										</div>
-									</div>
-									<div class="panel panel-default">
-										<div class="panel-heading" role="tab" id="headingTwo">
-											<h4 class="panel-title">
-												<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-													<i class="more-less glyphicon glyphicon-plus"></i>
-													Collapsible Group Item #2
-												</a>
-											</h4>
-										</div>
-										<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-											<div class="panel-body">
-												Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-											</div>
-										</div>
-									</div>
-									<div class="panel panel-default">
-										<div class="panel-heading" role="tab" id="headingThree">
-											<h4 class="panel-title">
-												<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-													<i class="more-less glyphicon glyphicon-plus"></i>
-													Collapsible Group Item #3
-												</a>
-											</h4>
-										</div>
-										<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-											<div class="panel-body">
-												Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-											</div>
-										</div>
-									</div>
-								</div><!-- panel-group -->   
-							</div><!-- container -->
-                        </md-tab-body>
-					</md-tab>		
+                    <md-tab>		
+                    </md-tab>		
                 </md-tabs>
             </div>
         </div>

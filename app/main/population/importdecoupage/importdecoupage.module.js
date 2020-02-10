@@ -8,6 +8,7 @@
            'app.population.importdecoupage.decoupagedistrict',
            'app.population.importdecoupage.decoupagecommune',
            'app.population.importdecoupage.decoupagefokontany',
+           'app.population.importdecoupage.exportdecoupage',
             ])
         // .run(testPermission)
         .config(config);

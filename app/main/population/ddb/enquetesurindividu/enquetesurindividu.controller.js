@@ -12,6 +12,7 @@
 		vm.ajout = ajout ;
 		var NouvelItem=false;
 		var currentItem;
+		vm.affiche_load =true;
 		vm.selectedItemLiendeparente = {} ;
 		vm.selectedItemHandicapvisuel = {} ;
 		vm.selectedItemHandicapparole = {} ;
@@ -81,6 +82,7 @@
 							});    
 							apiFactory.getTable("enquete_menage/index","situation_matrimoniale").then(function(result){
 								vm.allRecordsSituationmatrimoniale = result.data.response;
+								vm.affiche_load =false;
 							});    
 						});    
 					});    

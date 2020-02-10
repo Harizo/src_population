@@ -14,7 +14,7 @@
                 <div class="title">Acteurs</div>
             </div>
         </div>
-		<!-- Début masque de saisie acteur-->
+		<!-- Début masque de saisie acteur détail-->
         <md-tabs md-dynamic-height ng-show="vm.affichageMasque==1">
 			<md-tab label="{{vm.titreacteur}}">
 				<md-tab-body>
@@ -189,7 +189,7 @@
 				</md-tab-body>
 			</md-tab>
         </md-tabs>
-		<!-- Fin masque de saisie acteur-->
+		<!-- Fin masque de saisie acteur détail-->
 		<!-- Début masque de saisie type acteur-->
         <div class="content" layout="column">
             <div class="form-wrapper">
@@ -217,8 +217,17 @@
                                             <td>
                                                 <span ng-if="presta.$edit">
                                                     <md-input-container style="width:100%;">
-                                                        <label>Type acteur du projet</label>
-                                                        <input name="description" type="text" ng-model="presta.description"/>
+                                                        <label>Code type acteur</label>
+                                                        <input name="code" type="text" ng-model="presta.code" maxlength="10"/>
+                                                    </md-input-container>	
+                                                </span>
+                                                <span ng-if="!presta.$edit">{{presta.code}}</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="presta.$edit">
+                                                    <md-input-container style="width:100%;">
+                                                        <label>Type acteur</label>
+                                                        <input name="description" type="text" ng-model="presta.description" maxlength="50"/>
                                                     </md-input-container>	
                                                 </span>
                                                 <span ng-if="!presta.$edit">{{presta.description}}</span>
@@ -288,6 +297,15 @@
                                            <td>
                                                 <span ng-if="presta.$edit">
                                                     <md-input-container style="width:100%;">
+                                                        <label>Code</label>
+                                                        <input name="code" type="text" ng-model="presta.code" maxlength="10" required />
+                                                    </md-input-container>	
+                                                </span>
+                                                <span ng-if="!presta.$edit">{{presta.code}}</span>
+                                            </td>
+                                           <td>
+                                                <span ng-if="presta.$edit">
+                                                    <md-input-container style="width:100%;">
                                                         <label>Nom</label>
                                                         <input name="nom" type="text" ng-model="presta.nom" required/>
                                                     </md-input-container>	
@@ -348,7 +366,7 @@
                                 <table id="tableUnitemesure" ng-table="tableUnitemesure" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
                                     <thead>
                                         <tr>
-                                            <th class="secondary-text" ng-repeat="c in ::vm.typeacteur_column">
+                                            <th class="secondary-text" ng-repeat="c in ::vm.unite_mesure_column">
                                                 <div class="table-header">
                                                     <span class="column-title">{{c.titre}}</span>
                                                 </div>
@@ -357,6 +375,15 @@
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="tlog in vm.allRecordsUnitemesure"  ng-class="{selected: tlog.$selected}" ng-click="vm.selectionUnitemesure(tlog)">										
+                                            <td>
+                                                <span ng-if="tlog.$edit">
+                                                    <md-input-container style="width:100%;">
+                                                        <label>Code</label>
+                                                        <input name="code" type="text" ng-model="tlog.code"/>
+                                                    </md-input-container>	
+                                                </span>
+                                                <span ng-if="!tlog.$edit">{{tlog.code}}</span>
+                                            </td>
                                             <td>
                                                 <span ng-if="tlog.$edit">
                                                     <md-input-container style="width:100%;">

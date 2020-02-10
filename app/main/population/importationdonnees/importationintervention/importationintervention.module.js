@@ -43,8 +43,6 @@
 				var x = data;
 				nombre_non_importes.content = x ;
 				nombre_non_importes.color = '#F44336' ;
-				console.log(x);
 			});
 	}
-
 })();
