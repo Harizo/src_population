@@ -16,6 +16,7 @@
     <div class="content"layout="column">
 		<div class="form-wrapper"> 
 			<md-tabs md-dynamic-height>
+                <md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
 				<md-tab label="Liste validation des interventions">
 					<md-tab-body>
 						<fieldset>

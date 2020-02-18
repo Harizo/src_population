@@ -1328,8 +1328,8 @@
 					  vm.selectedItemIntervention.frequencetransfert = entite.frequencetransfert;
 					  vm.selectedItemIntervention.detail_transfert = vm.detail_transfert;
 					  vm.selectedItemIntervention.detail_type_transfert = vm.ListeDetailtypetransfert;
-					  vm.selectedItemIntervention.id_nomenclature_intervention = vm.id_nomenclature_intervention;
-					  vm.selectedItemIntervention.nomenclatureintervention = vm.nomenclatureintervention;
+					  vm.selectedItemIntervention.id_nomenclature_intervention = entite.id_nomenclature_intervention;
+					  vm.selectedItemIntervention.nomenclatureintervention = entite.nomenclatureintervention;
 					  vm.selectedItemIntervention.$selected = false;
 					  vm.selectedItemIntervention.$edit = false;
 						vm.afficherboutonModifSuprintervention = 0 ;
@@ -1374,6 +1374,7 @@
 						detail_transfert: vm.detail_transfert,
 						detail_type_transfert: vm.ListeDetailtypetransfert,
 						id_nomenclature_intervention: vm.id_nomenclature_intervention,
+						nomenclatureintervention: vm.nomenclatureintervention,
 					};
 					vm.selectedItemProgramme.detail_intervention.push(item); 
 					NouvelItemIntervention=false;

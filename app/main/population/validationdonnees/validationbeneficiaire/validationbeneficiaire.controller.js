@@ -84,6 +84,7 @@
 		vm.fokontany="";
 		vm.intervention="";
 		vm.date_inscription="";
+		vm.affiche_load=false;
         // Data
         vm.dtOptions = {
         dom       : '<"top"f>rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
@@ -420,6 +421,7 @@
             }  
         } 
  		vm.uploadFile = function (item,suppression) {
+			vm.affiche_load=true;
 			var file =vm.myFile[0];
 			// console.log('file is ' );
 			// console.dir(file);
@@ -463,6 +465,7 @@
 						});  
 						vm.afficherboutonnouveau=1;
 					}						
+					vm.affiche_load=false;
 					//add historique : Validation bénéficiaire : 
 					var config = {
 						headers : {

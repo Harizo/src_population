@@ -76,6 +76,7 @@
         vm.allParent = [] ;
         vm.ListeParent = [] ;
 		vm.monfichier ='';
+		vm.affiche_load=false;
         // Data
         vm.dtOptions = {
         dom       : '<"top"f>rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
@@ -339,6 +340,7 @@
         }
 		// Importation fichier excel intervention dans la BDD
 		vm.importerintervention = function(item) {
+			vm.affiche_load=true;
 			var bla = $.post(apiUrl + "importationintervention/importer_donnees_intervention",{
 						nom_fichier : item.nom_fichier,
 						repertoire: item.repertoire,
@@ -357,6 +359,7 @@
 						apiFactory.getAPIgeneraliser("listevalidationintervention/index","etat",20).then(function(result) {
 							vm.Listeinterventionvalidees = result.data.response;
 						});               
+						vm.affiche_load=false;
 						//add historique : Intégration bénéficiaire : 
 						var actions ="Intégration bénéficiaire : fichier " + item.raisonsociale + "  " + item.repertoire + item.nom_fichier;
 						var config = {

@@ -13,7 +13,7 @@
     {
         // State
         $stateProvider.state('app.population_importationdonnees_importationintervention', {
-            url      : '/importationdonnees/importation-bénéficiaire',
+            url      : '/importationdonnees/importation-intervention',
             views    : {
                 'content@app': {
                     templateUrl: 'app/main/population/importationdonnees/importationintervention/importationintervention.html',
@@ -24,7 +24,7 @@
             data : {
               authorizer : true,
               permitted : ["IMP","ADMIN","VLD"],
-              page: "Importation-bénéficiaire"
+              page: "Importation-intervention"
             }
 
         });
