@@ -196,8 +196,8 @@
 								<label>Axe stratégique</label>
 								<md-select name="id_axe_strategique" ng-model="vm.financementprogramme.id_axe_strategique" ng-init="vm.financementprogramme.id_axe_strategique=''" ng-change="vm.modifierAxestrategiqueFNP(vm.financementprogramme)">
 									<md-option value=''></md-option>
-									<md-option ng-repeat="ta in vm.allRecordsAxestrategique | orderBy:['description']" value='{{ta.id}}'>
-										{{ta.description}}
+									<md-option ng-repeat="ta in vm.allRecordsAxestrategique | orderBy:['axe']" value='{{ta.id}}'>
+										{{ta.axe}}
 									</md-option>
 								</md-select>
 								<div ng-messages="financementprogrammeform.id_axe_strategique.$error" role="alert">
@@ -570,8 +570,8 @@
 								<label>Action stratégique</label>
 								<md-select name="id_action_strategique" ng-model="vm.financementintervention.id_action_strategique" ng-init="vm.financementintervention.id_action_strategique=''" ng-change="vm.modifierActionstrategiqueINTV(vm.financementintervention)">
 									<md-option value=''></md-option>
-									<md-option ng-repeat="ta in vm.allRecordsActionstrategique | orderBy:['description']" value='{{ta.id}}'>
-										{{ta.description}}
+									<md-option ng-repeat="ta in vm.allRecordsActionstrategique | orderBy:['action']" value='{{ta.id}}'>
+										{{ta.action}}
 									</md-option>
 								</md-select>
 								<div ng-messages="financementinterventionform.id_action_strategique.$error" role="alert">
@@ -643,7 +643,7 @@
 		<!-- Début Masque de saisie financement intervention-->
 <!-- FIN de tous les Masques de saisie -->		
 <!-- Début affichage de tous les onglets  -->		
-        <div class="content" layout="column">
+        <div class="content" layout="column" ng-show="vm.afficher_les_onglets==1">
             <div class="form-wrapper">
                 <md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
                 <div style="clear:both;"></div>
@@ -715,6 +715,7 @@
                                         Zone d'intervention programme
                                     <button ng-disabled="!vm.selectedItemProgramme.id" ng-click="vm.ajouterZoneinterventionprogramme()" title="Ajouter une zone d'intervention programme" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
                                 </legend>
+								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b>
                                 <table id="tableZoneinterventionprogramme" ng-table="tableZoneinterventionprogramme" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
                                     <thead>
                                         <tr>
@@ -801,6 +802,7 @@
                                 <legend>
                                         Financement Programme
                                 </legend>
+								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b>
 								<div style="widht:100%;">    
 									<md-button type="submit" ng-disabled="!vm.selectedItemProgramme.id" ng-show="vm.afficherboutonnouveaufinancementprogramme==1" class="md-raised md-accent" aria-label="Nouveau" ng-click="vm.ajouterFinancementprogramme()" style="width:10%;">
 									  Nouveau
@@ -826,7 +828,7 @@
                                         <tr ng-repeat="prg in vm.selectedItemProgramme.detail_financement_programme"  ng-class="{selected: prg.$selected}" ng-click="vm.selectionFinancementprogramme(prg)">										
                                             <td>
                                                 <p style="margin:0;"><b>Source-fin :</b>{{prg.sourcefinancement[0].nom}}</p>
-                                                <p style="margin:0;"><b>Axe stratég :</b>{{prg.axestrategique[0].description}}</p>
+                                                <p style="margin:0;"><b>Axe stratég :</b>{{prg.axestrategique[0].axe}}</p>
                                             </td>
 											<td>
                                                 <span>{{prg.typefinancement[0].intitule}}</span>
@@ -857,6 +859,7 @@
                                 <legend>
                                         Intervention
                                 </legend>
+								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b>
 								<div style="widht:100%;">    
 									<md-button type="submit" ng-disabled="!vm.selectedItemProgramme.id" ng-show="vm.afficherboutonnouveauintervention==1" class="md-raised md-accent" aria-label="Nouveau" ng-click="vm.ajouterIntervention()" style="width:10%;">
 									  Nouveau
@@ -914,12 +917,14 @@
                     </md-tab>
 					<!-- Fin Onglet Intervention-->		
 					<!-- Début Onglet Financement intervention-->		
-					<md-tab label="Financement Intervention">
+					<md-tab label="Financement Intervention" ng-show="vm.affichageMasquefinancementintervention==0">
                         <md-tab-body>
                             <fieldset>
                                 <legend>
                                         Financement Intervention
                                 </legend>
+								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b>
+								<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b>
 								<div style="widht:100%;">    
 									<md-button type="submit" ng-disabled="!vm.selectedItemIntervention.id" ng-show="vm.afficherboutonnouveaufinancementintervention==1" class="md-raised md-accent" aria-label="Nouveau" ng-click="vm.ajouterFinancementintervention()" style="width:10%;">
 									  Nouveau
@@ -945,7 +950,7 @@
                                         <tr ng-repeat="prg in vm.selectedItemIntervention.detail_financement_intervention"  ng-class="{selected: prg.$selected}" ng-click="vm.selectionFinancementintervention(prg)">										
                                             <td>
                                                 <p style="margin:0;"><b>Source-fin :</b>{{prg.sourcefinancement[0].nom}}</p>
-                                                <p style="margin:0;"><b>Act° stratég :</b>{{prg.actionstrategique[0].description}}</p>
+                                                <p style="margin:0;"><b>Act° stratég :</b>{{prg.actionstrategique[0].action}}</p>
                                             </td>
 											<td>
                                                 <span>{{prg.devise[0].description}}</span>
@@ -974,7 +979,9 @@
                                         Zone d'intervention 
                                     <button ng-disabled="!vm.selectedItemIntervention.id" ng-click="vm.ajouterZoneintervention()" title="Ajouter une zone d'intervention " style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
                                 </legend>
-                                <table id="TableZoneIntervention" ng-table="tableZoneintervention" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
+ 								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b>
+ 								<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b>
+                               <table id="TableZoneIntervention" ng-table="tableZoneintervention" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
                                     <thead>
                                         <tr>
                                             <th class="secondary-text" ng-repeat="c in ::vm.zone_column">
@@ -1082,7 +1089,10 @@
                     </md-tab>		
  					<!-- Fin Onglet Zone d'intervention-->		
  					<!-- Début Onglet variable intervention-->		
-                    <md-tab label="Variable">
+                    <md-tab label="Variable intervention">
+							<b>Programme : {{vm.selectedItemProgramme.intitule}}</b></br>
+							<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b></br>
+							<div style="clear:both;"></div>	
 							<div layout="column" flex-gt-xs="50" ng-repeat='item in vm.allRecordsListevariable' style="width:50%;display:inline-block">					
 								<fieldset class="standard">
 									<legend  class="md-grey-800-bg">{{item.description}}</legend>
