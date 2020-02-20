@@ -361,7 +361,7 @@
                             </fieldset>
                         </md-tab-body>
                     </md-tab-->		
-                    <md-tab label="Type école fréquenté" ng-click="vm.Select_table(9)">
+                    <md-tab label="Type école" ng-click="vm.Select_table(9)">
                         <md-tab-body>
                             <fieldset>
                                 <legend>
@@ -637,6 +637,63 @@
                                                     <span class="icon-cancel"></span>
                                                 </a>
                                                 <a ng-if="typef.$edit && typef.description >''" ng-click="vm.ajout(typef,0)" title="Sauvegarder">
+                                                    <span class="icon-content-save"></span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </md-tab-body>
+                    </md-tab>		
+					<md-tab label="Indice Vulnérabilité" ng-click="vm.Select_table(12)">
+                        <md-tab-body>
+                            <fieldset>
+                                <legend>
+                                        Indice de Vulnérabilité
+                                    <button ng-click="vm.ajouterIndicevulnerabilite()" title="Ajouter un indice de vulnérabilité" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
+                                </legend>
+                                <table id="tableIndicevulnerabilite" ng-table="tableIndicevulnerabilite" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
+                                    <thead>
+                                        <tr>
+                                            <th class="secondary-text" ng-repeat="c in ::vm.donnateur_column">
+                                                <div class="table-header">
+                                                    <span class="column-title">{{c.titre}}</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="indicevuln in vm.allRecordsIndicevulnerabilite"  ng-class="{selected: indicevuln.$selected}" ng-click="vm.selectionIndicevulnerabilite(indicevuln)">										
+                                            <td>
+                                                <span ng-if="indicevuln.$edit">
+                                                    <md-input-container style="width:100%;">
+                                                        <label>Code</label>
+                                                        <input name="code_classe" type="text" ng-model="indicevuln.code" maxlength="2"/>
+                                                    </md-input-container>	
+                                                </span>
+                                                <span ng-if="!indicevuln.$edit">{{indicevuln.code}}</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="indicevuln.$edit">
+                                                    <md-input-container style="width:100%;">
+                                                        <label>Description</label>
+                                                        <input name="description" type="text" ng-model="indicevuln.description"/>
+                                                    </md-input-container>	
+                                                </span>
+                                                <span ng-if="!indicevuln.$edit">{{indicevuln.description}}</span>
+                                            </td>
+                                            <td>
+                                                <a ng-if="!indicevuln.$edit" ng-click="vm.modifierIndicevulnerabilite(indicevuln)" title="Modifier">
+                                                    <span class="icon-table-edit"></span>
+                                                </a>
+                                                <a ng-if="!indicevuln.$edit" ng-click="vm.supprimerIndicevulnerabilite(indicevuln)" title="Supprimer">
+                                                    <span class="icon-delete"></span>
+                                                </a>
+                                                <a ng-if="indicevuln.$edit" ng-click="vm.annulerIndicevulnerabilite(indicevuln)" title="Annuler modification">
+                                                    <span class="icon-cancel"></span>
+                                                </a>
+                                                <a ng-if="indicevuln.$edit && indicevuln.description >''" ng-click="vm.ajout(indicevuln,0)" title="Sauvegarder">
                                                     <span class="icon-content-save"></span>
                                                 </a>
                                             </td>

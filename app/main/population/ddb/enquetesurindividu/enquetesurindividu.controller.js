@@ -25,6 +25,7 @@
 		vm.selectedItemUsageservicemedical = {} ;
 		vm.selectedItemGroupeappartenance = {} ;
 		vm.selectedItemSituationmatrimoniale = {} ;
+		vm.selectedItemIndicevulnerabilite ={};
 		
 		vm.allRecordsLiendeparente = [] ;
 		vm.allRecordsHandicapvisuel = [] ;
@@ -38,6 +39,7 @@
 		vm.allRecordsUsageservicemedical = [] ;
 		vm.allRecordsGroupeappartenance = [] ;
 		vm.allRecordsSituationmatrimoniale = [] ;
+		vm.allRecordsIndicevulnerabilite =[];
 		vm.nom_table ="liendeparente";
 		vm.cas=1;
 		// Récupérer via cookies id utilisateur
@@ -82,7 +84,10 @@
 							});    
 							apiFactory.getTable("enquete_menage/index","situation_matrimoniale").then(function(result){
 								vm.allRecordsSituationmatrimoniale = result.data.response;
-								vm.affiche_load =false;
+								apiFactory.getTable("enquete_menage/index","indice_vulnerabilite").then(function(result){
+									vm.allRecordsIndicevulnerabilite = result.data.response;
+									vm.affiche_load =false;
+								});    
 							});    
 						});    
 					});    
@@ -159,6 +164,11 @@
 					case 11:  {
 						vm.nom_table="situation_matrimoniale";
 						vm.cas=11;
+						break;
+					}
+					case 12:  {
+						vm.nom_table="indice_vulnerabilite";
+						vm.cas=12;
 						break;
 					}
 					default: {
@@ -298,6 +308,15 @@
 								vm.action="Modification d'un enregistrement de DDB Enquête/Individu : Situation matrimoniale" + " ("+ possession.description + ")";
 								break;
 							}
+							case 12:  {
+								vm.selectedItemIndicevulnerabilite.code = possession.code;
+								vm.selectedItemIndicevulnerabilite.description = possession.description;
+								vm.selectedItemIndicevulnerabilite.$selected = false;
+								vm.selectedItemIndicevulnerabilite.$edit = false;
+								vm.selectedItemIndicevulnerabilite ={};
+								vm.action="Modification d'un enregistrement de DDB Enquête/Individu : Indice de vulnérabilité" + " ("+ possession.description + ")";
+								break;
+							}
 							default: {
 								break;
 							}
@@ -381,6 +400,13 @@
 								vm.action="Suppression d'un enregistrement de DDB Enquête/Individu : Situation matrimoniale" + " ("+ possession.description + ")";
 								break;
 							}
+							case 12:  {
+								vm.allRecordsIndicevulnerabilite = vm.allRecordsIndicevulnerabilite.filter(function(obj) {
+									return obj.id !== vm.selectedItemIndicevulnerabilite.id;
+								});
+								vm.action="Suppression d'un enregistrement de DDB Enquête/Individu : Indice de vulnérabilité" + " ("+ possession.description + ")";
+								break;
+							}
 							default: {
 								break;
 							}
@@ -443,6 +469,11 @@
 						case 11:  {
 							vm.selectedItemSituationmatrimoniale ={};
 							vm.action="Ajout d'un enregistrement de DDB Enquête/Individu : Situation matrimoniale" + " ("+ possession.description + ")";
+							break;
+						}
+						case 12:  {
+							vm.selectedItemIndicevulnerabilite ={};
+							vm.action="Ajout d'un enregistrement de DDB Enquête/Individu : Indice de vulnérabilité" + " ("+ possession.description + ")";
 							break;
 						}
 						default: {
@@ -1381,6 +1412,77 @@
 			});
         }
 		// Fin Situation matrimoniale
+		// Début Indice de vulnerabilite 
+        vm.selectionIndicevulnerabilite= function (item) {     
+            vm.selectedItemIndicevulnerabilite = item;
+        };
+        $scope.$watch('vm.selectedItemIndicevulnerabilite', function() {
+			if (!vm.allRecordsIndicevulnerabilite) return;
+			vm.allRecordsIndicevulnerabilite.forEach(function(item) {
+				item.$selected = false;
+			});
+			vm.selectedItemIndicevulnerabilite.$selected = true;
+        });
+        vm.ajouterIndicevulnerabilite = function () {
+			if(NouvelItem == true) {
+				vm.showAlert("ERREUR LORS DE L'INSERTION","Veuillez annuler ou sauvegarder la dernière insertion que vous avez fait.Merci !");
+			} else {	
+				vm.selectedItemIndicevulnerabilite.$selected = false;
+				NouvelItem = true ;
+				var items = {
+					$edit: true,
+					$selected: true,
+					supprimer:0,
+					description: '',
+				};
+				vm.allRecordsIndicevulnerabilite.push(items);
+				vm.allRecordsIndicevulnerabilite.forEach(function(it) {
+					if(it.$selected==true) {
+						vm.selectedItemIndicevulnerabilite = it;
+					}
+				});			
+			};
+        };
+        vm.annulerIndicevulnerabilite = function(item) {
+			if (!item.id) {
+				vm.allRecordsIndicevulnerabilite.pop();
+				NouvelItem = false;
+				return;
+			}          
+			item.$selected=false;
+			item.$edit=false;
+			NouvelItem = false;
+			 item.description = currentItem.description;
+			vm.selectedItemIndicevulnerabilite = {} ;
+			vm.selectedItemIndicevulnerabilite.$selected = false;
+       };
+        vm.modifierIndicevulnerabilite = function(item) {
+			NouvelItem = false ;
+			vm.selectedItemIndicevulnerabilite = item;
+			currentItem = angular.copy(vm.selectedItemIndicevulnerabilite);
+			$scope.vm.allRecordsIndicevulnerabilite.forEach(function(it) {
+				it.$edit = false;
+			});        
+			item.$edit = true;	
+			item.$selected = true;	
+			vm.selectedItemIndicevulnerabilite.description = vm.selectedItemIndicevulnerabilite.description;
+			vm.selectedItemIndicevulnerabilite.$edit = true;	
+        };
+        vm.supprimerIndicevulnerabilite = function() {
+			var confirm = $mdDialog.confirm()
+                .title('Etes-vous sûr de supprimer cet enregistrement ?')
+                .textContent('')
+                .ariaLabel('Lucky day')
+                .clickOutsideToClose(true)
+                .parent(angular.element(document.body))
+                .ok('supprimer')
+                .cancel('annuler');
+			$mdDialog.show(confirm).then(function() {          
+				ajout(vm.selectedItemIndicevulnerabilite,1);
+			}, function() {
+			});
+        }
+		// Fin Indice de vulnerabilite
 		
         function test_existence (item,suppression) {    
 			if(item.description.length > 0) {

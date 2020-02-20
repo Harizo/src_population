@@ -73,6 +73,8 @@
 		vm.allRecordsTutelle = [] ;
 		vm.allRecordsNomenclatureintervention =[];
 		vm.allRecordsListevariable =[];
+		// Affichage de tous les onglets =1 ; 0 sinon
+		vm.afficher_les_onglets=1;		
         vm.afficherboutonnouveauprogramme = 1 ;
 		vm.afficherboutonModifSuprprogramme = 0 ;
         vm.affichageMasqueprogramme = 0 ;
@@ -336,6 +338,7 @@
 				}
 				entite.$selected=false;
 				entite.$edit=false;
+				vm.afficher_les_onglets=1;
 				vm.affichageMasqueprogramme =0;
 				//add historique : suppresion/modifcation/ajout DDB Annuaire Programme
 				var config = {
@@ -413,6 +416,7 @@
         });
 		// Ajout d'un nouvel item de programme
         vm.ajouterProgramme = function () {
+			vm.afficher_les_onglets=0;
 			vm.titreacteur="Ajout Programme";
 			vm.selectedItemProgramme.$selected = false;
 			vm.affichageMasqueprogramme = 1 ;
@@ -443,6 +447,7 @@
         };
 		// Annulation modification d'un item de programme
         vm.annulerProgramme = function(item) {
+			vm.afficher_les_onglets=1;
 			vm.selectedItemProgramme = {} ;
 			vm.selectedItemProgramme.$selected = false;
 			vm.affichageMasqueprogramme = 0 ;
@@ -452,6 +457,7 @@
        };
 	   // Modification d'un item de programme
         vm.modifierProgramme = function(item) {
+			vm.afficher_les_onglets=0;
 			vm.titreacteur="Modification Programme";
 			NouvelItemProgramme = false ;
 			vm.affichageMasqueprogramme = 1 ;
@@ -954,6 +960,7 @@
 				}
 				entite.$selected=false;
 				entite.$edit=false;
+				vm.afficher_les_onglets=1;
 				vm.affichageMasquefinancementprogramme =0;
 				//add historique : suppresion/modifcation/ajout DDB Annuaire : source de financement
 				var config = {
@@ -994,6 +1001,7 @@
         });
 		// Ajout d'un nouvel item de financement_programme
         vm.ajouterFinancementprogramme = function () {
+			vm.afficher_les_onglets=0;
 			vm.titrefinancementprogramme="Ajout Financement programme";
 			vm.affichageMasquefinancementprogramme = 1 ;
 			vm.financementprogramme.id=0;
@@ -1016,6 +1024,7 @@
         };
 		// Annulation modification d'un item de financement_programme
         vm.annulerFinancementprogramme = function(item) {
+			vm.afficher_les_onglets=1;
 			vm.selectedItemFinancementprogramme = {} ;
 			vm.selectedItemFinancementprogramme.$selected = false;
 			vm.affichageMasquefinancementprogramme= 0 ;
@@ -1025,6 +1034,7 @@
        };
 	   // Modification d'un item de financement_programme
         vm.modifierFinancementprogramme = function(item) {
+			vm.afficher_les_onglets=0;
 			vm.titrefinancementprogramme="Modification Financement programme";
 			NouvelItemFinancementprogramme = false ;
 			vm.affichageMasquefinancementprogramme = 1 ;
@@ -1383,6 +1393,7 @@
 				entite.$selected=false;
 				entite.$edit=false;
 				vm.selectedItemIntervention ={};
+				vm.afficher_les_onglets=1;
 				vm.affichageMasqueintervention =0;
 				//add historique : suppresion/modifcation/ajout DDB Annuaire : intervention
 				var config = {
@@ -1485,6 +1496,7 @@
         });
 		// Ajout d'un nouvel item d'intervention
         vm.ajouterIntervention = function () {
+			vm.afficher_les_onglets=0;
 			vm.titreintervention="Ajout Intervention";
 			vm.affichageMasqueintervention = 1 ;
 			vm.intervention.id=0;
@@ -1522,6 +1534,7 @@
         };
 		// Annulation modification d'un item d'intervention
         vm.annulerIntervention = function(item) {
+			vm.afficher_les_onglets=1;
 			vm.selectedItemIntervention = {} ;
 			vm.selectedItemIntervention.$selected = false;
 			vm.affichageMasqueintervention= 0 ;
@@ -1531,6 +1544,7 @@
        };
 	   // Modification d'un item d'intervention
         vm.modifierIntervention = function(item) {
+			vm.afficher_les_onglets=0;
 			vm.titreintervention="Modification Intervention";
 			NouvelItemIntervention = false ;
 			vm.affichageMasqueintervention = 1 ;
@@ -1808,6 +1822,7 @@
 				}
 				entite.$selected=false;
 				entite.$edit=false;
+				vm.afficher_les_onglets=1;
 				vm.affichageMasquefinancementintervention =0;
 				//add historique : suppresion/modifcation/ajout DDB Annuaire : financement intervention
 				var config = {
@@ -1843,6 +1858,7 @@
         });
 		// Ajout d'un nouvel item de financement_intervention
         vm.ajouterFinancementintervention = function () {
+			vm.afficher_les_onglets=0;
 			vm.titrefinancementintervention="Ajout Financement intervention";
 			vm.affichageMasquefinancementintervention = 1 ;
 			vm.financementintervention.id=0;
@@ -1863,6 +1879,7 @@
         };
 		// Annulation modification d'un item de financement_intervention
         vm.annulerFinancementintervention = function(item) {
+			vm.afficher_les_onglets=1;
 			vm.selectedItemFinancementintervention = {} ;
 			vm.selectedItemFinancementintervention.$selected = false;
 			vm.affichageMasquefinancementintervention= 0 ;
@@ -1872,6 +1889,7 @@
        };
 	   // Modification d'un item de financement_intervention
         vm.modifierFinancementintervention = function(item) {
+			vm.afficher_les_onglets=0;
 			vm.titrefinancementintervention="Modification Financement intervention";
 			NouvelItemFinancementintervention = false ;
 			vm.affichageMasquefinancementintervention = 1 ;
