@@ -52,7 +52,7 @@
                             <div layout="column" layout-gt-xs="row">       
                                 
 
-                                <md-input-container flex="100" flex-gt-xs="33" ng-if="(vm.filtre.pivot != 'req41_theme2')&&(vm.filtre.pivot != 'req40_theme2')&&(vm.filtre.pivot != 'req42_theme2')&&(vm.filtre.pivot != 'req43_theme2')&&(vm.filtre.pivot != 'req10_theme2')&&(vm.filtre.pivot != 'req11_theme2')&&(vm.filtre.pivot != 'req12_theme2')&&(vm.filtre.pivot != 'req37_theme2')&&(vm.filtre.pivot != 'req36_theme2')&&(vm.filtre.pivot != 'req18_theme2')&&(vm.filtre.pivot != 'req14_theme2')&&(vm.filtre.pivot != 'req20_theme2')&&(vm.filtre.pivot != 'req19_theme2')&&(vm.filtre.pivot != 'req32_theme2')&&(vm.filtre.pivot != 'req34_theme2')&&(vm.filtre.pivot != 'req1_theme1')&&(vm.filtre.pivot != 'req3_theme1')&&(vm.filtre.pivot != 'req38_theme2')&&(vm.filtre.pivot != 'req7_theme2')&&(vm.filtre.pivot != 'req8_theme2')&&(vm.filtre.pivot != 'req9_theme2')">
+                                <md-input-container flex="100" flex-gt-xs="33" ng-if="(vm.filtre.pivot != 'req41_theme2')&&(vm.filtre.pivot != 'req40_theme2')&&(vm.filtre.pivot != 'req42_theme2')&&(vm.filtre.pivot != 'req43_theme2')&&(vm.filtre.pivot != 'req10_theme2')&&(vm.filtre.pivot != 'req11_theme2')&&(vm.filtre.pivot != 'req12_theme2')&&(vm.filtre.pivot != 'req37_theme2')&&(vm.filtre.pivot != 'req36_theme2')&&(vm.filtre.pivot != 'req18_theme2')&&(vm.filtre.pivot != 'req14_theme2')&&(vm.filtre.pivot != 'req20_theme2')&&(vm.filtre.pivot != 'req19_theme2')&&(vm.filtre.pivot != 'req32_theme2')&&(vm.filtre.pivot != 'req34_theme2')&&(vm.filtre.pivot != 'req1_theme1')&&(vm.filtre.pivot != 'req3_theme1')&&(vm.filtre.pivot != 'req38_theme2')&&(vm.filtre.pivot != 'req7_theme2')&&(vm.filtre.pivot != 'req8_theme2')&&(vm.filtre.pivot != 'req9_theme2')&&(vm.filtre.pivot != 'req_multiple_21_to_30_theme2')">
 
                                 
 
@@ -435,6 +435,41 @@
                                             </div>
                                         </th>
                                         <!--fin 32-->
+
+                                        <!-- 32-->
+                                        <th class="secondary-text" ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">
+                                            <div class="table-header">
+                                                <span class="column-title text-center">Nomenclature</span>
+                                            </div>
+                                        </th>
+                                        <th class="secondary-text" ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">
+                                            <div class="table-header">
+                                                <span class="column-title text-center">Intervention</span>
+                                            </div>
+                                        </th>
+                                        <th class="secondary-text" ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">
+                                            <div class="table-header">
+                                                <span class="column-title text-center">Variable</span>
+                                            </div>
+                                        </th>
+                                        <th class="secondary-text" ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">
+                                            <div class="table-header">
+                                                <span class="column-title text-center">Détails variable</span>
+                                            </div>
+                                        </th>
+                                        <th class="secondary-text" ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">
+                                            <div class="table-header">
+                                                <span class="column-title text-center">Effectif</span>
+                                            </div>
+                                        </th>
+                                        <th class="secondary-text" ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">
+                                            <div class="table-header">
+                                                <span class="column-title text-center">Coût</span>
+                                            </div>
+                                        </th>
+                                        <!--fin 32-->
+
+
                                         <!--if init-->
                                         <th class="secondary-text" ng-show="!vm.filtre.pivot">
                                             <div class="table-header">
@@ -838,6 +873,17 @@
                                         <td ng-show="vm.cacher_table('req32_theme2',vm.filtre.pivot)">{{data.nom_reg}}</td>
                                         <td ng-show="vm.cacher_table('req32_theme2',vm.filtre.pivot)">{{data.nbr_total_benaficiaire}}</td>
                                         <!--fin 32-->
+
+                                        <!--req_multiple_21_to_30_theme2-->
+                                        <td ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">{{data.nomenclature_description}}</td>
+                                        <td ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">{{data.intitule_intervention}}</td>
+                                        <td ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">{{data.liste_variable}}</td>
+                                        <td ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">{{data.variable}}</td>
+                                        <td ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">{{vm.parseFloat_0(data.effectif)}} %</td>
+                                        <td ng-show="vm.cacher_table('req_multiple_21_to_30_theme2',vm.filtre.pivot)">{{vm.parseFloat_0(data.stat_cout)}} %</td>
+                                        <!--fin req_multiple_21_to_30_theme2-->
+
+
                                         <!-- init-->
                                         <td ng-show="!vm.filtre.pivot">{{data.intitule_interv}}</td>
                                         <!--fin init-->
