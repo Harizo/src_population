@@ -121,7 +121,12 @@
             titre:"Cible de l'intervention",
             id:"req_multiple_21_to_30_theme2",
             category:"theme2"
-          },       
+          },
+          {
+            titre:"Indice de niveau de vulnérabilité",
+            id:"req6_theme2",
+            category:"theme2"
+          }, 
 
           //FIN CODE HARIZO    
 
@@ -155,7 +160,7 @@
             titre:"Répartition financement par tutele",
             id:"req9_theme2",
             category:"theme2"
-          }   
+          }    
           //code modifier par harizo   
           
           //Debut Bruce
