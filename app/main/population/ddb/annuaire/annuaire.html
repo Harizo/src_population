@@ -784,7 +784,7 @@
                                                 <a ng-if="ziprg.$edit" ng-click="vm.annulerZoneinterventionprogramme(ziprg)" title="Annuler modification">
                                                     <span class="icon-cancel"></span>
                                                 </a>
-                                                <a ng-if="ziprg.$edit && ziprg.id_programme >0 && (ziprg.id_region > 0 || ziprg.id_district > 0)" ng-click="vm.ajoutZoneinterventionprogramme(ziprg,0)" title="Sauvegarder">
+                                                <a ng-if="ziprg.$edit && ziprg.id_programme >0 && (ziprg.id_region > 0 || ziprg.id_district > 0) && ziprg.menage_beneficiaire_prevu >0 && ziprg.individu_beneficiaire_prevu >0" ng-click="vm.ajoutZoneinterventionprogramme(ziprg,0)" title="Sauvegarder">
                                                     <span class="icon-content-save"></span>
                                                 </a>
                                             </td>

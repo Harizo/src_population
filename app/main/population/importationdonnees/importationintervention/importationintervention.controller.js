@@ -398,7 +398,7 @@
 							var adresse_mail_hote =data["email_hote"];
 							if(parseInt(reponse)==1) {
 								// Aucune erreur détectée => Sauvegarde dans la liste de validation bénéficiaire
-								vm.showAlert("INFORMATION","Un email a été envoyé à l'adresse mail : " + adresse_mail_proprietaire + " .En copie : " + adresse_mail_hote + " .Merci .A bientôt");
+								vm.showAlert("INFORMATION","Un email a été envoyé à l'adresse : " + adresse_mail_proprietaire + " .En copie : " + adresse_mail_hote + " .Merci.");
 							} else {
 								vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers : " + adresse_mail_proprietaire +  " .En copie : " + adresse_mail_hote + " .Veuillez vérifier l'adresse e-mail si correct.Merci");
 							}						
