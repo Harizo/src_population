@@ -134,7 +134,7 @@
 						} else {	
 							location.reload();
 							// $location.path("/accueil");//si n'est pas packeT    
-							$window.location.href = '/population';
+							$window.location.href = '/sys3p';
 						}	
                     }
 				} else {
@@ -260,7 +260,7 @@
                     } else  {
 						location.reload();
 						// $location.path("/accueil");//si n'est pas packeT                
-						$window.location.href = '/population';
+						$window.location.href = '/sys3p';
                     }
 				} else {
                     $mdDialog.show({

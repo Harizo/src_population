@@ -29,7 +29,7 @@
                     </div>
                 </md-input-container>
                 <md-button type="submit" class="md-raised md-accent submit-button" aria-label="LOG IN"
-                           ng-disabled="loginForm.$invalid || loginForm.$pristine"
+                           ng-disabled="loginForm.$invalid || loginForm.$pristine || (vm.login.password != vm.login.confirm_password)"
                            translate="LOGIN.MODIF_LOG_IN" translate-attr-aria-label="LOGIN.MODIF_LOG_IN"
                            ng-click="vm.enregistrer(vm.login)">
                     LOG IN
