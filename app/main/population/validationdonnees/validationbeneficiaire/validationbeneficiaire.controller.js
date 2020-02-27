@@ -459,6 +459,7 @@
 					} else {
 						var actions ="Envoi fichier bénéficiaire à valider avec " + data["nombre_erreur"] + "erreur(s) : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier +"(non sauvegardé)";
 						vm.showAlert("INFORMATION","Il y a des erreurs dans le fichier à importer.Veuillez consulter votre e-mail et corriger les données marquées en rouge.Merci");
+						window.location = apiUrlbase+"/" + vm.repertoire + vm.fichier ;
 						// Enlever de la liste puisqu'il y a des erreurs : sans sauvegarde dans la BDD
 						vm.Listevalidationbeneficiaire = vm.Listevalidationbeneficiaire.filter(function(obj) {
 							return parseInt(obj.id) !== 0;
