@@ -96,11 +96,24 @@
         var id_user = $cookieStore.get('id');
 		vm.id_utilisateur = id_user;
 		vm.adresse_mail =$cookieStore.get('email');
+		// Filtrer résultat si utilisateur n'a pas le droit(roles) ADMIN
+		vm.roles=$cookieStore.get('roles');
+		vm.filtrer_resultat=true;
+		for (var i = 0; i < vm.roles.length; i++) {
+			if(vm.roles[i]=="ADMIN") {
+				vm.filtrer_resultat=false;
+			}          
+		}									
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
 			vm.raisonsociale = result.data.response.raison_sociale;
 			apiFactory.getAPIgeneraliser("listevalidationintervention/index","donnees_validees",0,"id_utilisateur",vm.id_utilisateur).then(function(result) {
 				vm.Listevalidationintervention = result.data.response;
+				if(vm.filtrer_resultat) {
+					vm.Listevalidationintervention = vm.Listevalidationintervention.filter(function(obj) {
+						return obj.id_utilisateur == vm.id_utilisateur;
+					});					
+				}
 			});               
         });     
 			//add historique : Consultation menu validation intervention

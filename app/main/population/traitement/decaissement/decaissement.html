@@ -5,13 +5,13 @@
             <div class="breadcrumb" layout="row" layout-align="start center">
                 <md-icon md-font-icon="icon-home" class="s16"></md-icon>
                 <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
-                <span class="parent">Données validées</span>
+                <span class="parent">Traitement</span>
                 <span class="parent"> </span>
                 <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
-                <span class="parent" href="javascript:;">Prospection</span>
+                <span class="parent" href="javascript:;">Suivi Décaissement</span>
             </div>
 
-            <div class="title">Prospection</div>
+            <div class="title">Suivi Décaissement</div>
         </div>
     </div>
         <div style="clear:both;"></div>
@@ -21,7 +21,7 @@
         <md-tabs md-dynamic-height ng-show="vm.affichageMasque==1">
 			<md-tab label="{{vm.titrepage}}">
 				<md-tab-body>							
-					<form name="prospectionform" class="md-inline-form"  novalidate>
+					<form name="decaissementform" class="md-inline-form"  novalidate>
 						<div layout="column" layout-gt-xs="row" flex>
 							<md-input-container flex="100" flex-gt-xs="30">
 								<label>Montant initial</label>
@@ -79,27 +79,19 @@
 									</div>
 								</div>
 							</md-input-container>
-							<!--md-input-container flex="100" flex-gt-xs="20">
-								<label>Début période</span>
-								<input type="date" name="date_debut_periode" ng-model="vm.decaissement.date_debut_periode" placeholder="Date début période">
-								<div ng-messages="date_debut_periode.$error" role="alert">
-									<div ng-message="required">
-										<span>Début période obligatoire</span>
-									</div>
-								</div>
+							<md-input-container flex="100" flex-gt-xs="5">
+								<span>Début période</span>
 							</md-input-container>
-							<md-input-container flex="100" flex-gt-xs="20">
-								<label>Fin période</span>
-								<input type="date" name="date_fin_periode" ng-model="vm.decaissement.date_fin_periode" placeholder="Date fin période" >
-								<div ng-messages="date_fin_periode.$error" role="alert">
-									<div ng-message="required">
-										<span>Fin période obligatoire</span>
-									</div>
-								</div>
-							</md-input-container-->
+								<md-datepicker name="date_debut_periode" ng-model="vm.decaissement.date_debut_periode"   md-placeholder="Début période" required>                       
+								</md-datepicker>
+							<md-input-container flex="100" flex-gt-xs="5">
+								<span>Fin période</span>
+							</md-input-container>
+								<md-datepicker name="date_fin_periode" ng-model="vm.decaissement.date_fin_periode"   md-placeholder="Fin période" required>                       
+								</md-datepicker>
 						</div>
 						<md-button type="submit" class="md-raised md-accent" aria-label="Enregistrer"
-							ng-disabled="prospectionform.$invalid" ng-click="vm.ajoutDecaissement(vm.decaissement,0,0)">
+							ng-disabled="decaissementform.$invalid" ng-click="vm.ajoutDecaissement(vm.decaissement,0,0)">
 							Enregistrer
 						</md-button>
 						<md-button type="submit" class="md-raised md-primary" aria-label="Annuler" ng-click="vm.annulerDecaissement(vm.decaissement)">
@@ -115,9 +107,21 @@
             <!-- LISTE TABLE -->
     <div class="content" layout="column">
 		<div class="form-wrapper">
-			<md-tabs md-dynamic-height>
+			<md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
+			<md-tabs md-dynamic-height ng-show="vm.afficher_les_onglets ==1">
 				<md-tab label="Financement Intervention">
 					<md-tab-body>
+						<div layout="column" layout-gt-xs="row" flex>
+							<!--md-input-container flex="100" flex-gt-xs="100"-->
+								<p style="float:left;display:inline-block;margin-right:5px;"><b>Choisir un Programme :  </b></p>
+								<md-select name="id_programme" ng-model="vm.id_programme"  ng-change="vm.modifierProgramme(vm.id_programme)" style="min-width:40%;display:inline-block;float:left;">
+									<md-option value=''></md-option>
+									<md-option ng-repeat="ta in vm.allRecordsProgramme | orderBy:['intitule']" value='{{ta.id}}'>
+										{{ta.intitule}}
+									</md-option>
+								</md-select>
+							<!--/md-input-container-->
+						</div>	
 						<table id="tableFinancementIntervention" ng-table="tableFinancementIntervention" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
 							<thead>
 								<tr>
@@ -132,7 +136,8 @@
 								<tr ng-repeat="prg in vm.allRecordsFinancementintervention"  ng-class="{selected: prg.$selected}" ng-click="vm.selection(prg)">										
 									<td>
 										<p style="margin:0;"><b>Source-fin :</b>{{prg.sourcefinancement[0].nom}}</p>
-										<p style="margin:0;"><b>Act° stratég :</b>{{prg.actionstrategique[0].description}}</p>
+										<p style="margin:0;"><b>Axe stratég :</b>{{prg.axestrategique[0].axe}}</p>
+										<p style="margin:0;"><b>Act° stratég :</b>{{prg.actionstrategique[0].action}}</p>
 									</td>
 									<td>
 										<span>{{prg.devise[0].description}}</span>
@@ -163,10 +168,6 @@
 								<md-button type="submit" ng-disabled="vm.desactivermodifier ==1" ng-show="vm.afficherboutonModifSupr==1" class="md-raised md-accent" aria-label="Supprimer" ng-click="vm.supprimerDecaissement()" style="width:10%;">
 								  Supprimer
 								</md-button>
-								<!--md-button type="submit" ng-show="(vm.afficherboutonModifSupr==1) && (vm.cliquable==1)" class="md-raised md-primary" aria-label="Supprimer" ng-click="vm.export_excel()" >
-								  Exporter en excel
-								</md-button-->
-
 							</div>  
 							<div style="clear:both;"></div>
 							<table id="tableDecaissement" ng-table="tableDecaissement" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
@@ -179,7 +180,10 @@
 										</th>
 									</tr>
 								</thead>
-								<div ng-show="vm.selectedItem.id >0"><b>Source fin : {{vm.selectedItem.sourcefinancement[0].nom}} - Act° stra : {{vm.selectedItem.actionstrategique[0].description}}</b></div>
+								<div ng-show="vm.selectedItem.id >0">
+									<p><b>Source fin : {{vm.selectedItem.sourcefinancement[0].nom}}  - Axe strat : {{vm.selectedItem.axestrategique[0].axe}}</b></p>
+									<p><b>Act° stra : {{vm.selectedItem.actionstrategique[0].action}}</b></p>
+								</div>
 								<tbody>
 									<tr ng-repeat="densi in vm.selectedItem.detail_decaissement"  ng-class="{selected: densi.$selected}" ng-click="vm.selectionDecaissement(densi)">
 										<td>

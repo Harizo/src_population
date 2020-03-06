@@ -8,7 +8,9 @@
                 'app.population.administration.utilisateur',
                 'app.population.administration.profil',
                 'app.population.administration.historiqueutilisateur',
-                'app.population.administration.groupe_user'
+                'app.population.administration.groupe_user',
+                'app.population.administration.cours_de_change'
+
             ])
         .run(testPermission)        
         .config(config);
