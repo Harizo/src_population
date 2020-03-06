@@ -34,7 +34,7 @@
     <![endif]-->
 
     <body md-theme="{{vm.themes.active.name}}" md-theme-watch ng-controller="IndexController as vm"
-          class="{{state.current.bodyClass || ''}}">
+          class="{{state.current.bodyClass || ''}}" onKeyPress="if (event.keyCode == 116) NomdeLaFonctionAExecuter();">
 
         <!-- SPLASH SCREEN -->
         <ms-splash-screen id="splash-screen">

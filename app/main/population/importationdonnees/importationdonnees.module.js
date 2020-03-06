@@ -19,12 +19,12 @@
         msNavigationServiceProvider.saveItem('population.importationdonnees', {
             title : 'Importation données',
             icon  : 'icon-data',
-            weight: 6,
+            weight: 6/*,
             hidden: function()
             {
                     return vs;
-            },
-            badge: nombre_non_importes,
+            }*/,
+            badge: nombre_non_importes
         });
 
 
