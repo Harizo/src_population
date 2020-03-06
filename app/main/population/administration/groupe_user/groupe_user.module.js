@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.population.administration.utilisateur', [])
+        .module('app.population.administration.groupe_user', [])
         .run(notification)        
         .config(config);
         var vs = {};
@@ -13,31 +13,30 @@
     function config($stateProvider, $translatePartialLoaderProvider, msNavigationServiceProvider)
     {
         // State
-        $stateProvider.state('app.population_admin_utilisateur', {
-            url      : '/administration/utilisateur',
+        $stateProvider.state('app.population_admin_groupe_user', {
+            url      : '/administration/groupe_user',
             views    : {
                 'content@app': {
-                    templateUrl: 'app/main/population/administration/utilisateur/utilisateur.html',
-                    controller : 'UserController as vm'
+                    templateUrl: 'app/main/population/administration/groupe_user/groupe_user.html',
+                    controller : 'Groupe_userController as vm'
                 }
             },
-            bodyClass: 'utilisateur',
+            bodyClass: 'groupe_user',
             data : {
               authorizer : true,
               permitted : ["USER","PERSONNEL","ADMIN"],
-              page: "Gestion_utilisateur"
+              page: "Gestion_groupe_user"
             }
         });
 
         
 
         // Navigation
-        msNavigationServiceProvider.saveItem('population.administration.user', {
-            title: 'Gestion Utilisateurs',
-            icon  : 'icon-account-key',
-            state: 'app.population_admin_utilisateur',
-			weight: 2,
-            badge:vs/*,
+        msNavigationServiceProvider.saveItem('population.administration.groupe_user', {
+            title: "Groupes d'utilisateurs",
+            icon  : 'icon-account-multiple',
+            state: 'app.population_admin_groupe_user',
+			weight: 1/*,
             hidden:function()
             {
                     return affichage;

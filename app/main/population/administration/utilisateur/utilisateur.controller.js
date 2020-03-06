@@ -22,10 +22,20 @@
 		vm.afficherboutonnouveau = 1 ;
 		vm.afficherboutonModifSupr = 0 ;
 		vm.afficherliste =1;
+
+		vm.affiche_load = false ;
 		// Récupérer via cookies id utilisateur
 		vm.id_utilisateur =$cookieStore.get('id');
-		vm.column = [{"titre":"Nom"},{"titre":"Prénom"},{"titre":"Email"},
-		{"titre":"Etat"},{"titre":"Envoi des données"},{"titre":"Privilège"}];
+		vm.column = 
+		[
+			{"titre":"Nom et Prénom"},
+			{"titre":"Fonction"},
+			{"titre":"Tel"},
+			{"titre":"Email"},
+			{"titre":"Etat"},
+			//{"titre":"Envoi des données"},
+			{"titre":"Groupes"}
+		];
 
 		vm.dtOptions = {
 			dom       : '<"top"f>rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
@@ -34,15 +44,41 @@
 			responsive: true
 		};
 		// Récupération des données référentielles
-		apiFactory.getAll("utilisateurs/index").then(function(result) {
-			vm.listes_utilisateurs = result.data.response;
-		});
+		
 		apiFactory.getAll("region/index").then(function(result) { 
 			vm.all_region = result.data.response;    
 		});
 		apiFactory.getAll("intervention/index").then(function(result) { 
 			vm.all_intervention = result.data.response;    
 		});
+
+		apiFactory.getAll("groupe_utilisateur/index").then(function(result) 
+		{ 
+			vm.all_groupe = result.data.response;  
+
+			apiFactory.getAll("utilisateurs/index").then(function(result) 
+			{
+				vm.listes_utilisateurs = result.data.response;
+			});  
+
+			vm.affichage_groupe = function(id_groupe)
+			{
+				var tab = vm.all_groupe ;
+
+				var groupe = tab.filter(function(obj) {            
+							return obj.id == id_groupe;
+						});
+
+				return groupe[0].nom ;
+			}
+		});
+
+
+		
+
+
+
+		
 		//add historique : consultation DDB annuaire d'intervention
 		var config = {
 			headers : {
@@ -70,6 +106,143 @@
                 return "";
             }
 		}      
+		//LIste check box
+		vm.tab_selected = [];
+
+		$scope.toggle = function (item, list) 
+		{
+			var idx = list.indexOf(item);
+			if (idx > -1) list.splice(idx, 1);
+			else list.push(item);
+
+			vm.get_roles_user();
+			
+		};
+
+		$scope.exists = function (item, list) 
+		{
+			return list.indexOf(item) > -1;
+		};
+
+		function retourne_false()
+    	{
+
+    		vm.acces.spr_adm = false ;
+    		vm.acces.ges_user = false ;
+			vm.acces.grp_user = false ;
+			vm.acces.his_user = false ;
+			vm.acces.var_ind = false ;
+			vm.acces.act_typ = false ;
+			vm.acces.prog = false ;
+			vm.acces.dec_adm = false ;
+			vm.acces.nom_int = false ;
+			vm.acces.var_int = false ;
+			vm.acces.anr_int = false ;
+			vm.acces.sui_dec = false ;
+			vm.acces.sim_ben = false ;
+			vm.acces.sim_int = false ;
+			vm.acces.imp_ben = false ;
+			vm.acces.imp_int = false ;
+			vm.acces.rpt = false ;
+    	}
+
+		vm.get_roles_user = function()
+		{
+			var tab_str = String(vm.tab_selected);
+			retourne_false();
+			apiFactory.getAPIgeneraliserREST("utilisateurs/index","tab_groupe",tab_str).then(function(result) 
+			{
+				vm.roles_user = result.data.response;
+
+				console.log(vm.roles_user);
+				angular.forEach(vm.roles_user, function(value, key)  
+				{           
+				switch(value)   {
+
+					case 'SPR_ADM':  {
+                      vm.acces.spr_adm = true ;
+                      break ;
+					}
+					case 'USER':  {
+                      vm.acces.user = true ;
+                      break ;
+					}
+					case 'GES_USER':  {
+			          vm.acces.ges_user = true ;
+			          break ;
+					}
+					case 'GRP_USER':  {
+			          vm.acces.grp_user = true ;
+			          break ;
+					}
+					case 'HIS_USER' :  {
+			          vm.acces.his_user = true ;
+			          break;
+					}
+					case 'VAR_IND': {
+			          vm.acces.var_ind = true ;
+			          break;
+					}
+					case 'ACT_TYP': {
+			          vm.acces.act_typ = true ;
+			          break;
+					}
+					case 'PROG':  {
+			          vm.acces.prog = true ;
+			          break;
+					}
+					case 'DEC_ADM':  {
+			          vm.acces.dec_adm = true ;
+			          break;
+					}
+					case 'NOM_INT':  {
+			          vm.acces.nom_int = true ;
+			          break;
+					}
+					case 'VAR_INT':  {
+			          vm.acces.var_int = true ;
+			          break;
+					}
+					case 'ANR_INT':  {
+			          vm.acces.anr_int = true ;
+			          break;
+					}
+					case 'SUI_DEC':  {
+			          vm.acces.sui_dec = true ;
+			          break;
+					}
+					case 'SIM_BEN':  {
+			          vm.acces.sim_ben = true ;
+			          break;
+					}
+					case 'SIM_INT':  {
+			          vm.acces.sim_int = true ;
+			          break;
+					}
+					case 'IMP_BEN':  {
+			          vm.acces.imp_ben = true ;
+			          break;
+					}
+					case 'IMP_INT':  {
+			          vm.acces.imp_int = true ;
+			          break;
+					}
+					case 'RPT':  {
+			          vm.acces.rpt = true ;
+			          break;
+					}
+					default:  {
+			          break ;
+					}
+				}  
+
+				
+			});
+			});
+		}
+
+
+		//fin LIste check box
 		vm.sexe = function (s)  {
 			var x = Number(s);
 			switch(x)  {
@@ -244,9 +417,12 @@
 			vm.user.imp=false;
 			vm.user.vld=false;
 			vm.NouvelItem = true ;			
+
+			vm.tab_selected = [];
         };
 		// Modification d'un utilisateur
 		vm.modifier = function()   {
+			retourne_false();
 			vm.NouvelItem = false ;	
 			vm.titre="Modification utilisateur";
 			vm.affichageMasque = 1 ;
@@ -305,45 +481,90 @@
 			vm.user.email_hote= vm.selectedItem.email_hote;
 			vm.user.telephone_hote= vm.selectedItem.telephone_hote;
 			vm.user.description_hote= vm.selectedItem.description_hote;
+
+			vm.tab_selected = vm.selectedItem.groupes ;
 			angular.forEach(vm.selectedItem.roles, function(value, key)  {           
 				switch(value)   {
+
+					case 'SPR_ADM':  {
+                      vm.acces.spr_adm = true ;
+                      break ;
+					}
 					case 'USER':  {
-                      vm.user.user = true ;
+                      vm.acces.user = true ;
                       break ;
 					}
-					case 'DDB':  {
-                      vm.user.ddb = true ;
-                      break ;
+					case 'GES_USER':  {
+			          vm.acces.ges_user = true ;
+			          break ;
 					}
-					case 'ADMIN' :  {
-                      vm.user.admin = true ;
-                      break;
+					case 'GRP_USER':  {
+			          vm.acces.grp_user = true ;
+			          break ;
 					}
-					case 'IMP': {
-                      vm.user.imp = true ;
-                      break;
+					case 'HIS_USER' :  {
+			          vm.acces.his_user = true ;
+			          break;
 					}
-					case 'VLD': {
-                      vm.user.vld = true ;
-                      break;
+					case 'VAR_IND': {
+			          vm.acces.var_ind = true ;
+			          break;
 					}
-					case 'AJOUT':  {
-                      vm.user.ajout = true ;
-                      break;
+					case 'ACT_TYP': {
+			          vm.acces.act_typ = true ;
+			          break;
 					}
-					case 'MODIF':  {
-                      vm.user.modif = true ;
-                      break;
+					case 'PROG':  {
+			          vm.acces.prog = true ;
+			          break;
 					}
-					case 'SUPPR':  {
-                      vm.user.suppr = true ;
-                      break;
+					case 'DEC_ADM':  {
+			          vm.acces.dec_adm = true ;
+			          break;
+					}
+					case 'NOM_INT':  {
+			          vm.acces.nom_int = true ;
+			          break;
+					}
+					case 'VAR_INT':  {
+			          vm.acces.var_int = true ;
+			          break;
+					}
+					case 'ANR_INT':  {
+			          vm.acces.anr_int = true ;
+			          break;
+					}
+					case 'SUI_DEC':  {
+			          vm.acces.sui_dec = true ;
+			          break;
+					}
+					case 'SIM_BEN':  {
+			          vm.acces.sim_ben = true ;
+			          break;
+					}
+					case 'SIM_INT':  {
+			          vm.acces.sim_int = true ;
+			          break;
+					}
+					case 'IMP_BEN':  {
+			          vm.acces.imp_ben = true ;
+			          break;
+					}
+					case 'IMP_INT':  {
+			          vm.acces.imp_int = true ;
+			          break;
+					}
+					case 'RPT':  {
+			          vm.acces.rpt = true ;
+			          break;
 					}
 					default:  {
-                      break ;
+			          break ;
 					}
 				}  
-          });
+
+				
+			});
 		}
 		// Suppression d'un utilisateur
 		vm.supprimer = function() {
@@ -364,42 +585,29 @@
 			});
 		}
 		// Enregistrement dans la BDD
-		vm.ajout = function(user,suppression)  {
-			var tab = [] ;   
-			// PRIVILEGES UTILISATEUR	
-			angular.forEach(user, function(value, key)  {        
-              if(key == 'user' && value == true)
-                  tab.push(key.toUpperCase());
-              if(key == 'ddb' && value == true)
-                tab.push(key.toUpperCase());
-              if(key == 'admin' && value == true)
-                  tab.push(key.toUpperCase());
-              if(key == 'vld' && value == true)
-                tab.push(key.toUpperCase());
-              if(key == 'imp' && value == true)
-                tab.push(key.toUpperCase());
-              if(key == 'ajout' && value == true)
-                tab.push(key.toUpperCase());
-              if(key == 'modif' && value == true)
-                tab.push(key.toUpperCase());
-              if(key == 'suppr' && value == true)
-                tab.push(key.toUpperCase());             
-			});         
-			if (suppression == 0) { //update
+		vm.ajout = function(user,suppression)  
+		{
+		
+			vm.affiche_load = true ;
+			if (suppression == 0) 
+			{ 
 				var config = {
 					headers : {
 						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
 					}
 				};
 				var getId = 0;
-				if (vm.NouvelItem==false) {
+				if (vm.NouvelItem==false) 
+				{
 				   getId = vm.selectedItem.id; 
 				} 
-				if (!vm.infoAssuj) {
+				if (!vm.infoAssuj) 
+				{
 					vm.infoAssuj = {};
 					vm.infoAssuj.id = "";
 				};
-				if (!vm.pers) {
+				if (!vm.pers) 
+				{
 					vm.pers = {};
 					vm.pers.id = "";
 				};
@@ -415,7 +623,7 @@
 					envoi_donnees: user.envoi_donnees ,
 					password: user.password ,
 					default_password: user.default_password ,
-					roles: tab,                 
+					roles: vm.tab_selected,                 
 					id_region: user.id_region,                 
 					id_district: user.id_district,                 
 					id_commune: user.id_commune,                 
@@ -433,7 +641,11 @@
 					telephone_hote: user.telephone_hote,                 
 					description_hote: user.description_hote,                 
 				});
-				apiFactory.add("utilisateurs/index",datas, config).success(function (data) {
+				apiFactory.add("utilisateurs/index",datas, config).success(function (data) 
+				{
+
+					vm.affiche_load = false ;
+					console.log(vm.affiche_load );
 					if (getId==0) { 
 						// Nouvel utilisateur	
 						// Et envoi e-mail pour signaler que le compte utilisateur a été ouvert
@@ -463,7 +675,7 @@
 							email_hote: user.email_hote,                 
 							telephone_hote: user.telephone_hote,                 
 							description_hote: user.description_hote, 
-							roles: tab,
+							roles: vm.tab_selected,
 						};
 						vm.listes_utilisateurs.push(items); 
 						vm.action="Ajout compte utilisateur ("+ user.raison_sociale + ") au nom de : " + user.prenom + " " + user.nom + "("+ user.email + ")";
@@ -475,7 +687,7 @@
 						}
 					} else {
 						// Mise à jour d'un utlisateur
-						vm.selectedItem.roles = tab ;
+						vm.selectedItem.roles = vm.tab_selected ;
 						vm.selectedItem.nom = user.nom;
 						vm.selectedItem.email = user.email;
 						vm.selectedItem.prenom = user.prenom;
@@ -519,7 +731,9 @@
 					});								
 					}).error(function (data) {               
 				});
-			} else {  //delete
+			} 
+			else 
+			{  //delete
 				var config = {
 					headers : {
 						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -530,8 +744,11 @@
 					supprimer:suppression,
 					id:vm.selectedItem.id
 				});
-				apiFactory.add("utilisateurs/index",datas, config).success(function (data) {
-					vm.listes_utilisateurs = vm.listes_utilisateurs.filter(function(obj) {            
+				apiFactory.add("utilisateurs/index",datas, config).success(function (data) 
+				{
+					vm.affiche_load = false ;
+					vm.listes_utilisateurs = vm.listes_utilisateurs.filter(function(obj) 
+					{            
 						return obj.id !== vm.selectedItem.id;
 					});
 				}).error(function (data) {

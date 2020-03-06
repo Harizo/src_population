@@ -7,7 +7,8 @@
             [
                 'app.population.administration.utilisateur',
                 'app.population.administration.profil',
-                'app.population.administration.historiqueutilisateur'
+                'app.population.administration.historiqueutilisateur',
+                'app.population.administration.groupe_user'
             ])
         .run(testPermission)        
         .config(config);
@@ -26,11 +27,11 @@
             }
         });
 
-        msNavigationServiceProvider.saveItem('population.administration.utilisateurs', {
+       /* msNavigationServiceProvider.saveItem('population.administration.utilisateurs', {
             title: 'Utilisateurs',
             icon  : 'icon-account-multiple'
             //state: 'app.population_administration_secteur'
-        });
+        });*/
     }
 
     function testPermission(loginService,$cookieStore,apiFactory)
@@ -44,7 +45,7 @@
             {
                 var user = result.data.response;
                 var permission = user.roles;
-                var permissions = ["ADMIN"];
+                var permissions = ["SPR_ADM"];
                 var x =  loginService.gestionMenu(permissions,permission);        
                 vs = x ;
               

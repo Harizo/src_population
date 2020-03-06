@@ -30,11 +30,11 @@
         
 
         // Navigation
-        msNavigationServiceProvider.saveItem('population.administration.utilisateurs.historiqueutilisateur', {
+        msNavigationServiceProvider.saveItem('population.administration.historiqueutilisateur', {
             title: 'Historique utilisateur',
             icon  : 'icon-package-variant',
             state: 'app.population_admin_historiqueutilisateur',
-			weight: 2
+			weight: 3
         });
     }
 

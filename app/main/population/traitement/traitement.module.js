@@ -4,9 +4,9 @@
 
     angular
         .module('app.population.traitement', [			
-           'app.population.traitement.menage',
-           'app.population.traitement.suivi',
-           'app.population.traitement.decaissement',
+           /*'app.population.traitement.menage',
+           'app.population.traitement.suivi',*/
+           'app.population.traitement.decaissement'
             ])
         // .run(testPermission)
         .config(config);

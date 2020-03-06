@@ -126,6 +126,12 @@
             titre:"Indice de niveau de vulnérabilité",
             id:"req6_theme2",
             category:"theme2"
+          },
+
+          {
+            titre:"Listes bénéficiaires",
+            id:"liste_beneficiaire_intevention",
+            category:"theme1"
           }, 
 
           //FIN CODE HARIZO    
@@ -330,48 +336,55 @@
 
           vm.export_excel = function(filtre)
           {
-            vm.affiche_load = true ;
-
-            var repertoire = "tableau_de_bord/" ;
-
-            var piv = vm.pivots.filter(function(obj) {
-              return obj.id == vm.filtre.pivot;
-            });
-
-            apiFactory.getAPIgeneraliserREST("Export_excel/index",
-                                              "menu",vm.filtre.pivot,
-                                              "id_region",filtre.region_id,
-                                              /*"id_district",filtre.district_id,
-                                              "id_commune",filtre.commune_id,
-                                              "id_intervention",filtre.intervention_id,*/
-                                              "id_type_transfert",filtre.id_type_transfert,
-                                              "date_debut",convertionDate(filtre.date_debut),
-                                              "date_fin",convertionDate(filtre.date_fin),
-                                              "repertoire",repertoire,
-                                              "nom_file",piv[0].titre)
-            .then(function(result)
+            if (vm.filtre.pivot != "liste_beneficiaire_intevention") 
             {
+              vm.affiche_load = true ;
 
-              
-              vm.status =  result.data.status ;
+              var repertoire = "tableau_de_bord/" ;
 
-              if(vm.status)
+              var piv = vm.pivots.filter(function(obj) {
+                return obj.id == vm.filtre.pivot;
+              });
+
+              apiFactory.getAPIgeneraliserREST("Export_excel/index",
+                                                "menu",vm.filtre.pivot,
+                                                "id_region",filtre.region_id,
+                                                /*"id_district",filtre.district_id,
+                                                "id_commune",filtre.commune_id,
+                                                "id_intervention",filtre.intervention_id,*/
+                                                "id_type_transfert",filtre.id_type_transfert,
+                                                "date_debut",convertionDate(filtre.date_debut),
+                                                "date_fin",convertionDate(filtre.date_fin),
+                                                "repertoire",repertoire,
+                                                "nom_file",piv[0].titre)
+              .then(function(result)
               {
-                var nom_fiche = result.data.nom_file;
-                window.location = apiUrlExcel + repertoire + nom_fiche ;
-                vm.affiche_load =false; 
 
-              }
-              else
-              {
-                vm.affiche_load =false;
-                var message=result.data.message;
-                vm.Alert('Export en excel',message);
                 
-              }
-             
-        
-            });
+                vm.status =  result.data.status ;
+
+                if(vm.status)
+                {
+                  var nom_fiche = result.data.nom_file;
+                  window.location = apiUrlExcel + repertoire + nom_fiche ;
+                  vm.affiche_load =false; 
+
+                }
+                else
+                {
+                  vm.affiche_load =false;
+                  var message=result.data.message;
+                  vm.Alert('Export en excel',message);
+                  
+                }
+               
+          
+              });
+            }
+            else
+            {
+              vm.Alert('Information!','En cours de dévéloppement');
+            }
 
             
           }
@@ -394,10 +407,12 @@
 
         //recuperation district par region
         vm.modifierregion = function(filtre)
-        {            
+        {   
+            vm.allcommune = [] ;
             apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",filtre.region_id).then(function(result)
             {
               vm.filtre.district_id = '*' ;
+              vm.filtre.commune_id = '*' ;
               vm.alldistrict = result.data.response;
               vm.isDistrict = true;
             });
