@@ -10,7 +10,6 @@
     function DecaissementController($scope, $mdDialog, apiFactory, $state, $cookieStore, apiUrl, apiUrlbase)
     {
         var vm = this;
-        vm.ajout = ajout ;
 		vm.ajoutDecaissement = ajoutDecaissement ;
 		vm.desactivermodifier =0;
 		vm.titrepage ="Nouvel prospection";
@@ -21,10 +20,14 @@
         vm.selectedItem ={};
         vm.selectedItemDecaissement={};
         vm.Decaissement=[];
+		vm.allRecordsProgramme=[];
 		vm.allRecordsFinancementintervention=[];
+		vm.listeFinancementintervention=[];
+		vm.id_programme="";
         //variale affichage bouton nouveau
         vm.afficherboutonnouveau = 1 ;
 		vm.afficherboutonModifSupr=0;
+		vm.afficher_les_onglets =1;
 		vm.cliquable=1;
         var trouve =false;
 		vm.affiche_load =true;
@@ -48,183 +51,31 @@
 		//col table
 		vm.financementintervention_column = [{titre:"Programme/Src-finance/Axe stratégique"},{titre:"Devise"},{titre:"Secteur"},{titre:"Budget initial"},{titre:"Budget modif"}];
 		vm.decaissement_column = [{titre:"Mont initial"},{titre:"Mont revisé"},{titre:"Date révision"},{titre:"Décaiss prévu"},{titre:"Décaiss effect"},{titre:"Transf bénéf"},{titre:"Période Déb"},{titre:"Période fin"}];
-		apiFactory.getAll("financement_intervention/index").then(function(result) {
-			vm.allRecordsFinancementintervention= result.data.response;
-			console.log(vm.allRecordsFinancementintervention);
+		apiFactory.getAll("programme/index").then(function(result) {
+			vm.allRecordsProgramme= result.data.response;
+			apiFactory.getAll("financement_intervention/index").then(function(result) {
+				vm.listeFinancementintervention= result.data.response;
+				vm.allRecordsFinancementintervention= [];
+				if(vm.allRecordsProgramme.length >0) {
+					// Filtre par défaut : premier élément du tableau programme
+					vm.id_programme=vm.allRecordsProgramme[0].id;
+					vm.modifierProgramme(vm.id_programme);
+					vm.affiche_load =false;
+				}
+				console.log(vm.allRecordsProgramme);
+			});
 		});
 		apiFactory.getAll("decaissement/index").then(function(result) {
 			vm.allRecordsDecaissement= result.data.response;
 		});
         //Debut
-        function ajout(prospection,suppression) {
-            if (NouvelItem==false) {
-                test_existance (prospection,suppression); 
-            } else {
-              
-                insert_in_base(prospection,suppression);
-            }                                        
-        }
-        function test_existance (item,suppression) {          
-            if (suppression!=1) {
-                vm.allRecordsFinancementintervention.forEach(function(indic) {               
-                  if (indic.id==item.id) {
-                      insert_in_base(item,suppression);
-                      vm.affichageMasque = 0 ;
-                     }
-                     else {
-                    vm.affichageMasque = 0 ;
-                    }
-                  
-                });
-            } else {        
-				insert_in_base(item,suppression);
-			} 
-        } 
-        function insert_in_base(prospection,suppression) {
-            //add
-            var config = {
-                headers : {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                }
-            };
-            var getId = 0;
-            if (NouvelItem==false) {
-               getId = vm.selectedItem.id; 
-            } 
-            var datas = $.param({
-                    id:getId,
-                    supprimer:suppression,
-                    id_type_fiche_prospection:prospection.id_type_fiche_prospection,
-                    typeprospection:prospection.typeprospection,
-                    prospecteur:prospection.prospecteur,
-                    personnelprospecteur:prospection.personnelprospecteur,
-                    reference_prospection:prospection.reference_prospection,
-                    numero_releve:prospection.numero_releve,
-                    numero_fiche:prospection.numero_fiche,
-                    date_prospection:prospection.date_prospection,
-                    date_envoi:prospection.date_envoi,
-                    id_station:prospection.id_station,
-                    station:prospection.station,
-                    id_post:prospection.id_post,
-                    poste:prospection.poste,
-                    surface_prospect:prospection.surface_prospect,
-                    surface_infeste:prospection.surface_infeste,
-                    latitude:prospection.latitude,
-                    longitude:prospection.longitude,
-                    altitude:prospection.altitude,
-                    coordonnee1:prospection.coordonnee1,
-                    coordonnee2:prospection.coordonnee2,
-                    coordonnee3:prospection.coordonnee3,
-                    coordonnee4:prospection.coordonnee4,
-                    id_utilisateur:prospection.id_utilisateur,
-                    informateur:prospection.informateur,
-                    date_observation:prospection.date_observation,
-                    date_signalisation:prospection.date_signalisation,
-                    moyen:prospection.moyen,
-                    validation:prospection.validation,
-                    supprime:prospection.supprime,
-                    localite:prospection.localite,
-                    id_fokontany:prospection.id_fokontany,
-                    fokontany:prospection.fokontany					
-				});  
-            //factory
-            apiFactory.add("ficheprospection/index",datas, config).success(function (data) {
-				if (NouvelItem == false) {                 
-                    // Update or delete: id exclu                    
-                    if(suppression==0) { 
-						vm.selectedItem.id_type_fiche_prospection=prospection.id_type_fiche_prospection; 
-						vm.selectedItem.typeprospection=prospection.typeprospection; 
-						vm.selectedItem.prospecteur=prospection.prospecteur; 
-						vm.selectedItem.personnelprospecteur=prospection.personnelprospecteur; 
-						vm.selectedItem.reference_prospection=prospection.reference_prospection; 
-						vm.selectedItem.numero_releve=prospection.numero_releve; 
-						vm.selectedItem.numero_fiche=prospection.numero_fiche; 
-						vm.selectedItem.date_prospection=prospection.date_prospection; 
-						vm.selectedItem.date_envoi=prospection.date_envoi; 
-						vm.selectedItem.id_station=prospection.id_station; 
-						vm.selectedItem.station=prospection.station; 
-						vm.selectedItem.id_post=prospection.id_post; 
-						vm.selectedItem.poste=prospection.poste; 
-						vm.selectedItem.surface_prospect=prospection.surface_prospect; 
-						vm.selectedItem.surface_infeste=prospection.surface_infeste; 
-						vm.selectedItem.latitude=prospection.latitude; 
-						vm.selectedItem.longitude=prospection.longitude; 
-						vm.selectedItem.altitude=prospection.altitude; 
-						vm.selectedItem.coordonnee1=prospection.coordonnee1; 
-						vm.selectedItem.coordonnee2=prospection.coordonnee2; 
-						vm.selectedItem.coordonnee3=prospection.coordonnee3; 
-						vm.selectedItem.coordonnee4=prospection.coordonnee4; 
-						vm.selectedItem.id_utilisateur=prospection.id_utilisateur; 
-						vm.selectedItem.informateur=prospection.informateur; 
-						vm.selectedItem.date_observation=prospection.date_observation; 
-						vm.selectedItem.date_signalisation=prospection.date_signalisation; 
-						vm.selectedItem.moyen=prospection.moyen; 
-						vm.selectedItem.validation=validez; 
-						vm.selectedItem.supprime=prospection.supprime; 
-                        vm.selectedItem.localite=prospection.localite; 
-                        vm.selectedItem.id_fokontany=prospection.id_fokontany;
-                        vm.selectedItem.fokontany=prospection.fokontany; 
-						vm.afficherboutonModifSupr = 0 ;
-						vm.afficherboutonnouveau = 1 ;
-						vm.selectedItem.$selected = false;
-						vm.selectedItem ={};
-                    } else {                      
-						vm.allRecordsFinancementintervention = vm.allRecordsFinancementintervention.filter(function(obj) {
-							return obj.id !== currentItem.id;
-						});
-                    }
-				} else {                               
-                    var item = {
-						id:String(data.response),
-						id_type_fiche_prospection:prospection.id_type_fiche_prospection,
-						typeprospection:prospection.typeprospection,
-						prospecteur:prospection.prospecteur,
-						personnelprospecteur:prospection.personnelprospecteur,
-						reference_prospection:prospection.reference_prospection,
-						numero_releve:prospection.numero_releve,
-						numero_fiche:prospection.numero_fiche,
-						date_prospection:prospection.date_prospection,
-						date_envoi:prospection.date_envoi,
-						id_station:prospection.id_station,
-						station:prospection.station,
-						id_post:prospection.id_post,
-						poste:prospection.poste,
-						surface_prospect:prospection.surface_prospect,
-						surface_infeste:prospection.surface_infeste,
-						latitude:prospection.latitude,
-						longitude:prospection.longitude,
-						altitude:prospection.altitude,
-						coordonnee1:prospection.coordonnee1,
-						coordonnee2:prospection.coordonnee2,
-						coordonnee3:prospection.coordonnee3,
-						coordonnee4:prospection.coordonnee4,
-						id_utilisateur:prospection.id_utilisateur,
-						informateur:prospection.informateur,
-						date_observation:prospection.date_observation,
-						date_signalisation:prospection.date_signalisation,
-						moyen:prospection.moyen,
-						validation:prospection.validation,
-						supprime:prospection.supprime,
-                        id_fokontany:prospection.id_fokontany,
-                        fokontany:prospection.fokontany,
-                        localite:prospection.localite,
-						// RAZ Détail
-						densite :[],
-						espece:[],
-						description  :[],
-						comportement :[],
-						vegetation :[],
-						vegetationdetail :[],
-						vegetationhumidite :[],
-						vegetationtexturesol :[],
-					};
-					vm.allRecordsFinancementintervention.push(item); 
-                    NouvelItem=false;
-				}
-                  vm.affichageMasque = 0 ;
-			})
-        }
-        //Fin
+        vm.modifierProgramme = function (id_programme) { 
+			vm.allRecordsFinancementintervention =[];
+			vm.selectedItem={};
+			vm.allRecordsFinancementintervention = vm.listeFinancementintervention.filter(function(obj) {
+				return obj.id_programme == id_programme;
+			});
+		}	
 		vm.showAlert = function(titre,textcontent) {
 			// Appending dialog to document.body to cover sidenav in docs app
 			// Modal dialogs should fully cover application
@@ -241,18 +92,6 @@
 				.targetEvent()
 			);
 		} 
-		function test_sexe(stp) {
-			switch (stp) {
-				case "1": {
-					return 1 ;
-					break ;
-				}
-				case "0": {
-					return 0 ;
-					break ;
-				}
-			}
-		}
 		function formatDate(date) {
 			var mois = date.getMonth()+1;
 			var dateSQL = (date.getFullYear()+"/"+mois+"/"+date.getDate());
@@ -270,14 +109,22 @@
             currentItem = JSON.parse(JSON.stringify(vm.selectedItem));       
 			// RAZ Détail			
 			if(item.detail_charge==0) {
+				vm.affiche_load =true;
 				item.detail_decaissement =[];
 				setTimeout(function(){
 					apiFactory.getAPIgeneraliserREST("decaissement/index","cle_etrangere",vm.selectedItem.id).then(function(result) {
 						item.detail_decaissement = result.data.response;
 						item.detail_charge=1;
+						for(var i=0;i < vm.listeFinancementintervention.length;i++) {
+							if(vm.listeFinancementintervention[i].id==vm.selectedItem.id) {
+								vm.listeFinancementintervention[i].detail_decaissement = result.data.response;
+								vm.listeFinancementintervention[i].detail_charge = 1;
+							}						
+						}	
+						vm.affiche_load =false;
 					});
 				},600);	
-			} 		
+			}	
         };
         $scope.$watch('vm.selectedItem', function() {
 			if (!vm.allRecordsFinancementintervention) return;
@@ -287,6 +134,7 @@
 			vm.selectedItem.$selected = true;
         });
         vm.ajouter = function () {
+			vm.afficher_les_onglets =0;
 			vm.selectedItem.$selected = false;
 			vm.decaissement.typeprospection={};
 			vm.decaissement.personnelprospecteur={};
@@ -313,6 +161,7 @@
 			vm.titrepage ="Nouvel prospection";
         };
         vm.annuler = function() {
+			vm.afficher_les_onglets =1;
 			vm.selectedItem = {} ;
 			vm.selectedItem.$selected = false;
 			// RAZ Détail
@@ -327,6 +176,7 @@
 			NouvelItem = false;
         };
 		vm.modifier = function() {
+			vm.afficher_les_onglets =0;
 			NouvelItem = false ;
 			vm.decaissement.id = vm.selectedItem.id ;
 			vm.decaissement.id_type_fiche_prospection = vm.selectedItem.id_type_fiche_prospection ;
@@ -393,19 +243,6 @@
             //alert('rien');
 			});
         };
-        vm.modifierTypeprospection = function (item) { 
-			vm.alltypeprospection.forEach(function(typepros) {
-				if(typepros.id==item.id_type_fiche_prospection) {
-					vm.decaissement.id_type_fiche_prospection = typepros.id; 
-					vm.decaissement.typeprospection=[];
-					var itemss = {
-						id: typepros.id,
-						libelle: typepros.libelle,
-					};
-					vm.decaissement.typeprospection.push(itemss);
-				}
-			});
-		}
 	// DETAIL
 	// DECAISSEMENT
         vm.selectionDecaissement= function (item) {     
@@ -424,6 +261,7 @@
         });
         //function cache masque de saisie
         vm.ajouterDecaissement = function () {
+			vm.afficher_les_onglets =0;
  			vm.affichageMasque = 1 ;
 			vm.selectedItemDecaissement.$selected = false;
             NouvelItemDecaissement = true ;
@@ -457,6 +295,7 @@
 			vm.decaissement.commentaire = null;
         };
         vm.annulerDecaissement = function(item) {
+			vm.afficher_les_onglets =1;
 			vm.affichageMasque = 0 ;
 			vm.afficherboutonnouveau = 1 ;
 			vm.afficherboutonModifSupr = 0 ;
@@ -467,6 +306,7 @@
 			vm.selectedItemDecaissement.$selected = false;
        };
         vm.modifierDecaissement = function() {
+			vm.afficher_les_onglets =0;
 			vm.affichageMasque = 1 ;
 			NouvelItemDecaissement = false ;
 			vm.decaissement={};
@@ -573,20 +413,20 @@
 					daty_revision = vm.decaissement.date_revision;
 				}
 			}	
-			if(vm.decaissement.date_date_debut_periode) {
+			if(vm.decaissement.date_debut_periode) {
 				if(parseInt(suppr)==0) {
-					daty_date_debut_periode = formatDate(vm.decaissement.date_date_debut_periode);
+					daty_date_debut_periode = formatDate(vm.decaissement.date_debut_periode);
 				} else {
 					// ignorer formatDate lors de la suppression
-					daty_date_debut_periode = vm.decaissement.date_date_debut_periode;
+					daty_date_debut_periode = vm.decaissement.date_debut_periode;
 				}
 			}	
-			if(vm.decaissement.date_date_fin_periode) {
+			if(vm.decaissement.date_fin_periode) {
 				if(parseInt(suppr)==0) {
-					daty_date_fin_periode = formatDate(vm.decaissement.date_date_fin_periode);
+					daty_date_fin_periode = formatDate(vm.decaissement.date_fin_periode);
 				} else {
 					// ignorer formatDate lors de la suppression
-					daty_date_fin_periode = vm.decaissement.date_date_fin_periode;
+					daty_date_fin_periode = vm.decaissement.date_fin_periode;
 				}
 			}	
 			var datas = $.param({
@@ -678,28 +518,13 @@
 				}
 				densi.$selected=false;
 				densi.$edit=false;
+				vm.afficher_les_onglets =1;
 				vm.affichageMasque = 0 ;
 				vm.afficherboutonnouveau = 1 ;
 				vm.afficherboutonModifSupr=0;
 			}).error(function (data) {
 				vm.showAlert('ERREUR',"Erreur lors de l'enregistrement !");
 			});  
-        }
-        vm.export_excel = function()  {
-            console.log(vm.selectedItem);
-            vm.cliquable=0;
-            vm.affiche_load = true;
-            var bla = $.post(apiUrl + "Exportexcel_fiches/export_prospection",{
-                id_fiche : vm.selectedItem.id,
-                id_type_fiche : vm.selectedItem.id_type_fiche_prospection,
-                repertoire:'prospection/fiche'
-            },
-            function(data) {
-                vm.affiche_load = false;
-                vm.cliquable=1;
-                //download excel
-                window.location = apiUrlbase+"exportexcel/prospection/fiche/"+data.ref+".xlsx" ;
-            });
         }
     }
 })();

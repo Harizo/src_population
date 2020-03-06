@@ -115,11 +115,11 @@
 		};
 		//col affiché des table
 		vm.programme_column = [{titre:"Contact Informateur"},{titre:"Identifiant"},{titre:"Bénéficiaire"},{titre:"Action"},{titre:"Intitulé"},{titre:"Début-Fin"}];
-		vm.ziprg_column = [{titre:"Région"},{titre:"District"},{titre:"Ménage prévu"},{titre:"Indiv prévu"},{titre:"Actions"}];
+		vm.ziprg_column = [{titre:"Région"},{titre:"District"},{titre:"Ménage prévu"},{titre:"Indiv prévu"},{titre:"Groupe prévu"},{titre:"Actions"}];
 		vm.financementprogramme_column = [{titre:"Programme/Src-finance/Axe stratégique"},{titre:"Type finance"},{titre:"Devise"},{titre:"Secteur"},{titre:"Budget initial"},{titre:"Budget modif"}];
 		vm.intervention_column = [{titre:"Contact Informateur"},{titre:"Ident/Intitulé/Comment"},{titre:"Acteur/Catég int/Action"},{titre:"Action"},{titre:"Intitulé"}];
 		vm.financementintervention_column = [{titre:"Programme/Src-finance/Axe stratégique"},{titre:"Devise"},{titre:"Secteur"},{titre:"Budget initial"},{titre:"Budget modif"}];
-		vm.zone_column = [{titre:"Région"},{titre:"District"},{titre:"Commune"},{titre:"Fokontany"},{titre:"Ménage prévu"},{titre:"Indiv prévu"},{titre:"Actions"}];
+		vm.zone_column = [{titre:"Région"},{titre:"District"},{titre:"Commune"},{titre:"Fokontany"},{titre:"Ménage prévu"},{titre:"Indiv prévu"},{titre:"Groupe prévu"},{titre:"Actions"}];
 		vm.detailtypetransfert_column = [{titre:"Choix"},{titre:"Descript°"},{titre:"Qté/Val"},{titre:"Unité"}];
 		vm.detailtypesecteur_column = [{titre:"Choix"},{titre:"Descript°"}];
 		// Début Récupération des données référetielles
@@ -659,50 +659,127 @@
 				id_region: zoneprg.id_region,
 				menage_beneficiaire_prevu: zoneprg.menage_beneficiaire_prevu,
 				individu_beneficiaire_prevu: zoneprg.individu_beneficiaire_prevu,
-			});       
-			//factory table zone_intervention_programme
-			apiFactory.add("zone_intervention_programme/index",datas, config).success(function (data) {
-				if (NouvelItemZoneinterventionprogramme == false) {
-					// Update or delete: id exclu                   
-					if(suppression==0) {
-					  vm.selectedItemZoneinterventionprogramme.id_programme = zoneprg.id_programme;
-					  vm.selectedItemZoneinterventionprogramme.id_district = zoneprg.id_district;
-					  vm.selectedItemZoneinterventionprogramme.id_region = zoneprg.id_region;
-					  vm.selectedItemZoneinterventionprogramme.menage_beneficiaire_prevu = zoneprg.menage_beneficiaire_prevu;
-					  vm.selectedItemZoneinterventionprogramme.individu_beneficiaire_prevu = zoneprg.individu_beneficiaire_prevu;
-					  vm.selectedItemZoneinterventionprogramme.$selected = false;
-					  vm.selectedItemZoneinterventionprogramme.$edit = false;
-					  vm.selectedItemZoneinterventionprogramme ={};
-					  vm.action="Modification d'un enregistrement de DDB (Annuaire): Zone d'intervention programme";
-					} else {    
-						vm.selectedItemProgramme.detail_zone_intervention_programme = vm.selectedItemProgramme.detail_zone_intervention_programme.filter(function(obj) {
-							return obj.id !== vm.selectedItemZoneinterventionprogramme.id;
-						});
-						vm.action="Suppression d'un enregistrement de DDB (Annuaire): Zone d'intervention programme";
-					}
+				groupe_beneficiaire_prevu: zoneprg.groupe_beneficiaire_prevu,
+			});   
+			// Début Controle si détaillé par district ou par région seulement	
+			vm.a_sauvegarder =true; // Après controle : si tout est ok => sauvegarde dans la BDD sinon message d'erreur
+			var region_id =zoneprg.id_region;
+			var district_id =zoneprg.id_district;
+			var nombre_detaille_par_district=0;
+			var nombre_par_region=0;
+			for(var i=0;i< vm.selectedItemProgramme.detail_zone_intervention_programme.length;i++) {
+				nombre_detaille_par_district=0;
+				nombre_par_region=0;
+				vm.cherche_haut=false;
+				vm.cherche_bas=false;
+				region_id = vm.selectedItemProgramme.detail_zone_intervention_programme[i].id_region;
+				district_id = vm.selectedItemProgramme.detail_zone_intervention_programme[i].id_district;
+				vm.doublon=false // plusieurs item identique 
+				if(parseInt(region_id) >0 && parseInt(district_id) >0) {
+					// Détaillé par district
+					vm.cherche_haut =true;
 				} else {
-					zoneprg.id=data.response;	
-					NouvelItemZoneinterventionprogramme=false;
-					vm.action="Ajout d'un enregistrement de DDB (Annuaire): Zone d'intervention programme";
+					// Par région seulement
+					vm.cherche_bas =true;
+				}	
+				// Lecture de comparaison ;
+				for(var j=1;j < vm.selectedItemProgramme.detail_zone_intervention_programme.length;j++) {
+					if(i!=j) {
+						// à comparer
+						var region_temp = parseInt(vm.selectedItemProgramme.detail_zone_intervention_programme[j].id_region);
+						var district_temp = parseInt(vm.selectedItemProgramme.detail_zone_intervention_programme[j].id_district);
+						if(vm.cherche_haut==true) {
+							if(parseInt(region_id) == parseInt(region_temp) && district_temp==null) {
+								// Détaillé et région seulement =>erreur
+								vm.a_sauvegarder=false;
+								// break
+								i= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
+								j= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
+							}
+							// Controle doublon
+							if(parseInt(region_id) == parseInt(region_temp) && parseInt(district_id)==parseInt(district_temp)) {
+								// dobulon =>erreur
+								vm.doublon=true;
+								vm.a_sauvegarder=false;
+								// break
+								i= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
+								j= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
+							}
+						}
+						if(vm.cherche_bas==true) {
+							if(parseInt(region_id) == parseInt(region_temp) && parseInt(district_temp) >0) {
+								// région seulement et Détaillé par district=>erreur
+								vm.a_sauvegarder=false;
+								// break
+								i= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
+								j= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
+							}
+							// Controle doublon
+							if(parseInt(region_id) == parseInt(region_temp)) {
+								// doublon =>erreur
+								vm.doublon=true;
+								vm.a_sauvegarder=false;
+								// break
+								i= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
+								j= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
+							}
+						}
+					}	
 				}
-				zoneprg.$selected=false;
-				zoneprg.$edit=false;
-				//add historique : suppresion/modifcation/ajout DDB Annuaire zone d'intervention programme
-				var config = {
-					headers : {
-						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+				if(nombre_detaille_par_district >0 && nombre_par_region >0) {
+					// Existence item détaillé par district et item avec region seulement => à ne pas sauvegarder
+					vm.a_sauvegarder=false;
+				} 	
+			} 
+			// Fin Controle si détaillé par district ou par région 	seulement
+			if(vm.a_sauvegarder==true) {
+				//factory table zone_intervention_programme
+				apiFactory.add("zone_intervention_programme/index",datas, config).success(function (data) {
+					if (NouvelItemZoneinterventionprogramme == false) {
+						// Update or delete: id exclu                   
+						if(suppression==0) {
+						  vm.selectedItemZoneinterventionprogramme.id_programme = zoneprg.id_programme;
+						  vm.selectedItemZoneinterventionprogramme.id_district = zoneprg.id_district;
+						  vm.selectedItemZoneinterventionprogramme.id_region = zoneprg.id_region;
+						  vm.selectedItemZoneinterventionprogramme.menage_beneficiaire_prevu = zoneprg.menage_beneficiaire_prevu;
+						  vm.selectedItemZoneinterventionprogramme.individu_beneficiaire_prevu = zoneprg.individu_beneficiaire_prevu;
+						  vm.selectedItemZoneinterventionprogramme.groupe_beneficiaire_prevu = zoneprg.groupe_beneficiaire_prevu;
+						  vm.selectedItemZoneinterventionprogramme.$selected = false;
+						  vm.selectedItemZoneinterventionprogramme.$edit = false;
+						  vm.selectedItemZoneinterventionprogramme ={};
+						  vm.action="Modification d'un enregistrement de DDB (Annuaire): Zone d'intervention programme";
+						} else {    
+							vm.selectedItemProgramme.detail_zone_intervention_programme = vm.selectedItemProgramme.detail_zone_intervention_programme.filter(function(obj) {
+								return obj.id !== vm.selectedItemZoneinterventionprogramme.id;
+							});
+							vm.action="Suppression d'un enregistrement de DDB (Annuaire): Zone d'intervention programme";
+						}
+					} else {
+						zoneprg.id=data.response;	
+						NouvelItemZoneinterventionprogramme=false;
+						vm.action="Ajout d'un enregistrement de DDB (Annuaire): Zone d'intervention programme";
 					}
-				};
-				var datas = $.param({
-					action:vm.action,
-					id_utilisateur:vm.id_utilisateur
+					zoneprg.$selected=false;
+					zoneprg.$edit=false;
+					//add historique : suppresion/modifcation/ajout DDB Annuaire zone d'intervention programme
+					var config = {
+						headers : {
+							'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+						}
+					};
+					var datas = $.param({
+						action:vm.action,
+						id_utilisateur:vm.id_utilisateur
+					});
+					//factory
+					apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+					});								
+				}).error(function (data) {
+					vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 				});
-				//factory
-				apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-				});								
-			}).error(function (data) {
-				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
-			});  
+			} else {
+				vm.showAlert("INFORMATION","Saisie détaillé par district ou par région seulement.Veuillez corriger l'erreur.Merci !")
+			}	
         }
 		// Fonction : boite de dialogue pour information à l'utilisateur
 		vm.showAlert = function(titre,textcontent) {
@@ -746,6 +823,7 @@
                 region: [] ,
                 menage_beneficiaire_prevu: null ,
                 individu_beneficiaire_prevu: null ,
+                groupe_beneficiaire_prevu: null ,
 			};
 			vm.selectedItemProgramme.detail_zone_intervention_programme.push(items);
 		    vm.selectedItemProgramme.detail_zone_intervention_programme.forEach(function(it) {
@@ -789,6 +867,9 @@
 			if (vm.selectedItemZoneinterventionprogramme.individu_beneficiaire_prevu) {
 				vm.selectedItemZoneinterventionprogramme.individu_beneficiaire_prevu = parseInt(vm.selectedItemZoneinterventionprogramme.individu_beneficiaire_prevu);
 			} else vm.selectedItemZoneinterventionprogramme.individu_beneficiaire_prevu = null;
+			if (vm.selectedItemZoneinterventionprogramme.groupe_beneficiaire_prevu) {
+				vm.selectedItemZoneinterventionprogramme.groupe_beneficiaire_prevu = parseInt(vm.selectedItemZoneinterventionprogramme.groupe_beneficiaire_prevu);
+			} else vm.selectedItemZoneinterventionprogramme.groupe_beneficiaire_prevu = null;
 			vm.selectedItemZoneinterventionprogramme.$edit = true;	
         };
 		// Suppression d'un item zone_intervention_programme
@@ -842,7 +923,7 @@
 					item.id_region = null; 
 					item.region=[];
 					vm.allRecordsDistrict =vm.all_district;
-			}
+			}	
 		}
         vm.modifierDistrictZIPRG = function (item) { 
 			vm.nontrouvee=true;
@@ -2045,6 +2126,7 @@
 				id_fokontany: zoneint.id_fokontany,
 				menage_beneficiaire_prevu: zoneint.menage_beneficiaire_prevu,
 				individu_beneficiaire_prevu: zoneint.individu_beneficiaire_prevu,
+				groupe_beneficiaire_prevu: zoneint.groupe_beneficiaire_prevu,
 			});       
 			//factory table zone_intervention
 			apiFactory.add("zone_intervention/index",datas, config).success(function (data) {
@@ -2062,6 +2144,7 @@
 					  vm.selectedItemZoneintervention.fokontany = zoneint.fokontany;
 					  vm.selectedItemZoneintervention.menage_beneficiaire_prevu = zoneint.menage_beneficiaire_prevu;
 					  vm.selectedItemZoneintervention.individu_beneficiaire_prevu = zoneint.individu_beneficiaire_prevu;
+					  vm.selectedItemZoneintervention.groupe_beneficiaire_prevu = zoneint.groupe_beneficiaire_prevu;
 					  vm.selectedItemZoneintervention.$selected = false;
 					  vm.selectedItemZoneintervention.$edit = false;
 					  vm.selectedItemZoneintervention ={};
@@ -2130,6 +2213,7 @@
                 fokontany: [] ,
                 menage_beneficiaire_prevu: null ,
                 individu_beneficiaire_prevu: null ,
+                groupe_beneficiaire_prevu: null ,
 			};
 			vm.selectedItemIntervention.detail_zone_intervention.push(items);
 		    vm.selectedItemIntervention.detail_zone_intervention.forEach(function(it) {
@@ -2174,6 +2258,9 @@
 			if (vm.selectedItemZoneintervention.individu_beneficiaire_prevu) {
 				vm.selectedItemZoneintervention.individu_beneficiaire_prevu = parseInt(vm.selectedItemZoneintervention.individu_beneficiaire_prevu);
 			} else vm.selectedItemZoneintervention.individu_beneficiaire_prevu = null;
+			if (vm.selectedItemZoneintervention.groupe_beneficiaire_prevu) {
+				vm.selectedItemZoneintervention.groupe_beneficiaire_prevu = parseInt(vm.selectedItemZoneintervention.groupe_beneficiaire_prevu);
+			} else vm.selectedItemZoneintervention.groupe_beneficiaire_prevu = null;
 			apiFactory.getAPIgeneraliserREST("fokontany/index","cle_etrangere",vm.selectedItemZoneintervention.id_commune).then(function(result) { 
 				vm.allRecordsFokontany = [];
 				vm.allRecordsCommune = [];

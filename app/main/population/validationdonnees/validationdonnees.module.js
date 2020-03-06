@@ -39,12 +39,20 @@
             });
         }   
     }
-    function Donnees_non_validees(loginService,$cookieStore,apiFactory,apiUrl) {
+    function Donnees_non_validees(loginService,$interval,$cookieStore,apiFactory,apiUrl) {
 		var bla = $.post(apiUrl + "validationbeneficiaire/recuperer_nombre_liste_fichier_non_valides",{
 				},function(data) {  
-					var x = data;
-					nombre_non_valides.content = x ;
+					nombre_non_valides.content = data ;
 					nombre_non_valides.color = '#F44336' ;
 				});
+            $interval(function(){			
+				var bla1 = $.post(apiUrl + "validationbeneficiaire/recuperer_nombre_liste_fichier_non_valides",{
+					},function(data) {  
+						if (nombre_non_valides.content != data) {
+							nombre_non_valides.content = data ;
+							nombre_non_valides.color = '#F44336' ;
+						};
+					});
+			},150000) ;			
     }
 })();

@@ -774,6 +774,15 @@
                                                 </span>
                                                 <span ng-if="!ziprg.$edit">{{ziprg.individu_beneficiaire_prevu | number:0}}</span>
                                             </td>
+                                            <td style="width:10%;">
+                                                <span ng-if="ziprg.$edit">
+                                                    <md-input-container style="width:100%;">
+                                                        <label>Groupe prévu</label>
+                                                        <input name="groupe_beneficiaire_prevu" type="number" ng-model="ziprg.groupe_beneficiaire_prevu"/>
+                                                    </md-input-container>	
+                                                </span>
+                                                <span ng-if="!ziprg.$edit">{{ziprg.groupe_beneficiaire_prevu | number:0}}</span>
+                                            </td>
                                             <td style="width:20%;">
                                                 <a ng-if="!ziprg.$edit" ng-click="vm.modifierZoneinterventionprogramme(ziprg)" title="Modifier">
                                                     <span class="icon-table-edit"></span>
@@ -784,7 +793,7 @@
                                                 <a ng-if="ziprg.$edit" ng-click="vm.annulerZoneinterventionprogramme(ziprg)" title="Annuler modification">
                                                     <span class="icon-cancel"></span>
                                                 </a>
-                                                <a ng-if="ziprg.$edit && ziprg.id_programme >0 && (ziprg.id_region > 0 || ziprg.id_district > 0) && ziprg.menage_beneficiaire_prevu >0 && ziprg.individu_beneficiaire_prevu >0" ng-click="vm.ajoutZoneinterventionprogramme(ziprg,0)" title="Sauvegarder">
+                                                <a ng-if="ziprg.$edit && ziprg.id_programme >0 && (ziprg.id_region > 0 || ziprg.id_district > 0) && (ziprg.menage_beneficiaire_prevu >0 || ziprg.individu_beneficiaire_prevu >0 || ziprg.groupe_beneficiaire_prevu >0)" ng-click="vm.ajoutZoneinterventionprogramme(ziprg,0)" title="Sauvegarder">
                                                     <span class="icon-content-save"></span>
                                                 </a>
                                             </td>
@@ -971,6 +980,24 @@
                         </md-tab-body>
                     </md-tab>	
 					<!-- Fin Onglet Financement intervention-->		
+ 					<!-- Début Onglet variable intervention-->		
+                    <md-tab label="Variable intervention">
+							<b>Programme : {{vm.selectedItemProgramme.intitule}}</b></br>
+							<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b></br>
+							<div style="clear:both;"></div>	
+							<div layout="column" flex-gt-xs="50" ng-repeat='item in vm.allRecordsListevariable' style="width:50%;display:inline-block">					
+								<fieldset class="standard">
+									<legend  class="md-grey-800-bg">{{item.description}}</legend>
+                                    <md-checkbox ng-repeat='det in item.detail_variable' ng-checked="exists(det.id, vm.tab_reponse_variable)" ng-click="vm.toggle(det.id, vm.tab_reponse_variable)" ng-disabled="!vm.selectedItemIntervention.id">
+                                        {{det.description}}
+                                    </md-checkbox>
+								</fieldset>
+							</div>
+							<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>						 
+							  <md-button class="md-raised md-primary" ng-disabled="!vm.selectedItemIntervention.id" ng-click="vm.sauvegarder_variable_intervention(vm.selectedItemIntervention.id)">Enregistrer</md-button>                         
+							</section>
+					</md-tab>
+ 					<!-- Fin Onglet variable intervention-->
 					<!-- Début Onglet Zone d'intervention-->		
                     <md-tab label="Zone d'intervention">
                         <md-tab-body>
@@ -1067,6 +1094,15 @@
                                                 </span>
                                                 <span ng-if="!zoneint.$edit">{{zoneint.individu_beneficiaire_prevu | number:0}}</span>
                                             </td>
+                                            <td style="width:10%;">
+                                                <span ng-if="zoneint.$edit">
+                                                    <md-input-container style="width:100%;">
+                                                        <label>Groupe prévu</label>
+                                                        <input name="groupe_beneficiaire_prevu" type="number" ng-model="zoneint.groupe_beneficiaire_prevu"/>
+                                                    </md-input-container>	
+                                                </span>
+                                                <span ng-if="!zoneint.$edit">{{zoneint.groupe_beneficiaire_prevu | number:0}}</span>
+                                            </td>
                                             <td style="width:20%;">
                                                 <a ng-if="!zoneint.$edit" ng-click="vm.modifierZoneintervention(zoneint)" title="Modifier">
                                                     <span class="icon-table-edit"></span>
@@ -1077,7 +1113,7 @@
                                                 <a ng-if="zoneint.$edit" ng-click="vm.annulerZoneintervention(zoneint)" title="Annuler modification">
                                                     <span class="icon-cancel"></span>
                                                 </a>
-                                                <a ng-if="zoneint.$edit && zoneint.id_intervention >0 && zoneint.id_fokontany > 0" ng-click="vm.ajoutZoneintervention(zoneint,0)" title="Sauvegarder">
+												<a ng-if="zoneint.$edit && zoneint.id_intervention >0 && zoneint.id_fokontany > 0 && (zoneint.menage_beneficiaire_prevu >0 || zoneint.individu_beneficiaire_prevu >0 || zoneint.groupe_beneficiaire_prevu >0)" ng-click="vm.ajoutZoneintervention(zoneint,0)" title="Sauvegarder">
                                                     <span class="icon-content-save"></span>
                                                 </a>
                                             </td>
@@ -1088,24 +1124,6 @@
                         </md-tab-body>
                     </md-tab>		
  					<!-- Fin Onglet Zone d'intervention-->		
- 					<!-- Début Onglet variable intervention-->		
-                    <md-tab label="Variable intervention">
-							<b>Programme : {{vm.selectedItemProgramme.intitule}}</b></br>
-							<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b></br>
-							<div style="clear:both;"></div>	
-							<div layout="column" flex-gt-xs="50" ng-repeat='item in vm.allRecordsListevariable' style="width:50%;display:inline-block">					
-								<fieldset class="standard">
-									<legend  class="md-grey-800-bg">{{item.description}}</legend>
-                                    <md-checkbox ng-repeat='det in item.detail_variable' ng-checked="exists(det.id, vm.tab_reponse_variable)" ng-click="vm.toggle(det.id, vm.tab_reponse_variable)" ng-disabled="!vm.selectedItemIntervention.id">
-                                        {{det.description}}
-                                    </md-checkbox>
-								</fieldset>
-							</div>
-							<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>						 
-							  <md-button class="md-raised md-primary" ng-disabled="!vm.selectedItemIntervention.id" ng-click="vm.sauvegarder_variable_intervention(vm.selectedItemIntervention.id)">Enregistrer</md-button>                         
-							</section>
-					</md-tab>
- 					<!-- Fin Onglet variable intervention-->
 					<md-tab>
                     </md-tab>
                 </md-tabs>

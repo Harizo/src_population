@@ -30,19 +30,27 @@
         });
         // Navigation
         msNavigationServiceProvider.saveItem('population.importationdonnees.importationintervention', {
-            title: 'Intervention',
+            title: 'Suivi Intervention',
             icon  : 'icon-swap-horizontal',
             state: 'app.population_importationdonnees_importationintervention',
             badge: nombre_non_importes,
 			weight: 2
         });
     }
-	function Donnees_non_importees(loginService,$cookieStore,apiFactory,apiUrl) {
+	function Donnees_non_importees(loginService,$interval,$cookieStore,apiFactory,apiUrl) {
 		var bla = $.post(apiUrl + "importationbeneficiaire/recuperer_nombre_liste_intervention_non_importes",{
 			},function(data) {  
-				var x = data;
-				nombre_non_importes.content = x ;
+				nombre_non_importes.content = data ;
 				nombre_non_importes.color = '#F44336' ;
 			});
+            $interval(function(){			
+				var bla1 = $.post(apiUrl + "importationbeneficiaire/recuperer_nombre_liste_intervention_non_importes",{
+					},function(data) {  
+						if (nombre_non_importes.content != data) {
+							nombre_non_importes.content = data ;
+							nombre_non_importes.color = '#F44336' ;
+						};
+					});
+			},150000) ;			
 	}
 })();
