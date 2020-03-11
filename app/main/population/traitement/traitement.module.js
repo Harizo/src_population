@@ -15,7 +15,7 @@
     /** @ngInject */
     function config(msNavigationServiceProvider)
     {
-        msNavigationServiceProvider.saveItem('population.traitement', {
+        /*msNavigationServiceProvider.saveItem('population.traitement', {
             title : 'Traitement',
             icon  : 'icon-data',
             weight: 4,
@@ -23,7 +23,7 @@
             {
                     return vs;
             }
-        });
+        });*/
 
 
     }

@@ -36,11 +36,10 @@
             title: "Groupes d'utilisateurs",
             icon  : 'icon-account-multiple',
             state: 'app.population_admin_groupe_user',
-			weight: 1/*,
             hidden:function()
             {
                     return affichage;
-            }*/
+            }
         });
     }
 
@@ -86,7 +85,10 @@
                
 
                 var permission = user.roles;
-                var permissions = ["ADMIN"];
+                var permissions =   [
+                                        "SPR_ADM",
+                                        "GRP_USER"
+                                    ];
                 affichage =  loginService.gestionMenu(permissions,permission);        
                 
 

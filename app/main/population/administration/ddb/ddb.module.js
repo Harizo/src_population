@@ -2,23 +2,27 @@
 {
     'use strict';
 
+    var tab = [         
+            'app.population.ddb_adm.variable_individu',
+            'app.population.ddb_adm.acteurs',
+            'app.population.ddb_adm.projet',
+            'app.population.ddb_adm.decoup_admin',
+            'app.population.ddb_adm.variable',
+            'app.population.ddb_adm.nomenclatureintervention',
+            ] ;
+
     angular
-        .module('app.population.reporting', [			
-         //  'app.population.reporting.nombrebeneficiaire',
-            'app.population.reporting.environment_et_systeme',
-            //'app.population.reporting.systeme_protection_social',
-            ])
-         .run(testPermission)
+        .module('app.population.ddb_adm', tab.sort())
+        .run(testPermission)
         .config(config);
         var vs ;
 
     /** @ngInject */
     function config(msNavigationServiceProvider)
     {
-        msNavigationServiceProvider.saveItem('population.reporting', {
-            title : 'Reporting',
+        msNavigationServiceProvider.saveItem('population.administration.ddb_adm', {
+            title : 'Données de Bases',
             icon  : 'icon-data',
-            weight: 8,
             hidden: function()
             {
                     return vs;
@@ -43,7 +47,12 @@
                 var permission = user.roles;
                 var permissions =   [
                                         "SPR_ADM",
-                                        "RPT"
+                                        "VAR_IND",//ddb
+                                        "ACT_TYP",
+                                        "PROG",
+                                        "DEC_ADM",
+                                        "NOM_INT",
+                                        "VAR_INT"//fin ddb
                                     ];
                 var x =  loginService.gestionMenu(permissions,permission);        
                 vs = x ;

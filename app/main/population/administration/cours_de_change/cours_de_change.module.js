@@ -33,8 +33,7 @@
         msNavigationServiceProvider.saveItem('population.administration.cours_de_change', {
             title: 'Cours de change',
             icon  : 'icon-package-variant',
-            state: 'app.population_admin_cours_de_change',
-			weight: 3
+            state: 'app.population_admin_cours_de_change'
         });
     }
 

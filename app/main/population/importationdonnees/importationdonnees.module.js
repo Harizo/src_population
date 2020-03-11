@@ -19,11 +19,11 @@
         msNavigationServiceProvider.saveItem('population.importationdonnees', {
             title : 'Importation données',
             icon  : 'icon-data',
-            weight: 6/*,
+            weight: 6,
             hidden: function()
             {
                     return vs;
-            }*/,
+            },
             badge: nombre_non_importes
         });
 
@@ -43,7 +43,11 @@
                
 
                 var permission = user.roles;
-                var permissions = ["IMP"];
+                var permissions =   [   
+                                        "SPR_ADM",
+                                        "IMP_BEN",
+                                        "IMP_INT"
+                                    ];
                 var x =  loginService.gestionMenu(permissions,permission);        
                 vs = x ;
 

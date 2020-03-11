@@ -136,12 +136,17 @@
 								<md-checkbox ng-model="vm.acces.var_int" aria-label="Checkbox 1" ng-disabled="vm.acces.spr_adm" style="margin: 4px;">
 								    Variable/Intervention
 								</md-checkbox> 
-								<md-checkbox ng-model="vm.acces.anr_int" aria-label="Checkbox 1" ng-disabled="vm.acces.spr_adm" style="margin: 4px;">
-								    Annuaire Intervention
-								</md-checkbox> 
+								 
 						                                                            
 						</fieldset>
 
+						<fieldset class="standard" >
+							<legend><code>Annuaire Intervention</code></legend>
+							<md-checkbox ng-model="vm.acces.anr_int" aria-label="Checkbox 1" ng-disabled="vm.acces.spr_adm" style="margin: 4px;">
+								    
+							</md-checkbox>
+
+						</fieldset>
 						<fieldset class="standard" >
 							<legend><code>Traitement</code></legend>                                
 								<md-checkbox  ng-model="vm.acces.sui_dec" aria-label="Checkbox 1" ng-disabled="vm.acces.spr_adm" style="margin: 4px;">
@@ -156,7 +161,7 @@
 								    Bénéficiaire
 								</md-checkbox>
 								<md-checkbox ng-model="vm.acces.sim_int" aria-label="Checkbox 1" ng-disabled="vm.acces.spr_adm" style="margin: 4px;">
-								    Intervention
+								    Suivi Intervention
 								</md-checkbox>     
 						                                                            
 						</fieldset>

@@ -223,17 +223,22 @@
             var tab = [];
             angular.forEach(listesAutorise, function(value, key) {
                 angular.forEach(autorisationPersonnel, function(val, k) {
-                    if (value == val) {
+                    if (value == val) 
+                    {
                        tab.push(1);
                     };
                 });
             });
-            if(tab.length > 0 ) {
-				return false;
-            }else{
-				return true;
+            if(tab.length > 0 ) 
+            {
+				      return false;
             }
-        },first_login:function(motdepasse,ev) {
+            else
+            {
+				      return true;
+            }
+        },
+        first_login:function(motdepasse,ev) {
 			//clear
 			var pwd = motdepasse.password;
 			var conf_pwd = motdepasse.confirm_password;

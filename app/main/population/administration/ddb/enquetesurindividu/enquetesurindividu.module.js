@@ -3,38 +3,36 @@
     'use strict';
 
     angular
-        .module('app.population.administration.historiqueutilisateur', [])              
-        .run(testPermission)        
+        .module('app.population.ddb_adm.variable_individu', [])
+        .run(testPermission)
         .config(config);
         var vs ;
-    
+
     /** @ngInject */
     function config($stateProvider, $translatePartialLoaderProvider, msNavigationServiceProvider)
     {
         // State
-        $stateProvider.state('app.population_admin_historiqueutilisateur', {
-            url      : '/administration/historiqueutilisateur',
+        $stateProvider.state('app.population_ddb_enquetesurindividu', {
+            url      : '/donnees-de-base/enquete-sur-individu',
             views    : {
                 'content@app': {
-                    templateUrl: 'app/main/population/administration/historiqueutilisateur/historiqueutilisateur.html',
-                    controller : 'HistoriqueutilisateurController as vm'
+                    templateUrl: 'app/main/population/administration/ddb/enquetesurindividu/enquetesurindividu.html',
+                    controller : 'EnquetesurindividuController as vm'
                 }
             },
-            bodyClass: 'historiqueutilisateur',
+            bodyClass: 'enquetesurindividu',
             data : {
               authorizer : true,
               permitted : ["USER","PERSONNEL","ADMIN"],
-              page: "Historique_utilisateur"
+              page: "Variable/Individu"
             }
         });
 
-        
-
         // Navigation
-        msNavigationServiceProvider.saveItem('population.administration.historiqueutilisateur', {
-            title: 'Historique utilisateur',
-            icon  : 'icon-package-variant',
-            state: 'app.population_admin_historiqueutilisateur',
+        msNavigationServiceProvider.saveItem('population.administration.ddb_adm.enquetesurindividu', {
+            title: "<div style='font-size: 11px;'>Variable/Individu</div>",
+            icon  : 'icon-tile-four',
+            state: 'app.population_ddb_enquetesurindividu',
             hidden: function()
             {
                     return vs;
@@ -47,21 +45,20 @@
         var id_user = $cookieStore.get('id');
        
         var permission = [];
-        if (id_user) 
+        if (id_user > 0) 
         {
             apiFactory.getOne("utilisateurs/index", id_user).then(function(result) 
             {
                 var user = result.data.response;
+               
+
                 var permission = user.roles;
                 var permissions =   [
-                                        "SPR_ADM",//administration
-                                        
-                                        "HIS_USER"//fin administration
-                                        
+                                        "SPR_ADM",
+                                        "VAR_IND"
                                     ];
                 var x =  loginService.gestionMenu(permissions,permission);        
                 vs = x ;
-              
 
             });
         }

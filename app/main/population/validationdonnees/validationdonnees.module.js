@@ -15,7 +15,7 @@
     /** @ngInject */
     function config(msNavigationServiceProvider) {
         msNavigationServiceProvider.saveItem('population.validationdonnees', {
-            title : 'Validation données',
+            title : 'Simulation',
             icon  : 'icon-data',
             weight: 5,
             hidden: function()
@@ -32,7 +32,11 @@
             apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
                 var user = result.data.response;
                 var permission = user.roles;
-                var permissions = ["VLD"];
+                var permissions =   [
+                                        "SPR_ADM",
+                                        "SIM_BEN",
+                                        "SIM_INT"
+                                    ];
                 var x =  loginService.gestionMenu(permissions,permission);        
                 vs = x ;
 

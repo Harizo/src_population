@@ -24,5 +24,6 @@
 
 		  document.getElementById('forms').innerHTML = 'playerSpriteX = ' + playerSpriteX;*/
 		//});
+		
     }
 })();

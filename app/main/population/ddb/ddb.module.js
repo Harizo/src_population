@@ -3,25 +3,18 @@
     'use strict';
 
     angular
-        .module('app.population.ddb', [			
-           // 'app.population.ddb.enquetesurmenage',
-           'app.population.ddb.enquetesurindividu',
-            'app.population.ddb.acteurs',
-            'app.population.ddb.ddbprojet',
-            //'app.population.ddb.localisation',
-            'app.population.ddb.annuaire',
-            'app.population.ddb.region_district_commune',
-            'app.population.ddb.ddbvariable',
-            'app.population.ddb.nomenclatureintervention',
+        .module('app.population.ddb', 
+            [			
+                'app.population.ddb.annuaire'
             ])
-        .run(testPermission)
+       // .run(testPermission)
         .config(config);
         var vs ;
 
     /** @ngInject */
     function config(msNavigationServiceProvider)
     {
-        msNavigationServiceProvider.saveItem('population.ddb', {
+        /*msNavigationServiceProvider.saveItem('population.ddb', {
             title : 'Données de Bases',
             icon  : 'icon-data',
             weight: 2,
@@ -29,7 +22,7 @@
             {
                     return vs;
             }
-        });
+        });*/
 
 
     }

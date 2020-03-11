@@ -2,16 +2,18 @@
 {
     'use strict';
 
-    angular
-        .module('app.population.administration', 
-            [
+    var tab = [
                 'app.population.administration.utilisateur',
                 'app.population.administration.profil',
                 'app.population.administration.historiqueutilisateur',
                 'app.population.administration.groupe_user',
-                'app.population.administration.cours_de_change'
+                'app.population.administration.cours_de_change',
+                'app.population.ddb_adm'
 
-            ])
+            ] ;
+
+    angular
+        .module('app.population.administration', tab.sort())
         .run(testPermission)        
         .config(config);
         var vs ;
@@ -47,7 +49,18 @@
             {
                 var user = result.data.response;
                 var permission = user.roles;
-                var permissions = ["SPR_ADM"];
+                var permissions =   [
+                                        "SPR_ADM",//administration
+                                        "GES_USER",
+                                        "GRP_USER",
+                                        "HIS_USER",//fin administration
+                                        "VAR_IND",//ddb
+                                        "ACT_TYP",
+                                        "PROG",
+                                        "DEC_ADM",
+                                        "NOM_INT",
+                                        "VAR_INT"//fin ddb
+                                    ];
                 var x =  loginService.gestionMenu(permissions,permission);        
                 vs = x ;
               
