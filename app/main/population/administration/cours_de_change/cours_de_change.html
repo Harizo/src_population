@@ -1,5 +1,4 @@
   <div id="forms" class="page-layout simple fullwidth doc-page" layout="column">
-
     <!-- HEADER -->
     <div class="header md-accent-bg" layout="row" layout-align="space-between">
         <div layout="column" layout-align="space-between">
@@ -15,7 +14,6 @@
         </div>
     </div>
     <!-- / HEADER -->
-
     <!-- CONTENT -->            
     <div class="content"layout="column">    	 
       	<div class="form-wrapper">
@@ -42,37 +40,38 @@
 		                    
 		                    <md-datepicker ng-model="vm.filtre.date_fin" md-placeholder="Enter date de fin" md-min-date="vm.filtre.date_debut" md-max-date="vm.date_now" ng-disabled="!vm.filtre.date_debut" required>        								
         					</md-datepicker>
+							<md-input-container>				  
+								<md-button class="md-raised md-button md-ink-ripple" ng-click="vm.Filtrer()">Rafraichir</md-button>
+							</md-input-container>				  				
+							<md-input-container>				  
+								<md-button class="md-raised md-button md-ink-ripple" ng-click="showTabDialog($event,vm.filtre.date_fin)"">Saisie</md-button>
+							</md-input-container>				  				
 	                    </div>
 	                    
 	                    <div>
-	                        <!--md-button type="submit" class="md-raised md-accent" aria-label="Enregistrer" ng-disabled="filtreform.$invalid || vm.affiche_load" ng-click="vm.analyse_filtre(vm.filtre)"> Actualiser
-	                        </md-button>
-	                        <md-button type="submit" class="md-raised md-accent" aria-label="Sauvegarder historique" ng-disabled="filtreform.$invalid || vm.affiche_load" ng-click="vm.sauvegarde_historique(vm.filtre)"> Vider et sauvegarder historique
-	                        </md-button-->
 	                    </div>
 	                </form>
 	                <!--/ Formulaire -->
 	                <!-- Liste table -->
 	                <div>
-	                	<!--table class="dataTable row-border hover" datatable="ng"
-						dt-options="vm.dtOptions">
+	                	<table class="dataTable row-border hover">
 							<thead>
 								<tr>
-									<th class="secondary-text" ng-repeat="histo in ::vm.historique_column">
+									<th class="secondary-text" ng-repeat="tit in ::vm.titre_saisie_cours">
 										<div class="table-header">
-											<span class="column-title">{{histo.titre}}</span>
+											<span class="column-title">{{tit.titre}}</span>
 										</div>
 									</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="historique in vm.allhistorique">
-									<td>{{historique.user.prenom}} {{historique.user.nom}}</td>
-									<td>{{historique.action}}</td>
-									<td>{{vm.converDate(historique.date_action)}}</td>
+								<tr ng-repeat="item in vm.valeur_saisie_cours" ng-class="{selected: item.$selected}" ng-click="vm.selectioncours(item)">
+									<td ng-repeat="(index,val) in item">
+										<span>{{val}}</span>
+									</td>
 								</tr>
 							</tbody>
-						</table-->
+						</table>
 	                </div>
 	                <!--/ Liste table -->
 	            </md-tab>
