@@ -19,7 +19,8 @@
       	vm.filtre.date_fin = new Date() ;
       	vm.date_now 	   = new Date() ;
       	vm.id_utilisateur  = $cookieStore.get('id');
-        vm.titre_saisie_cours=[{titre:"Date"},{titre:"USD"},{titre:"EURO"},{titre:"LIVRE STERLING"}];
+        // vm.titre_saisie_cours=[{titre:"Date"},{titre:"USD"},{titre:"EURO"}];
+        // vm.titre_saisie_cours=[];
         //style
 	    vm.dtOptions = {
 	      	dom: '<"top"f>rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
@@ -37,14 +38,18 @@
 		//factory
 		apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
 		});
-	    //recuperation historique
+		apiFactory.getAPIgeneraliserREST("cours_de_change/index","requete_titre",Number(10)).then(function(result) {
+			vm.titre_saisie_cours=[];
+			vm.titre_saisie_cours =result.data.response;
+			vm.Filtrer();
+			
+		});
     	apiFactory.getAll("cours_de_change/index").then(function(result)  {
 	        vm.allcoursdechange = result.data.response;
 	    });
     	apiFactory.getAll("devise/index").then(function(result)  {
 	        vm.alldevise = result.data.response;
 			$rootScope.listedevise=vm.alldevise;
-			console.log(vm.alldevise);
 	    });
 		vm.selectioncours= function (item) {     
             vm.selectedItem = item;
@@ -116,22 +121,18 @@
   		vm.Filtrer = function() {
 			vm.cliquable=0;
 			vm.afficher=0;
-			vm.affiche_load=true;
-			vm.titre_saisie_cours=[];
+			vm.affiche_load=true;			
 			vm.valeur_saisie_cours =[];
-			apiFactory.getAPIgeneraliserREST("cours_de_change/index","requete_titre",Number(10)).then(function(result) {
-				vm.titre_saisie_cours =result.data.response;
-				console.log(vm.titre_saisie_cours);
-				apiFactory.getAPIgeneraliserREST("cours_de_change/index","requete_titre",Number(20)).then(function(result) {
-					vm.titre_valeur_cours =result.data.response;
-					console.log(vm.titre_valeur_cours);
-					apiFactory.getAPIgeneraliserREST("cours_de_change/index","requete_donnees_croisee",Number(10),"date_debut",moment(vm.filtre.date_debut).format('YYYY-MM-DD'),"date_fin",moment(vm.filtre.date_fin).format('YYYY-MM-DD')).then(function(result) {
-						vm.valeur_saisie_cours =result.data.response;
-						vm.affiche_load=false;
-						console.log(vm.valeur_saisie_cours);
-					});
-				});	
-			});
+			console.log(vm.titre_saisie_cours);
+			apiFactory.getAPIgeneraliserREST("cours_de_change/index","requete_titre",Number(20)).then(function(result) {
+				vm.titre_valeur_cours =result.data.response;
+				console.log(vm.titre_valeur_cours);
+				apiFactory.getAPIgeneraliserREST("cours_de_change/index","requete_donnees_croisee",Number(10),"date_debut",moment(vm.filtre.date_debut).format('YYYY-MM-DD'),"date_fin",moment(vm.filtre.date_fin).format('YYYY-MM-DD')).then(function(result) {
+					vm.valeur_saisie_cours =result.data.response;
+					vm.affiche_load=false;
+					console.log(vm.valeur_saisie_cours);
+				});
+			});	
 		}	
 	    //convertion date format
 	    vm.converDateAffiche = function(dat) {
