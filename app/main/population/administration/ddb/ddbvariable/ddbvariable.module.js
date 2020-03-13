@@ -30,7 +30,7 @@
 
         // Navigation
         msNavigationServiceProvider.saveItem('population.administration.ddb_adm.ddbvariable', {
-            title: "<div style='font-size: 11px;'>Variable/Intervention</div'>",
+            title: "Variable/Intervention",
             icon  : 'icon-map-marker-circle',
             state: 'app.population_ddb_ddbvariable',
             hidden: function()

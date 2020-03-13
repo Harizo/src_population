@@ -31,7 +31,7 @@
         });
         // Navigation
         msNavigationServiceProvider.saveItem('population.administration.ddb_adm.acteurs', {
-            title: "<div style='font-size: 11px;'>Acteurs/Type transfert</div'>",
+            title: "Acteurs/Type transfert",
             icon  : 'icon-swap-horizontal',
             state: 'app.population_ddb_acteurs',
             hidden: function()

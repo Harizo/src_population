@@ -30,7 +30,7 @@
 
         // Navigation
         msNavigationServiceProvider.saveItem('population.administration.ddb_adm.nomenclatureintervention', {
-            title: "<div style='font-size: 11px;'>Nomenclature intervention</div>",
+            title: "Nomenclature intervention",
             icon  : 'icon-map-marker-circle',
             state: 'app.population_ddb_nomenclatureintervention',
             hidden: function()

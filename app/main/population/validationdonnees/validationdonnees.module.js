@@ -15,7 +15,7 @@
     /** @ngInject */
     function config(msNavigationServiceProvider) {
         msNavigationServiceProvider.saveItem('population.validationdonnees', {
-            title : 'Simulation',
+            title : 'Simulation des données',
             icon  : 'icon-data',
             weight: 5,
             hidden: function()

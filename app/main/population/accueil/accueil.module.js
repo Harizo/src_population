@@ -31,7 +31,7 @@
 
         // Navigation
         msNavigationServiceProvider.saveItem('population.accueil', {
-            title : 'Acceuil',
+            title : 'Accueil',
             icon  : 'icon-alarm-check',
             state : 'app.population_accueil',
             translate: 'accueil.menu.titre',

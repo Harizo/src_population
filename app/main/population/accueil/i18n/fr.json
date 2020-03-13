@@ -1,10 +1,10 @@
 {
     "accueil": {
       "parent": "Accueil",
-      "titre": "Bienvenue dans l'application web",
+      "titre": "Bienvenue dans l'application SYS3P",
       "mot_de_bienvenue":"",
       "menu":{
-        "titre":"Acceuil"
+        "titre":"Accueil"
       }
     }
 }

@@ -30,7 +30,7 @@
 
         // Navigation
         msNavigationServiceProvider.saveItem('population.administration.ddb_adm.region_district_commune', {
-            title: "<div style='font-size: 11px;'>Découpage administratif</div>",
+            title: "Découpage administratif",
             icon  : 'icon-map-marker-circle',
             state: 'app.population_ddb_region_district_commune',
             hidden: function()

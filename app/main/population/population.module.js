@@ -20,7 +20,7 @@
             'app.population.importationdonnees',
             'app.population.reporting',
             'app.population.importdecoupage',
-            // 'app.population.beneficiaire',
+            'app.population.registre_beneficiaire'
        ])
         .config(config);
 

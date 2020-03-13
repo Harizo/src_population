@@ -3,11 +3,11 @@
     'use strict';
 
     angular
-        .module('app.population.reporting.environment_et_systeme')
-        .controller('Environment_et_systemeController', Environment_et_systemeController);
+        .module('app.population.registre_beneficiaire')
+        .controller('registre_beneficiaireController', registre_beneficiaireController);
 
     /** @ngInject */
-    function Environment_et_systemeController($scope, $mdDialog, apiFactory,$state, apiUrlExcel)
+    function registre_beneficiaireController($scope, $mdDialog, apiFactory,$state, apiUrlExcel)
     {
         /*********DEBUT INITIALISATION *********/
             var vm = this;
@@ -33,156 +33,14 @@
 
         vm.pivots = [
           
-         /* {
-            titre:"* Nombre cumulé bénéficiaire_33",
-            id:"req33theme2_interven_nbrbenef_region_dist_comm",
-            category:"theme2"
-
-          }
-          //DEBUT CODE HARIZO
-          ,*/
+          
           {
-            titre:"Effectif des bénéficiaires handicapés",
-            id:"req40_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Effectif des bénéficiaires sortis du programme",
-            id:"req41_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Moyenne des transferts",
-            id:"req42_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Total des transferts",
-            id:"req43_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Répartition décaissement par programme",
-            id:"req10_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Répartition décaissement par tutelle",
-            id:"req11_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Répartition des agences d'exécution par programme",
-            id:"req12_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Montant du budget non consommé",
-            id:"req37_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Taux de décaissement par intervention",
-            id:"req36_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Proportion des interventions par type de cible",
-            id:"req18_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Répartition géographique des interventions",
-            id:"req14_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Proportion des interventions avec critères de sexe",
-            id:"req20_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Proportion des interventions avec critères d'âge",
-            id:"req19_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Nombre de nouveaux bénéficiaires",
-            id:"req32_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Taux d’atteinte des résultats",
-            id:"req34_theme2",
-            category:"theme2"
-          },
-          ,
-          {
-            titre:"Cible de l'intervention",
-            id:"req_multiple_21_to_30_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Indice de niveau de vulnérabilité",
-            id:"req6_theme2",
-            category:"theme2"
-          }/*,
-
-          {
-            titre:"Listes bénéficiaires",
+            titre:"Registre bénéficiaires",
             id:"liste_beneficiaire_intevention",
             category:"theme1"
-          }*/, 
+          }, 
 
-          //FIN CODE HARIZO    
 
-          //code modifier par harizo
-          { 
-            titre:"Effectif par age sexe de la population",
-            id:"req1_theme1",
-            category:"theme1"
-          },
-          { 
-            titre:"Effectif menage ayant enfant",
-            id:"req3_theme1",
-            category:"theme1"
-          },
-          { 
-            titre:"Répartition par âge et par sexe des bénéficiaires",
-            id:"req38_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Répartition financement par programme",
-            id:"req7_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Répartition financement par source",
-            id:"req8_theme2",
-            category:"theme2"
-          },
-          {
-            titre:"Répartition financement par tutele",
-            id:"req9_theme2",
-            category:"theme2"
-          }    
-          //code modifier par harizo   
-          
-          //Debut Bruce
-          ,
-          /*{
-            titre:"* Nombre des bénéficiaires prévus_31",
-            id:"req31theme2_interven_nbrinter_program_beneparan_beneprevu_region",
-            category:"theme2"
-          }*//*,
-          {
-            titre:"Proportion des interventions avec critères d'âge",
-            id:"req19theme2_interven_pourcenenfan_pourcensco_pourcentra_pourcenage_pcout",
-            category:"theme2"
-          }*/    
-          //Fin Bruce
-        
         ];
 
 
@@ -313,14 +171,11 @@
             vm.affiche_load = true ;
 
             apiFactory.getAPIgeneraliserREST("Environment_et_systeme/index",
-                                              "menu",filtre.pivot,
+                                              "menu","liste_beneficiaire_intevention",
                                               "id_region",filtre.region_id,
                                               "id_district",filtre.district_id,
                                               "id_commune",filtre.commune_id,
-                                              "id_intervention",filtre.intervention_id,
-                                              "id_type_transfert",filtre.id_type_transfert,//code harizo
-                                              "date_debut",convertionDate(filtre.date_debut),
-                                              "date_fin",convertionDate(filtre.date_fin))//fin code harizo
+                                              "id_intervention",filtre.intervention_id)//fin code harizo
             .then(function(result)
             {
 
@@ -336,27 +191,26 @@
 
           vm.export_excel = function(filtre)
           {
-            if (vm.filtre.pivot != "liste_beneficiaire_intevention") 
-            {
+            
               vm.affiche_load = true ;
 
-              var repertoire = "tableau_de_bord/" ;
+              var repertoire = "registre_beneficiaire/" ;
 
               var piv = vm.pivots.filter(function(obj) {
                 return obj.id == vm.filtre.pivot;
               });
 
               apiFactory.getAPIgeneraliserREST("Export_excel/index",
-                                                "menu",vm.filtre.pivot,
+                                                "menu","liste_beneficiaire_intevention",
                                                 "id_region",filtre.region_id,
-                                                /*"id_district",filtre.district_id,
+                                                "id_district",filtre.district_id,
                                                 "id_commune",filtre.commune_id,
-                                                "id_intervention",filtre.intervention_id,*/
+                                                "id_intervention",filtre.intervention_id,
                                                 "id_type_transfert",filtre.id_type_transfert,
                                                 "date_debut",convertionDate(filtre.date_debut),
                                                 "date_fin",convertionDate(filtre.date_fin),
                                                 "repertoire",repertoire,
-                                                "nom_file",piv[0].titre)
+                                                "nom_file","Registre beneficiaires")
               .then(function(result)
               {
 
@@ -380,11 +234,7 @@
                
           
               });
-            }
-            else
-            {
-              vm.Alert('Information!','En cours de dévéloppement');
-            }
+           
 
             
           }

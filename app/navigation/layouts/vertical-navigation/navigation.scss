@@ -1,6 +1,9 @@
 #vertical-navigation {
     width: $navigationWidth;
-    min-width: $navigationWidth;
+    /*min-width: $navigationWidth;
+    max-width: $navigationWidth;*/
+
+    min-width: 270px !important;
     max-width: $navigationWidth;
     overflow-x: hidden;
     transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2), width 0.1s linear, min-width 0.1s linear, max-width 0.1s linear;

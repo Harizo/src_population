@@ -30,7 +30,7 @@
 
         // Navigation
         msNavigationServiceProvider.saveItem('population.administration.ddb_adm.enquetesurindividu', {
-            title: "<div style='font-size: 11px;'>Variable/Individu</div>",
+            title: "Variable/Individu",
             icon  : 'icon-tile-four',
             state: 'app.population_ddb_enquetesurindividu',
             hidden: function()

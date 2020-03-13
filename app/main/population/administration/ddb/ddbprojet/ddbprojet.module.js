@@ -30,7 +30,7 @@
         });
         // Navigation
         msNavigationServiceProvider.saveItem('population.administration.ddb_adm.ddbprojet', {
-            title: "<div style='font-size: 11px;'>Programme</div'>",
+            title: "Variables programme",
             icon  : 'icon-swap-horizontal',
             state: 'app.population_ddb_ddbprojet',
             hidden: function()

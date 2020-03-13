@@ -21,7 +21,7 @@
     function config(msNavigationServiceProvider)
     {
         msNavigationServiceProvider.saveItem('population.administration.ddb_adm', {
-            title : 'Données de Bases',
+            title : 'Données de Base',
             icon  : 'icon-data',
             hidden: function()
             {
