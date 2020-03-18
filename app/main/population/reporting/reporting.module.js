@@ -6,6 +6,7 @@
         .module('app.population.reporting', [			
          //  'app.population.reporting.nombrebeneficiaire',
             'app.population.reporting.environment_et_systeme',
+            'app.population.reporting.carte'
             //'app.population.reporting.systeme_protection_social',
             ])
          .run(testPermission)

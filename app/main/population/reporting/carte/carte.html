@@ -1,0 +1,43 @@
+<div id="forms" class="page-layout simple fullwidth doc-page" layout="column">
+    <!-- HEADER -->
+    <div class="header md-accent-bg" layout="row" layout-align="space-between">
+        <div layout="column" layout-align="space-between">
+            <div class="breadcrumb" layout="row" layout-align="start center">
+                    <md-icon md-font-icon="icon-home" class="s16"></md-icon>
+                    <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
+                    <span class="parent">Reporting</span>
+                    <span class="parent"> </span>
+                    <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
+                    <span class="parent" href="javascript:;"> Carte</span>
+                </div>
+
+            <div class="title">Carte</div>
+        </div>
+    </div>
+    <!--/ HEADER -->
+   
+    <!-- CONTENT -->
+    <div class="content" layout="column">
+        <div class="form-wrapper">
+           
+            <div class="white-bg md-whiteframe-4dp">
+
+                <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom">
+                    <div ng-repeat="p in vm.polylines">
+
+                        <ui-gmap-polygon  path="p.path" stroke="p.stroke" visible='p.visible'
+                        geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" clickable='true' icons='p.icons' events="p.events" fill="p.fill" geodesic="true">
+                      
+                    </ui-gmap-polygon>
+
+                    </div>
+                   
+                </ui-gmap-google-map>
+
+               
+           
+            </div>
+        </div>
+    </div>
+    <!--/ CONTENT -->    
+</div>
