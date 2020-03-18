@@ -17,7 +17,7 @@
         msNavigationServiceProvider.saveItem('population.validationdonnees', {
             title : 'Simulation des données',
             icon  : 'icon-data',
-            weight: 5,
+            weight: 4,
             hidden: function()
             {
                     return vs;

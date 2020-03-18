@@ -33,7 +33,7 @@
             title: 'Suivi Décaissement',
             icon  : 'icon-swap-horizontal',
             state: 'app.population_saisie_decaissement',
-			weight: 3,
+			weight: 8,
             hidden: function()
             {
                     return vs;

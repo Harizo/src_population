@@ -12,7 +12,6 @@
             'app.population.auth.lock',
             'app.population.auth.firstlogin',
             'app.population.administration',
-            'app.population.ddb',
             // 'app.population.registresocial',
             'app.population.recommandation',
             'app.population.traitement',
@@ -20,7 +19,9 @@
             'app.population.importationdonnees',
             'app.population.reporting',
             'app.population.importdecoupage',
-            'app.population.registre_beneficiaire'
+            'app.population.registre_beneficiaire',
+            'app.population.annuaire',
+            'app.population.canevas_formate'
        ])
         .config(config);
 

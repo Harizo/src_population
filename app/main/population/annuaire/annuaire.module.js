@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.population.ddb.annuaire', [])
+        .module('app.population.annuaire', [])
         .run(testPermission)        
         .config(config);
         var vs ;
@@ -12,11 +12,11 @@
     function config($stateProvider, $translatePartialLoaderProvider, msNavigationServiceProvider)
     {
         // State
-        $stateProvider.state('app.population_ddb_annuaire', {
-            url      : '/donnees-de-base/annuaire',
+        $stateProvider.state('app.population_annuaire', {
+            url      : '/annuaire-intervention',
             views    : {
                 'content@app': {
-                    templateUrl: 'app/main/population/ddb/annuaire/annuaire.html',
+                    templateUrl: 'app/main/population/annuaire/annuaire.html',
                     controller : 'AnnuaireController as vm'
                 }
             },
@@ -32,8 +32,8 @@
         msNavigationServiceProvider.saveItem('population.annuaire', {
             title: 'Annuaire Intervention',
             icon  : 'icon-swap-horizontal',
-            state: 'app.population_ddb_annuaire',
-			weight: 7,
+            state: 'app.population_annuaire',
+			weight: 6,
             hidden: function()
             {
                     return vs;

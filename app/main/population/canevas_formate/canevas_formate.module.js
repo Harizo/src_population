@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.population.recommandation', ['ngCookies'])
+        .module('app.population.canevas_formate', ['ngCookies'])
         // .run(notification)        
         .config(config);
         var vs = {};
@@ -11,26 +11,26 @@
         var hide_menu ;
     /** @ngInject */
    function config($stateProvider,  $translatePartialLoaderProvider, msNavigationServiceProvider)  {
-        $stateProvider.state('app.population_recommandation', {
-            url      : '/recommandations',
+        $stateProvider.state('app.population_canevas_formate', {
+            url      : '/canevas-formate',
             views    : {
                 'content@app': {
-                    templateUrl: 'app/main/population/recommandation/recommandation.html',
-                    controller : 'RecommandationController as vm'
+                    templateUrl: 'app/main/population/canevas_formate/canevas_formate.html',
+                    controller : 'CanevasformateController as vm'
                 }
             },
-            bodyClass: 'recommandation',
+            bodyClass: 'canevas_formate',
             data : {
               authorizer : true,
               permitted : ["USER","PERSONNEL","ADMIN"],
-              page: "Recommandations"
+              page: "Canevas Formaté"
             }
         });
-		msNavigationServiceProvider.saveItem('population.recommandation', {
-			title: 'Recommandations',
+		msNavigationServiceProvider.saveItem('population.canevas_formate', {
+			title: 'Canevas Formaté',
 			icon  : 'icon-account-switch',
-			weight: 11,
-			state: 'app.population_recommandation',
+			weight: 10,
+			state: 'app.population_canevas_formate',
 		/*	badge:vs,
             hidden: function()
             {

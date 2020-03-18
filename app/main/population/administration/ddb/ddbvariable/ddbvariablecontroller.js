@@ -10,6 +10,7 @@
         var vm = this;
         var NouvelItem =false;
         vm.id_utilisateur = $cookieStore.get('id'); 
+		vm.allReponse=[{id:1,libelle:"Oui"},{id:0,libelle:"Non"}];
 /***********DEBUT add historique***********/
         var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
         var datas = $.param({
@@ -47,7 +48,8 @@
                           supprimer: 0,
                           id:          e.data.models[0].id,      
                           code:        e.data.models[0].code,
-                          description: e.data.models[0].description               
+                          description: e.data.models[0].description,              
+                          choix_unique:       e.data.models[0].liste_reponse.id,
                       });
                   apiFactory.add("liste_variable/index",datas, config).success(function (data)
                   {                
@@ -109,11 +111,18 @@
                             supprimer: 0,
                             id:        0,      
                             code:      e.data.models[0].code,
-                            description:       e.data.models[0].description              
+                            description:       e.data.models[0].description,             
+							choix_unique:       e.data.models[0].liste_reponse,
                         });
                     apiFactory.add("liste_variable/index",datas, config).success(function (data)
                     { 
                       e.data.models[0].id = String(data.response);               
+                     var itemsChoix_unique =
+                      {
+                        id: e.data.models[0].liste_reponse,
+                        libelle: vm.libelleChoixunique
+                      };
+					  e.data.models[0].liste_reponse=itemsChoix_unique;    
                       e.success(e.data.models);
                       /***********Debut add historique***********/
                         var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
@@ -133,7 +142,7 @@
             },               
             //data: valueMapCtrl.dynamicData,
             batch: true,
-            autoSync: false,
+            // autoSync: false,
             schema:
             {
                 model:
@@ -142,7 +151,8 @@
                     fields:
                     {
                         code: {type: "string",validation: {required: true}},
-                        description: {type: "string", validation: {required: true}}
+                        description: {type: "string", validation: {required: true}},
+                        liste_reponse: {validation: {required: true}}
                     }
                 }
             },
@@ -158,14 +168,12 @@
                text:"",
                iconClass: "k-icon k-i-table-light-dialog"              
           }],
-          editable:{ mode:"inline",update: true,destroy: true},
-          //selectable:"row",
+          editable: {
+            mode:"inline"
+          },
+          selectable:"row",
+          scrollable: false,
           sortable: true,
-          //pageable: true,
-          reorderable: true,
-          scrollable: false,              
-          filterable: true,
-          //groupable: true,
           pageable:{refresh: true,
                     pageSizes: true, 
                     buttonCount: 3,
@@ -179,7 +187,7 @@
                       first: "Première page",
                       last: "Dernière page"
                     }
-                  },         
+                  },
           //dataBound: function() {
                 //this.expandRow(this.tbody.find("tr.k-master-row").first());
             //},
@@ -194,23 +202,42 @@
               title: "Déscription",
               width: "Auto"
             },
+            {
+              field: "liste_reponse",
+              title: "Choix unique",
+              template: "{{dataItem.liste_reponse.libelle}}",
+              editor: ChoixuniqueDropDownEditor,
+              width: "Auto"
+            },
             { 
               title: "Action",
               width: "Auto",
               command:[{
                       name: "edit",
                       text: {edit: "",update: "",cancel: ""},
-                      click: function (e){
-                        e.preventDefault();
-                        var row = $(e.currentTarget).closest("tr");
-                        console.log(e);
-                        var data = this.dataItem(row);
-                        console.log(data);
-                        row.addClass("k-state-selected");
-                      }
+                      //iconClass: {edit: "k-icon k-i-edit",update: "k-icon k-i-update",cancel: "k-icon k-i-cancel"
+                       // },
                   },{name: "destroy", text: ""}]
             }]
           };
+		  
+		function ChoixuniqueDropDownEditor(container, options) {
+            $('<input id="choixuniqueDropDownList" change="vm.mande()" required data-text-field="libelle" data-value-field="id" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    dataTextField: "libelle",
+                    dataValueField: "choix_unique",
+                    dataSource: vm.allReponse         
+                }); 
+                var choixuniqueContener = container.find("#choixuniqueDropDownList").data("kendoDropDownList");
+          
+				choixuniqueContener.bind("change", function() {
+				vm.libelleChoixunique = choixuniqueContener.text();
+				console.log(vm.libelleChoixunique);  
+			});
+        }
+		  
+		  
       /* ***************Fin liste variable**********************/
       /* ***************Debut détail variable**********************/
       vm.alldetailvariable = function(id_liste_variable) {
@@ -335,7 +362,8 @@
                     fields:
                     {
                         code: {type: "string",validation: {required: true}},
-                        nom: {type: "string", validation: {required: true}}
+                        description: {type: "string", validation: {required: true}},
+                        choix_unique: {validation: {required: true}}
                     }
                 }
             },

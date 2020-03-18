@@ -932,7 +932,7 @@
                                 <legend>
                                         Financement Intervention
                                 </legend>
-								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b>
+								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b></br>
 								<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b>
 								<div style="widht:100%;">    
 									<md-button type="submit" ng-disabled="!vm.selectedItemIntervention.id" ng-show="vm.afficherboutonnouveaufinancementintervention==1" class="md-raised md-accent" aria-label="Nouveau" ng-click="vm.ajouterFinancementintervention()" style="width:10%;">
@@ -986,11 +986,19 @@
 							<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b></br>
 							<div style="clear:both;"></div>	
 							<div layout="column" flex-gt-xs="50" ng-repeat='item in vm.allRecordsListevariable' style="width:50%;display:inline-block">					
-								<fieldset class="standard">
+								<fieldset class="standard" ng-if="item.choix_unique==0">
 									<legend  class="md-grey-800-bg">{{item.description}}</legend>
                                     <md-checkbox ng-repeat='det in item.detail_variable' ng-checked="exists(det.id, vm.tab_reponse_variable)" ng-click="vm.toggle(det.id, vm.tab_reponse_variable)" ng-disabled="!vm.selectedItemIntervention.id">
                                         {{det.description}}
                                     </md-checkbox>
+								</fieldset>
+								<fieldset class="standard" ng-if="item.choix_unique==1">
+									<legend  class="md-grey-800-bg">{{item.description}}</legend>
+                                        <md-radio-group ng-model="vm.choix_unique[item.id]">
+ 										   <div ng-repeat='detail in item.detail_variable' class="row">
+											  <md-radio-button   ng-value="detail.id">{{detail.description}}</md-radio-button>
+										  </div>
+                                       </md-radio-group>
 								</fieldset>
 							</div>
 							<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>						 
@@ -1006,8 +1014,9 @@
                                         Zone d'intervention 
                                     <button ng-disabled="!vm.selectedItemIntervention.id" ng-click="vm.ajouterZoneintervention()" title="Ajouter une zone d'intervention " style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
                                 </legend>
- 								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b>
- 								<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b>
+ 								<b>Programme : {{vm.selectedItemProgramme.intitule}}</b></br>
+ 								<b>Intervention : {{vm.selectedItemIntervention.intitule}}</b></br>
+								<b>Cible : {{vm.afficher_cible}}</b>
                                <table id="TableZoneIntervention" ng-table="tableZoneintervention" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
                                     <thead>
                                         <tr>
@@ -1080,7 +1089,7 @@
                                                 <span ng-if="zoneint.$edit">
                                                     <md-input-container style="width:100%;">
                                                         <label>Ménage prévu</label>
-                                                        <input name="menage_beneficiaire_prevu" type="number" ng-model="zoneint.menage_beneficiaire_prevu"/>
+                                                        <input name="menage_beneficiaire_prevu" type="number" ng-model="zoneint.menage_beneficiaire_prevu" ng-disabled="vm.menage_prevu==0"/>
                                                     </md-input-container>	
                                                 </span>
                                                 <span ng-if="!zoneint.$edit">{{zoneint.menage_beneficiaire_prevu | number:0}}</span>
@@ -1089,7 +1098,7 @@
                                                 <span ng-if="zoneint.$edit">
                                                     <md-input-container style="width:100%;">
                                                         <label>Individu prévu</label>
-                                                        <input name="individu_beneficiaire_prevu" type="number" ng-model="zoneint.individu_beneficiaire_prevu"/>
+                                                        <input name="individu_beneficiaire_prevu" type="number" ng-model="zoneint.individu_beneficiaire_prevu" ng-disabled="vm.individu_prevu==0"/>
                                                     </md-input-container>	
                                                 </span>
                                                 <span ng-if="!zoneint.$edit">{{zoneint.individu_beneficiaire_prevu | number:0}}</span>
@@ -1098,7 +1107,7 @@
                                                 <span ng-if="zoneint.$edit">
                                                     <md-input-container style="width:100%;">
                                                         <label>Groupe prévu</label>
-                                                        <input name="groupe_beneficiaire_prevu" type="number" ng-model="zoneint.groupe_beneficiaire_prevu"/>
+                                                        <input name="groupe_beneficiaire_prevu" type="number" ng-model="zoneint.groupe_beneficiaire_prevu" ng-disabled="vm.groupe_prevu==0"/>
                                                     </md-input-container>	
                                                 </span>
                                                 <span ng-if="!zoneint.$edit">{{zoneint.groupe_beneficiaire_prevu | number:0}}</span>
