@@ -4,10 +4,10 @@
 
     angular
         .module('app.population.importdecoupage', [			
-           'app.population.importdecoupage.decoupageregion',
-           'app.population.importdecoupage.decoupagedistrict',
-           'app.population.importdecoupage.decoupagecommune',
-           'app.population.importdecoupage.decoupagefokontany',
+           // 'app.population.importdecoupage.decoupageregion',
+           // 'app.population.importdecoupage.decoupagedistrict',
+           // 'app.population.importdecoupage.decoupagecommune',
+           // 'app.population.importdecoupage.decoupagefokontany',
            'app.population.importdecoupage.exportdecoupage',
             ])
         // .run(testPermission)
@@ -20,7 +20,7 @@
         msNavigationServiceProvider.saveItem('population.importdecoupage', {
             title : 'Import découpage admin',
             icon  : 'icon-data',
-            weight: 8,
+            weight: 9,
             hidden: function()
             {
                     return vs;

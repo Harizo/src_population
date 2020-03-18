@@ -2,7 +2,7 @@
 {
     'use strict';
     angular
-        .module('app.population.ddb.annuaire')
+        .module('app.population.annuaire')
         .controller('AnnuaireController', AnnuaireController);
 
     /** @ngInject */
@@ -16,7 +16,15 @@
 		vm.ajoutIntervention = ajoutIntervention ;
 		vm.ajoutFinancementintervention = ajoutFinancementintervention ;
 		vm.ajoutZoneintervention = ajoutZoneintervention ;
+		// Tableau reponse variable à choix multiple
         vm.tab_reponse_variable = [] ;
+		// Tableau reponse variable à choix multiple
+        vm.choix_unique = [] ;
+		// Pour controler la saisie des nombre prévu ménage/individu/groupe ainsi que la description du cible
+		vm.menage_prevu=0;
+		vm.individu_prevu=0;
+		vm.groupe_prevu=0;
+		vm.afficher_cible="";
 		
 		var NouvelItemProgramme=false;
 		var NouvelItemZoneinterventionprogramme=false;
@@ -715,7 +723,7 @@
 								j= vm.selectedItemProgramme.detail_zone_intervention_programme.length - 1 ;
 							}
 							// Controle doublon
-							if(parseInt(region_id) == parseInt(region_temp)) {
+							if(parseInt(region_id) == parseInt(region_temp) && parseInt(district_id)==null) {
 								// doublon =>erreur
 								vm.doublon=true;
 								vm.a_sauvegarder=false;
@@ -778,7 +786,11 @@
 					vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 				});
 			} else {
-				vm.showAlert("INFORMATION","Saisie détaillé par district ou par région seulement.Veuillez corriger l'erreur.Merci !")
+				if(vm.doublon==true) {
+					vm.showAlert("INFORMATION","Zone d'intervention déjà présente dans la base de données.Veuillez corriger l'erreur.Merci !");					
+				} else {
+					vm.showAlert("INFORMATION","Saisie détaillé par district ou par région seulement.Veuillez corriger l'erreur.Merci !");
+				}	
 			}	
         }
 		// Fonction : boite de dialogue pour information à l'utilisateur
@@ -916,7 +928,6 @@
 					vm.allRecordsDistrict = vm.allRecordsDistrict.filter(function(obj) {
 						return obj.region_id == item.id_region;
 					});
-					console.log(vm.allRecordsDistrict);
 				}
 			});
 			if(vm.nontrouvee==true) {				
@@ -1066,8 +1077,6 @@
 			// Récupérer détail type secteur pour chaque financement
 			vm.tab_reponse_type_secteur =[];
 			vm.tab_reponse_type_secteur =item.typesecteur; 
-			console.log(vm.tab_reponse_type_secteur);
-			console.log(vm.tab_reponse_type_secteur.length);			
             vm.afficherboutonModifSuprfinancementprogramme = 1 ;
             vm.affichageMasquefinancementprogramme = 0 ;
             vm.afficherboutonnouveaufinancementprogramme = 1 ;
@@ -1321,7 +1330,6 @@
 			var i=0;
 			if(vm.nombre >0) {
 				vm.txt="";
-				console.log(vm.ListeDetailtypetransfert);
 				vm.ListeDetailtypetransfert.forEach(function(det) {
 					// Stocker seulement les id >0 et qte/val >0 ; le reste à ignorer
 					if(parseInt(det.id_detail_type_transfert) >0 && parseFloat(det.valeur_quantite) >0) {
@@ -1388,7 +1396,6 @@
 			apiFactory.add("intervention/index",donnees, config).success(function (data) {
 				if (NouvelItemIntervention == false) {
 					// Update or delete: id exclu  
-					console.log(data);
 					if(suppression==0) {
 					  vm.selectedItemIntervention.id = entite.id;
 					  vm.selectedItemIntervention.id_programme = entite.id_programme;
@@ -1490,7 +1497,6 @@
 				apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
 				});								
 			}).error(function (data) {
-				console.log();
 				vm.showAlert('Erreur lors de la sauvegarde','Veuillez corriger le(s) erreur(s) !');
 			});  
         }
@@ -1537,17 +1543,30 @@
 								});
 								item.detail_type_transfert = vm.ListeDetailtypetransfert; 
 								vm.selectedItemIntervention.detail_type_transfert = vm.ListeDetailtypetransfert; 
-								console.log(vm.ListeDetailtypetransfert);
 							} else {
 								inb_rien =3;							
 							}
 							// Récupération détail variable intervention  par id_intervention	
 							apiFactory.getAPIgeneraliser("variable_intervention/index","cle_etrangere",vm.selectedItemIntervention.id).then(function(result) {
-								item.detail_variable_intervention = result.data.response; 
-								vm.selectedItemIntervention.detail_variable_intervention = result.data.response; 
+								item.detail_variable_intervention_multiple = result.data.response.variable_choix_multiple; 
+								item.detail_variable_intervention_unique = result.data.response.variable_choix_unique; 
+								vm.selectedItemIntervention.detail_variable_intervention_multiple = result.data.response.variable_choix_multiple; 
+								vm.selectedItemIntervention.detail_variable_intervention_unique = result.data.response.variable_choix_unique; 
+								vm.menage_prevu=result.data.response.menage_prevu;
+								vm.individu_prevu=result.data.response.individu_prevu;
+								vm.groupe_prevu=result.data.response.groupe_prevu;
+								if(parseInt(vm.menage_prevu)==1) {
+									vm.afficher_cible="MENAGE";
+								} else if(parseInt(vm.individu_prevu)==1) {
+									vm.afficher_cible="INDIVIDU";
+								} else {
+									vm.afficher_cible="GROUPE";
+								}
 								vm.tab_reponse_variable=[];
-								if(result.data.response.length >0) {
-									vm.tab_reponse_variable = result.data.response; 
+								vm.choix_unique=[];
+								if(item.detail_variable_intervention_multiple.length >0 || item.detail_variable_intervention_unique.length >0) {
+									vm.tab_reponse_variable = result.data.response.variable_choix_multiple; 
+									vm.choix_unique=result.data.response.variable_choix_unique;
 								} else {
 									inb_rien =4;							
 								}
@@ -1561,10 +1580,15 @@
 					});
 				});
 			} else {
+				// Réinitialisation : pour affichage
 				vm.tab_reponse_variable = [];
+				vm.choix_unique=[];
 				// vm.ListeDetailtypetransfert=[];
-				vm.tab_reponse_variable = item.detail_variable_intervention;
-				// vm.ListeDetailtypetransfert=item.detail_type_transfert;
+				vm.tab_reponse_variable = item.detail_variable_intervention_multiple;
+				vm.choix_unique = item.detail_variable_intervention_unique;
+				vm.menage_prevu=item.menage_prevu;
+				vm.individu_prevu=item.individu_prevu;
+				vm.groupe_prevu=item.groupe_prevu;
 			}			
         };
 		// $watch pour sélectionner ou désélectionner automatiquement un item d'intervention
@@ -1653,7 +1677,6 @@
 				vm.intervention.id_type_transfert=parseInt(vm.selectedItemIntervention.id_type_transfert);
 			} else vm.intervention.id_type_transfert=null;
 			vm.intervention.id_type_transfert_ancien=vm.selectedItemIntervention.id_type_transfert_ancien;
-			console.log(vm.selectedItemIntervention.id_type_transfert_ancien);
 			vm.intervention.typetransfert=vm.selectedItemIntervention.typetransfert;
 			vm.intervention.flag_integration_donnees=vm.selectedItemIntervention.flag_integration_donnees;
 			vm.intervention.nouvelle_integration=vm.selectedItemIntervention.nouvelle_integration;
@@ -1666,15 +1689,12 @@
 				vm.intervention.montant_transfert=parseFloat(vm.selectedItemIntervention.montant_transfert);
 			} else vm.intervention.montant_transfert=null;			
 			if(vm.intervention.id_type_transfert) {
-				console.log(vm.intervention.id_type_transfert);
 				if(vm.selectedItemIntervention.detail_type_transfert) {
 					vm.ListeDetailtypetransfert =[];
 					vm.ListeDetailtypetransfert =vm.selectedItemIntervention.detail_type_transfert;
-					console.log(vm.ListeDetailtypetransfert);
 					vm.ListeDetailtypetransfert = vm.ListeDetailtypetransfert.filter(function(obj) {
 						return parseInt(obj.id_type_transfert) == parseInt(vm.intervention.id_type_transfert);
 					});		
-					console.log(vm.ListeDetailtypetransfert);
 					// vm.ListeDetailtypetransfert = vm.selectedItemIntervention.detail_type_transfert;					
 					vm.ListeDetailtypetransfert.forEach(function(dt) {
 						dt.valeur_quantite = parseFloat(dt.valeur_quantite);
@@ -1698,7 +1718,6 @@
 			vm.intervention.frequencetransfert=vm.selectedItemIntervention.frequencetransfert;
 			vm.afficherboutonModifSuprintervention = 0;
 			vm.afficherboutonnouveauintervention = 0;  
-			console.log(vm.intervention);
         };
 		// Suppression d'un item intervention
         vm.supprimerIntervention = function() {
@@ -1751,23 +1770,16 @@
 				// Affichage détail et saisie quantité ou valeur
 				if(item.id_type_transfert==item.id_type_transfert_ancien) {
 					// Aucun changement => affichage liste detail à partir vm.selectedItemIntervention.detail_type_transfert valeur originale
-					console.log("haut");
-					console.log(item.id_type_transfert);
-					console.log(item.id_type_transfert_ancien); 
 					vm.ListeDetailtypetransfert=vm.selectedItemIntervention.detail_type_transfert;
 					vm.ListeDetailtypetransfert = vm.ListeDetailtypetransfert.filter(function(obj) {
 						return parseInt(obj.id_type_transfert) == parseInt(item.id_type_transfert);
 					});					
-					console.log(vm.ListeDetailtypetransfert);
 				} else {
 					// vm.allRecordsDetailtypetransfert = liste par défaut vide de quantite
 					vm.ListeDetailtypetransfert=vm.allRecordsDetailtypetransfert;
-					console.log(item.id_type_transfert);
-					console.log(item.id_type_transfert_ancien);
 					vm.ListeDetailtypetransfert = vm.ListeDetailtypetransfert.filter(function(obj) {
 						return parseInt(obj.id_type_transfert) == parseInt(item.id_type_transfert);
 					});					
-					console.log("bas");
 				}			
 			}
 		}	
@@ -2182,7 +2194,6 @@
 		// Clic sur un enregistrement de zone_intervention
         vm.selectionZoneintervention= function (item) {     
             vm.selectedItemZoneintervention = item;
-			console.log(item);
         };
 		// $watch pour sélectionner ou désélectionner automatiquement un item de zone_intervention
         $scope.$watch('vm.selectedItemZoneintervention', function() {
@@ -2434,42 +2445,57 @@
 		}
 		// FIN DIFFRENTES FONCTIONS UTILES POUR LA TABLE DETAIL TYPE TRANSFERT	
 		// DEBUT DIFFRENTES FONCTIONS UTILES POUR LA SAUVEGARDE VARIABLE INTERVENTION
-		
 		vm.sauvegarder_variable_intervention=function(id_intervention) {
 			if(id_intervention && parseInt(id_intervention) >0) {
 				// Stocker dans une variable texte temporaire : txtTmp les valeurs à poster ultérieurement
-				// Tableau détail variable intervention : vm.tab_reponse_variable à stocker dans des variables indexées id_variable_(index)
+				// Tableau détail variable intervention : vm.tab_reponse_variable et vm.choix_unique à stocker dans des variables indexées id_variable_(index)
 				// Puis on utilise la fonction eval afin que l'on puisse poster normalement txtTmp
 				// C'est une façon de contourner la récupération impossible de variable tableau dans le serveur PHP	
-				vm.nombre_variable_intervention = vm.tab_reponse_variable.length; // nombre valeur selectionnée
+				vm.nombre_variable_intervention_choix_multiple = vm.tab_reponse_variable.length; // nombre valeur selectionnée multiple
+				vm.nombre_variable_intervention_choix_unique = 0; // nombre valeur selectionnée unique
 				var intitule_intervention = vm.selectedItemIntervention.intitule;
-				// Trier le tableau
-				for(var i=0;i < vm.nombre_variable_intervention;i++) {
-					if(vm.tab_reponse_variable[i].length==1) {
-						// insérer un ZERO avant pour que le tri soit croissant
-						vm.tab_reponse_variable[i] = '0' + vm.tab_reponse_variable[i];
-					}						
-				}				
-				vm.tab_reponse_variable.sort();
 				var txtTmp="";
 				txtTmp += "id_intervention" +":\"" + id_intervention + "\",";	
 				txtTmp += "intitule_intervention" +":\"" + intitule_intervention + "\",";	
-				txtTmp += "nombre_variable_intervention" +":\"" + vm.nombre_variable_intervention + "\",";	
-				for(var i=0;i < vm.nombre_variable_intervention;i++) {
+				txtTmp += "nombre_variable_intervention_choix_multiple" +":\"" + vm.nombre_variable_intervention_choix_multiple + "\",";	
+				for(var i=0;i < vm.nombre_variable_intervention_choix_multiple;i++) {
 					txtTmp += "id_variable_" + (i+1) + ":\"" + vm.tab_reponse_variable[i] + "\",";	
 				}
+				var iteration=1;
+				angular.forEach(vm.choix_unique, function(value, key)  { 
+					txtTmp += "id_liste_variable_" + iteration + ":\"" + key + "\",";
+					txtTmp += "id_variable_unique_" + iteration + ":\"" + value + "\",";
+					iteration=iteration + 1;	
+				});				
+				vm.nombre_variable_intervention_choix_unique =iteration; // nombre valeur selectionnée unique
+				txtTmp += "nombre_variable_intervention_choix_unique" +":\"" + (iteration - 1) + "\",";	
 				var donnees = $.param(eval('({' + txtTmp + '})'));
 				var config = {
 					headers : {
 						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
 					}
 				};
-				console.log(txtTmp);
 				apiFactory.add("variable_intervention/index",donnees, config).success(function (data) {
-					console.log(data.response);	
+					// Ecraser les valeurs dans vm.selectedItemIntervention 
+					vm.selectedItemIntervention.detail_variable_intervention_multiple = []; 
+					vm.selectedItemIntervention.detail_variable_intervention_unique = []; 	
+					vm.selectedItemIntervention.detail_variable_intervention_multiple = data.response.variable_choix_multiple; 
+					vm.selectedItemIntervention.detail_variable_intervention_unique = data.response.variable_choix_unique; 
+					vm.menage_prevu=data.response.menage_prevu;
+					vm.individu_prevu=data.response.individu_prevu;
+					vm.groupe_prevu=data.response.groupe_prevu;
+					if(parseInt(vm.menage_prevu)==1) {
+						vm.afficher_cible="MENAGE";
+					} else if(parseInt(vm.individu_prevu)==1) {
+						vm.afficher_cible="INDIVIDU";
+					} else {
+						vm.afficher_cible="GROUPE";
+					}
+					vm.selectedItemIntervention.detail_charge=1;
+					vm.showAlert("INFORMATION","Variable intervention sauvegardé avec succès");
 					//add historique : suppresion/modifcation/ajout DDB Annuaire : variable d'intervention
 					var datas = $.param({
-						action:data.response,
+						action:data.response.message_retour,
 						id_utilisateur:vm.id_utilisateur
 					});
 					//factory historique_utilisateur
@@ -2483,75 +2509,5 @@
 			}	
 		}	
 		// FIN DIFFRENTES FONCTIONS UTILES POUR LA SAUVEGARDE VARIABLE INTERVENTION
-		vm.clickaccordion=function(qui) {
-				var acc = document.getElementsByClassName("accordion");
-				var i;
-				var clic_sur_qui;
-				for (i = 1; i <= acc.length; i++) {	
-					clic_sur_qui = "p" + i;
-					alert(clic_sur_qui);
-					if(clic_sur_qui ===qui) {
-						alert("ATO");
-						if(clic_sur_qui.style.display=="block") {							
-								clic_sur_qui.style.display ="none";								
-						} else {		
-								clic_sur_qui.style.display ="block";
-								alert("TSSSSSSSS");
-						} 
-						/*if($("#"+clic_sur_qui).css("display")=="block") {							
-								$("#"+clic_sur_qui).css("display") ="none";								
-						} else {		
-								$("#"+clic_sur_qui).css("display") ="block";
-								alert("TSSSSSSSS");
-						} */
-						/*if(clic_sur_qui.style.display=="block") {
-							
-								clic_sur_qui.style.display ="none";
-								alert("ATO");
-						} else {		
-								clic_sur_qui.style.display ="block";
-								alert("TSSSSSSSS");
-						} */
-					} else {
-						// clic_sur_qui.style.display ="none";
-						/*acc[i].addEventListener("click", function() {
-							this.classList.toggle("active");
-							var panel = this.nextElementSibling;
-							if (panel.style.display === "block") {
-							  panel.style.display = "none";
-							} else {
-							  panel.style.display = "block";
-							}
-						});*/	
-					}	
-				}
-		};
-			$(document).on("click", "[class*='accordion']", function() {
-				var acc = document.getElementsByClassName("accordion");
-				// var clic_sur_qui = acc.attr("id");
-				// alert(acc.length);
-				var i;
-				for (i = 1; i <= acc.length; i++) {						
-					// alert(clic_sur_qui);	
-					// acc[i].addEventListener("click", function() {
-						/* Toggle between adding and removing the "active" class,
-						to highlight the button that controls the panel */
-						var div1 = document.getElementById("p"+i);
-						// var display = div1.getAttribute("display");
-						var display = div1.style.display;
-						// var display = div1.className;
-						alert(display);
-						this.classList.toggle("active");
-						/* Toggle between hiding and showing the active panel */
-						var panel = this.nextElementSibling;
-						if (panel.style.display === "block") {
-						  panel.style.display = "none";
-						} else {
-						  panel.style.display = "block";
-						}
-					// });
-				}
-			}); 
-		
     }
   })();

@@ -19,7 +19,7 @@
         msNavigationServiceProvider.saveItem('population.importationdonnees', {
             title : 'Importation données',
             icon  : 'icon-data',
-            weight: 6,
+            weight: 5,
             hidden: function()
             {
                     return vs;

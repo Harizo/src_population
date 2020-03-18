@@ -328,6 +328,7 @@
 			vm.afficherboutonnouveau=0;
         };
 		vm.sauverDocument = function (item,suppression) {
+			vm.affiche_load=true;
 			var config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -422,6 +423,7 @@
 				vm.selectedListedonneesavaliderItem={};
 				vm.afficherboutonnouveau=1;
 				vm.disable=false;
+				vm.affiche_load=false;
             }).error(function (data) {
                 alert('Erreur');
             }); 
@@ -466,6 +468,7 @@
 						vm.intervention=data["intervention"];
 						vm.date_inscription=data["date_inscription"];
 						// Aucune erreur détectée => Sauvegarde dans la liste de validation bénéficiaire
+						vm.affiche_load=true;
 						vm.sauverDocument(item,0);
 						var actions ="Envoi fichier bénéficiaire à valider : fichier " + vm.raisonsociale + " " + vm.repertoire + vm.fichier;
 						vm.showAlert("INFORMATION","Le fichier à importer ne contient pas des erreurs.Merci de votre collaboration.A bientôt");

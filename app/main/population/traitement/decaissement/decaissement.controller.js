@@ -476,10 +476,14 @@
 						vm.selectedItemDecaissement.$selected = false;
 						vm.selectedItemDecaissement.$edit = false;
 						vm.selectedItemDecaissement ={};
+						vm.action="Modification d'un enregistrement de décaissement";
+						vm.showAlert("INFORMATION","Décaissement modifié avec succès");
 					} else {    
 						vm.selectedItem.detail_decaissement = vm.selectedItem.detail_decaissement.filter(function(obj) {
 							return obj.id !== vm.selectedItemDecaissement.id;
 						});
+						vm.action="Suppression d'un enregistrement de décaissement";
+						vm.showAlert("INFORMATION","Décaissement supprimé avec succès");
 					}
 				} else {
 					densi.id=data.response;	
@@ -514,7 +518,10 @@
 						nouvelle_integration:vm.decaissement.nouvelle_integration,
 						commentaire:vm.decaissement.commentaire,
 					}	
-					vm.selectedItem.detail_decaissement.push(ite);					
+					vm.selectedItem.detail_decaissement.push(ite);	
+					vm.action="Ajout d'un enregistrement de décaissement";
+					vm.showAlert("INFORMATION","Décaissement ajouté et sauvegardé avec succès");
+					
 				}
 				densi.$selected=false;
 				densi.$edit=false;
@@ -522,6 +529,18 @@
 				vm.affichageMasque = 0 ;
 				vm.afficherboutonnouveau = 1 ;
 				vm.afficherboutonModifSupr=0;
+				//add historique : Décaissement
+				var config = {
+					headers : {
+						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+					}
+				};
+				var datas = $.param({
+					action:vm.action,
+					id_utilisateur:vm.id_utilisateur
+				});
+				apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+				});					
 			}).error(function (data) {
 				vm.showAlert('ERREUR',"Erreur lors de l'enregistrement !");
 			});  

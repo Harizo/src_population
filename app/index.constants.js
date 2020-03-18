@@ -32,7 +32,8 @@
 
 		.constant("apiUrlvalidationbeneficiaire", "validationdonnees/beneficiaire/")
 		.constant("apiUrlvalidationintervention", "validationdonnees/intervention/")
-		.constant("apiUrlrecommandation", "recommandation/");
+		.constant("apiUrlrecommandation", "recommandation/")
+		.constant("apiUrlcanevasformate", "canevasformate/");
 
 		
 })();
