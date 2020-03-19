@@ -23,7 +23,7 @@
     {
         msNavigationServiceProvider.saveItem('population.administration', {
             title : 'Administration',
-            icon  : 'icon-camera-iris',
+            icon  : 'icon-cog',
             weight: 1,
             hidden: function()
             {

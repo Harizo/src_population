@@ -8,6 +8,14 @@
 		.constant("apiUrl", "http://localhost/2019/population/api/index.php/api/")
 		.constant("apiUrlbase", "http://localhost/2019/population/")
 		.constant('apiUrlExcel', "http://localhost/2019/population/exportexcel/")
+
+		/* SERVEUR Min Pop*/
+
+		/*.constant("apiUrl", "http://192.168.3.7/2019/population/api/index.php/api/")
+		.constant("apiUrlbase", "http://192.168.3.7/2019/population/")
+		.constant('apiUrlExcel', "http://192.168.3.7/2019/population/exportexcel/")*/
+
+		/* SERVEUR Min Pop*/
 		
 		/* SERVEUR Externe ASTRUM*/
 			/*.constant("apiUrl", "http://196.192.38.40/2019/population/api/index.php/api/")
@@ -23,11 +31,11 @@
 		/*FIN SERVEUR LOCAL ASTRUM*/
 
 
-		/* AUTRE SERVEUR */
-		/*.constant("apiUrl", "http://192.168.1.209/2019/population/api/index.php/api/")
-		.constant("apiUrlbase", "http://192.168.1.209/2019/population/")
-		.constant('apiUrlExcel', "http://192.168.1.209/2019/population/exportexcel/")*/
-		/*FIN AUTRE SERVEUR */
+		/* Telma SERVEUR */
+		/*.constant("apiUrl", "http://41.207.51.186/registresocial/2019/population/api/index.php/api/")
+		.constant("apiUrlbase", "http://41.207.51.186/registresocial/2019/population/")
+		.constant('apiUrlExcel', "http://41.207.51.186/registresocial/2019/population/exportexcel/")*/
+		/*FIN Telma SERVEUR */
 
 
 		.constant("apiUrlvalidationbeneficiaire", "validationdonnees/beneficiaire/")

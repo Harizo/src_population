@@ -29,7 +29,7 @@
         // Navigation
         msNavigationServiceProvider.saveItem('population.reporting.environment_et_systeme', {
             title: 'Tableau de bord',
-            icon  : 'icon-swap-horizontal',
+            icon  : 'icon-chart-line',
             state: 'app.population_reporting_environment_et_systeme',
             weight: 1
         });

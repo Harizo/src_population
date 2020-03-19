@@ -16,7 +16,7 @@
     function config(msNavigationServiceProvider) {
         msNavigationServiceProvider.saveItem('population.validationdonnees', {
             title : 'Simulation des données',
-            icon  : 'icon-data',
+            icon  : 'icon-arrow-up-bold-hexagon-outline',
             weight: 4,
             hidden: function()
             {

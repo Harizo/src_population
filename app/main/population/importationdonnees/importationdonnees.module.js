@@ -18,7 +18,7 @@
     {
         msNavigationServiceProvider.saveItem('population.importationdonnees', {
             title : 'Importation données',
-            icon  : 'icon-data',
+            icon  : 'icon-arrow-up-bold-circle',
             weight: 5,
             hidden: function()
             {

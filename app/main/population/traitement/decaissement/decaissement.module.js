@@ -31,7 +31,7 @@
         // Navigation
         msNavigationServiceProvider.saveItem('population.decaissement', {
             title: 'Suivi Décaissement',
-            icon  : 'icon-swap-horizontal',
+            icon  : 'icon-cash',
             state: 'app.population_saisie_decaissement',
 			weight: 8,
             hidden: function()

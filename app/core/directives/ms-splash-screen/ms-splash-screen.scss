@@ -84,7 +84,7 @@
                         height: 100px;
                         box-sizing: border-box;
                         border: 10px solid #4285F4;
-                        border-bottom-color: transparent;
+                        border-bottom-color: #f8670d;
                         border-radius: 50%;
                     }
                 }
@@ -94,7 +94,7 @@
 
                     .half-circle {
                         left: 0;
-                        border-right-color: transparent;
+                        border-right-color: #f8670d;
                         animation: left-wobble 1.3125s cubic-bezier(0.35, 0, 0.25, 1) infinite;
                         -webkit-animation: left-wobble 1.3125s cubic-bezier(0.35, 0, 0.25, 1) infinite;
                     }
@@ -105,7 +105,7 @@
 
                     .half-circle {
                         right: 0;
-                        border-left-color: transparent;
+                        border-left-color: #f8670d;
                         animation: right-wobble 1.3125s cubic-bezier(0.35, 0, 0.25, 1) infinite;
                         -webkit-animation: right-wobble 1.3125s cubic-bezier(0.35, 0, 0.25, 1) infinite;
                     }

@@ -1,10 +1,7 @@
 #vertical-navigation {
-    width: $navigationWidth;
-    /*min-width: $navigationWidth;
-    max-width: $navigationWidth;*/
-
-    min-width: 270px !important;
-    max-width: $navigationWidth;
+    width: 300px;
+    min-width: $navigationWidth;
+    /*max-width: $navigationWidth;*/
     overflow-x: hidden;
     transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2), width 0.1s linear, min-width 0.1s linear, max-width 0.1s linear;
     box-shadow: $whiteframe-shadow-6dp;
@@ -19,7 +16,7 @@
 
             .logo-image {
                 display: block;
-                background: material-color('light-blue', '600');
+                background: #f8670d;
                 width: 32px;
                 min-width: 32px;
                 height: 32px;
@@ -27,12 +24,12 @@
                 text-align: center;
                 font-size: 16px;
                 font-weight: 500;
-                color: #FFFFFF;
+                color: #f8670d;
                 border-radius: 2px;
             }
 
             .logo-text {
-                color: #FFFFFF;
+                color: #f8670d;
                 margin-left: 16px;
                 font-size: 16px;
             }

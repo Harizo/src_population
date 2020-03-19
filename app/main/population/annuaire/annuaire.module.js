@@ -31,7 +31,7 @@
         // Navigation
         msNavigationServiceProvider.saveItem('population.annuaire', {
             title: 'Annuaire Intervention',
-            icon  : 'icon-swap-horizontal',
+            icon  : 'icon-file-multiple',
             state: 'app.population_annuaire',
 			weight: 6,
             hidden: function()

@@ -29,7 +29,7 @@
         // Navigation
         msNavigationServiceProvider.saveItem('population.reporting.carte', {
             title: 'Carte',
-            icon  : 'icon-swap-horizontal',
+            icon  : 'icon-google-maps',
             state: 'app.population_reporting_carte',
             weight: 2
         });

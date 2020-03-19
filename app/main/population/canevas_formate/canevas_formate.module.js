@@ -28,7 +28,7 @@
         });
 		msNavigationServiceProvider.saveItem('population.canevas_formate', {
 			title: 'Canevas Formaté',
-			icon  : 'icon-account-switch',
+			icon  : 'icon-arrow-down-bold-circle-outline',
 			weight: 10,
 			state: 'app.population_canevas_formate',
 		/*	badge:vs,
