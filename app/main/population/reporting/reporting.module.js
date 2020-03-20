@@ -17,7 +17,7 @@
     function config(msNavigationServiceProvider)
     {
         msNavigationServiceProvider.saveItem('population.reporting', {
-            title : 'Reporting',
+            title : 'Suivi Stratégique',
             icon  : 'icon-chart-bar',
             weight: 7,
             hidden: function()

@@ -7,7 +7,7 @@
         .controller('AccueilController', AccueilController);
 
     /** @ngInject */
-    function AccueilController()
+    function AccueilController(apiFactory, $cookieStore, loginService)
     {
     	/*var vm = this ;
    
@@ -24,6 +24,23 @@
 
 		  document.getElementById('forms').innerHTML = 'playerSpriteX = ' + playerSpriteX;*/
 		//});
+		var id_user = $cookieStore.get('id');
+
+		apiFactory.getOne("utilisateurs/index", id_user).then(function(result) 
+            {
+                var user = result.data.response;
+               
+
+                var permission = user.roles;
+                var permissions =   [
+                                        "SPR_ADM",
+                                        "RPT"
+                                    ];
+                var acces =  loginService.gestionMenu(permissions,permission);  
+                console.log(acces);      
+                
+
+            });
 		
     }
 })();
