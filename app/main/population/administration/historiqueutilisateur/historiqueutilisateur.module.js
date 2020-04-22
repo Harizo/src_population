@@ -38,7 +38,8 @@
             hidden: function()
             {
                     return vs;
-            }
+            },
+			weight: 3
         });
     }
 

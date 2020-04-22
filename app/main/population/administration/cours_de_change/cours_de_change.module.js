@@ -34,7 +34,7 @@
             title: 'Cours de change',
             icon  : 'icon-currency-eur',
             state: 'app.population_admin_cours_de_change',
-			weight: 3
+			weight: 5
         });
     }
 
