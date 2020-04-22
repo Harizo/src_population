@@ -40,7 +40,8 @@
             hidden:function()
             {
                     return affichage;
-            }
+            },
+			weight: 2
         });
     }
 

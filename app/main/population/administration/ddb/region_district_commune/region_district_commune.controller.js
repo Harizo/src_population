@@ -80,33 +80,40 @@
                 //suppression region
                 destroy: function (e)
                 {
-                    
-                    var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-                    
-                    var datas = $.param({
-                            supprimer: 1,
-                            id:        e.data.models[0].id               
-                        });
-                    apiFactory.add("region/index",datas, config).success(function (data)
-                    {                
-                      e.success(e.data.models);
-
-                      /***********Debut add historique***********/
-                          var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-                          var datas = $.param({
-                                  action:"Suppression : Region de nom de " + e.data.models[0].nom,
-                                  id_utilisateur:vm.id_utilisateur
-                          });
-                                
-                          apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-                          });
-                      /***********Fin add historique***********/
-
-                    }).error(function (data)
-                      {
-                        vm.showAlert('Erreur','Erreur lors de l\'insertion de donnée');
-                      });
-               
+					// Demande de confirmation de suppression
+					var confirm = $mdDialog.confirm()
+						.title('Etes-vous sûr de supprimer cet enregistrement ?')
+						.textContent('')
+						.ariaLabel('Lucky day')
+						.clickOutsideToClose(true)
+						.parent(angular.element(document.body))
+						.ok('supprimer')
+						.cancel('annuler');
+					$mdDialog.show(confirm).then(function() {  
+						// demande de confirmation de suppression OK => enregitrement à supprimer
+						var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};                   
+						var datas = $.param({
+								supprimer: 1,
+								id:        e.data.models[0].id               
+							});
+						apiFactory.add("region/index",datas, config).success(function (data)  {                
+						  e.success(e.data.models);
+						  /***********Debut add historique***********/
+							  var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
+							  var datas = $.param({
+									  action:"Suppression : Region de nom de " + e.data.models[0].nom,
+									  id_utilisateur:vm.id_utilisateur
+							  });
+									
+							  apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+							  });
+						  /***********Fin add historique***********/
+						}).error(function (data) {
+							vm.showAlert('Erreur','Erreur lors de la suppression de donnée');
+						});
+					}, function() {
+						// Aucune action = sans suppression
+					});               
                 },
                 //creation region
                 create: function(e)
@@ -284,31 +291,39 @@
               //supression district
               destroy : function (e)
               {
-                  var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-                  
-                  var datas = $.param({
-                          supprimer: 1,
-                          id:        e.data.models[0].id               
-                      });
-                  
-                  apiFactory.add("district/index",datas, config).success(function (data)
-                  {                
-                    e.success(e.data.models);
-
-                    /***********Debut add historique***********/
-                        var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-                        var datas = $.param({
-                                action:"Suppression : District de nom de " + e.data.models[0].nom,
-                                id_utilisateur:vm.id_utilisateur
-                        });
-                              
-                        apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-                        });
-                    /***********Fin add historique***********/ 
-                  }).error(function (data)
-                    {
-                      vm.showAlert('Erreur','Erreur lors de l\'insertion de donnée');
-                    });      
+					// Demande de confirmation de suppression
+					var confirm = $mdDialog.confirm()
+						.title('Etes-vous sûr de supprimer cet enregistrement ?')
+						.textContent('')
+						.ariaLabel('Lucky day')
+						.clickOutsideToClose(true)
+						.parent(angular.element(document.body))
+						.ok('supprimer')
+						.cancel('annuler');
+					$mdDialog.show(confirm).then(function() {  
+						// demande de confirmation de suppression OK => enregitrement à supprimer
+						var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};                  
+						var datas = $.param({
+							  supprimer: 1,
+							  id:        e.data.models[0].id               
+						});                 
+						apiFactory.add("district/index",datas, config).success(function (data) {                
+							e.success(e.data.models);
+							/***********Debut add historique***********/
+							var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
+							var datas = $.param({
+									action:"Suppression : District de nom de " + e.data.models[0].nom,
+									id_utilisateur:vm.id_utilisateur
+							});                             
+							apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+							});
+							/***********Fin add historique***********/ 
+						}).error(function (data) {
+							vm.showAlert('Erreur','Erreur lors de la suppression de donnée');
+						}); 
+					}, function() {
+						// Aucune action = sans suppression
+					});					
               },
               //creation district
               create : function (e)
@@ -475,34 +490,40 @@
               },
               //suppression commune
               destroy : function (e)
-              {
-                  
-                  var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-                  
-                  var datas = $.param({
-                          supprimer: 1,
-                          id:        e.data.models[0].id               
-                      });
-                  
-                  apiFactory.add("commune/index",datas, config).success(function (data)
-                  {                
-                    e.success(e.data.models);
-
-                    /***********Debut add historique***********/
-                        var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-                        var datas = $.param({
-                                action:"Suppression : Commune de nom de " + e.data.models[0].nom,
-                                id_utilisateur:vm.id_utilisateur
-                        });
-                              
-                        apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-                        });
-                    /***********Fin add historique***********/  
-                  }).error(function (data)
-                    {
-                      vm.showAlert('Erreur','Erreur lors de l\'insertion de donnée');
-                    });
-
+              {                  
+					// Demande de confirmation de suppression
+					var confirm = $mdDialog.confirm()
+						.title('Etes-vous sûr de supprimer cet enregistrement ?')
+						.textContent('')
+						.ariaLabel('Lucky day')
+						.clickOutsideToClose(true)
+						.parent(angular.element(document.body))
+						.ok('supprimer')
+						.cancel('annuler');
+					$mdDialog.show(confirm).then(function() {  
+						// demande de confirmation de suppression OK => enregitrement à supprimer
+						var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};                 
+						var datas = $.param({
+							  supprimer: 1,
+							  id:        e.data.models[0].id               
+						  });                 
+						apiFactory.add("commune/index",datas, config).success(function (data) {                
+							e.success(e.data.models);
+							/***********Debut add historique***********/
+							var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
+							var datas = $.param({
+									action:"Suppression : Commune de nom de " + e.data.models[0].nom,
+									id_utilisateur:vm.id_utilisateur
+							});                             
+							apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+							});
+							/***********Fin add historique***********/  
+						}).error(function (data) {
+						  vm.showAlert('Erreur','Erreur lors de la suppression de donnée');
+						});
+					}, function() {
+						// Aucune action = sans suppression
+					});               
               },
               //creation commune
               create : function (e)
@@ -669,33 +690,40 @@
               },
               //suppression fokontany
               destroy : function (e)
-              {
-                  
-                  var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-                  
-                  var datas = $.param({
-                          supprimer: 1,
-                          id:        e.data.models[0].id               
-                      });
-                  
-                  apiFactory.add("fokontany/index",datas, config).success(function (data)
-                  {                
-                    e.success(e.data.models);                    
-
-                  /***********Debut add historique***********/
-                      var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
-                      var datas = $.param({
-                              action:"Suppression : Fokontany de nom de  " + e.data.models[0].nom,
-                              id_utilisateur:vm.id_utilisateur
-                      });
-                            
-                      apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-                      });
-                  /***********Fin add historique***********/ 
-                  }).error(function (data)
-                    {
-                      vm.showAlert('Erreur','Erreur lors de l\'insertion de donnée');
-                    });     
+              {                 
+					// Demande de confirmation de suppression
+					var confirm = $mdDialog.confirm()
+						.title('Etes-vous sûr de supprimer cet enregistrement ?')
+						.textContent('')
+						.ariaLabel('Lucky day')
+						.clickOutsideToClose(true)
+						.parent(angular.element(document.body))
+						.ok('supprimer')
+						.cancel('annuler');
+					$mdDialog.show(confirm).then(function() {  
+						// demande de confirmation de suppression OK => enregitrement à supprimer
+						var config ={headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};                 
+						var datas = $.param({
+							  supprimer: 1,
+							  id:        e.data.models[0].id               
+						  });                  
+						apiFactory.add("fokontany/index",datas, config).success(function (data) {                
+							e.success(e.data.models);                    
+							/***********Debut add historique***********/
+							var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}};
+							var datas = $.param({
+								  action:"Suppression : Fokontany de nom de  " + e.data.models[0].nom,
+								  id_utilisateur:vm.id_utilisateur
+							});                          
+							apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+							});
+							/***********Fin add historique***********/ 
+						}).error(function (data)  {
+						  vm.showAlert('Erreur','Erreur lors de la suppression de donnée');
+						});     
+					}, function() {
+						// Aucune action = sans suppression
+					});					
               },
               //creation fokontany
               create : function (e)

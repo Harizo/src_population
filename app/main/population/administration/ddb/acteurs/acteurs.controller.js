@@ -50,6 +50,7 @@
 		vm.filtre.id_district ={};
 		vm.filtre.id_commune ={};
 		vm.acteur.id_fokontany ={};
+		vm.afficher_onglet=true;
 		//variale affichage bouton nouveau
 		//variable cache masque de saisie
 		//style
@@ -143,7 +144,7 @@
 			};
 			var getId = 0;
 			if (NouvelItem==false) {
-			   getId = vm.selectedItem.id; 
+			   getId = vm.selectedItemTypeacteur.id; 
 			} 
 			var datas = $.param({
 				supprimer:suppression,
@@ -156,23 +157,23 @@
 				if (NouvelItem == false) {
 					// Update or delete: id exclu                   
 					if(suppression==0) {
-					  vm.selectedItem.code = typeact.code;
-					  vm.selectedItem.description = typeact.description;
-					  vm.selectedItem.$selected = false;
-					  vm.selectedItem.$edit = false;
-					  vm.selectedItem ={};
-					  vm.action="Modification d'un enregistrement de DDB : Type acteur" + " ("+ entite.code + " " +  entite.description + ")";
+					  vm.selectedItemTypeacteur.code = typeact.code;
+					  vm.selectedItemTypeacteur.description = typeact.description;
+					  vm.selectedItemTypeacteur.$selected = false;
+					  vm.selectedItemTypeacteur.$edit = false;
+					  vm.selectedItemTypeacteur ={};
+					  vm.action="Modification d'un enregistrement de DDB : Type acteur" + " ("+ typeact.code + " " +  typeact.description + ")";
 					} else {    
 						// Suppression type acteur
 						vm.allRecordsTypeacteur = vm.allRecordsTypeacteur.filter(function(obj) {
-							return obj.id !== vm.selectedItem.id;
+							return obj.id !== vm.selectedItemTypeacteur.id;
 						});
-						vm.action="Suppression d'un enregistrement de DDB : Type acteur" + " ("+ entite.code + " " + entite.description + ")";
+						vm.action="Suppression d'un enregistrement de DDB : Type acteur" + " ("+ typeact.code + " " + typeact.description + ")";
 					}
 				} else {
 					typeact.id=data.response;	
 					NouvelItem=false;
-					vm.action="Ajout d'un enregistrement de DDB : Type acteur" + " ("+ entite.code + " " + entite.description + ")";
+					vm.action="Ajout d'un enregistrement de DDB : Type acteur" + " ("+ typeact.code + " " + typeact.description + ")";
 				}
 				typeact.$selected=false;
 				typeact.$edit=false;
@@ -395,6 +396,7 @@
 					NouvelItemActeur=false;
 					vm.action="Ajout d'un enregistrement de DDB : Acteur" + " (" + entite.code + " " + entite.nom + ")";
 				}
+				vm.afficher_onglet=true;
 				entite.$selected=false;
 				entite.$edit=false;
 				vm.affichageMasque =0;
@@ -434,6 +436,7 @@
         });
 		// Ajout d'un nouvel item acteur
         vm.ajouterActeur = function () {
+			vm.afficher_onglet=false;
 			vm.titreacteur="Ajout Acteur";
 			vm.selectedItemActeur.$selected = false;
 			vm.affichageMasque = 1 ;
@@ -456,6 +459,7 @@
         };
 		// Annulation modification d'un item acteur
         vm.annulerActeur = function(item) {
+			vm.afficher_onglet=true;
 			vm.selectedItemActeur = {} ;
 			vm.selectedItemActeur.$selected = false;
 			vm.affichageMasque = 0 ;
@@ -465,6 +469,7 @@
        };
 	   // Modification d'un item de acteur
         vm.modifierActeur = function(item) {
+			vm.afficher_onglet=false;
 			vm.titreacteur="Modification Acteur";
 			NouvelItemActeur = false ;
 			vm.affichageMasque = 1 ;

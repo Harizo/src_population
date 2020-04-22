@@ -4,24 +4,24 @@
             <div class="breadcrumb" layout="row" layout-align="start center">
                 <md-icon md-font-icon="icon-home" class="s16"></md-icon>
                 <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
-                <span class="parent">Importation des données</span>
+                <span class="parent">Validation des données</span>
                 <span class="parent"> </span>
                 <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
-                <span class="parent" href="javascript:;">Validation des interventions</span>
+                <span class="parent" href="javascript:;">Validation suivie des interventions</span>
             </div>
 
-            <div class="title">Validation des interventions</div>
+            <div class="title">Validation suivie des interventions</div>
         </div>
     </div>
     <div class="content"layout="column">
 		<div class="form-wrapper"> 
 			<md-tabs md-dynamic-height>
                 <md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
-				<md-tab label="Liste validation des interventions">
+				<md-tab label="Liste validation suivie des interventions">
 					<md-tab-body>
 						<fieldset>
 							<legend>
-								Validation des interventions
+								Validation suivie des interventions
 								<button ng-disabled="vm.disable" ng-click="vm.ajouterDocument()" ng-show="vm.afficherboutonnouveau==1" title="Ajouter document" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
 							</legend>
 							<div style="clear:both;"></div>

@@ -8,10 +8,10 @@
                     <span class="parent">Données de bases</span>
                     <span class="parent"> </span>
                     <md-icon md-font-icon="icon-chevron-right" class="s16 separator"></md-icon>
-                    <span class="parent" href="javascript:;"> Acteurs</span>
+                    <span class="parent" href="javascript:;"> Acteurs/Type transfert</span>
                 </div>
     
-                <div class="title">Acteurs</div>
+                <div class="title">Acteurs/Type transfert</div>
             </div>
         </div>
 		<!-- Début masque de saisie acteur détail-->
@@ -194,7 +194,7 @@
         <div class="content" layout="column">
             <div class="form-wrapper">
                 <div style="clear:both;"></div>
-                <md-tabs md-dynamic-height>
+                <md-tabs md-dynamic-height ng-show="vm.afficher_onglet">
                     <md-tab label="Type acteur" ng-click="vm.Select_table(1)">
                         <md-tab-body>
                             <fieldset>

@@ -39,7 +39,8 @@
             hidden:function()
             {
                     return affichage;
-            }
+            },
+			weight: 1
         });
     }
 

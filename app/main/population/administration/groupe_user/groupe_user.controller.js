@@ -128,6 +128,10 @@
 						          vm.acces.rpt = true ;
 						          break;
 								}
+								case 'CR_CHANGE':  {
+						          vm.acces.cr_change = true ;
+						          break;
+								}
 								default:  {
 						          break ;
 								}
@@ -336,6 +340,7 @@
 				vm.acces.imp_ben = false ;
 				vm.acces.imp_int = false ;
 				vm.acces.rpt = false ;
+				vm.acces.cr_change = false ;
         	}
 
 
@@ -361,6 +366,7 @@
 					vm.acces.imp_ben = true ;
 					vm.acces.imp_int = true ;
 					vm.acces.rpt = true ;
+					vm.acces.cr_change = true ;
         		}
         		else
         		{
@@ -410,6 +416,8 @@
 					if(key == 'imp_int' && value == true)
 					tab.push(key.toUpperCase());
 					if(key == 'rpt' && value == true)
+					tab.push(key.toUpperCase());           
+					if(key == 'cr_change' && value == true)
 					tab.push(key.toUpperCase());           
 				}); 
 
