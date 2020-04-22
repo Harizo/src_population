@@ -26,21 +26,12 @@
 		//});
 		var id_user = $cookieStore.get('id');
 
-		apiFactory.getOne("utilisateurs/index", id_user).then(function(result) 
-            {
-                var user = result.data.response;
-               
+		apiFactory.getAll("commune/index").then(function(result) 
+        {
+            console.log(result);      
+            
 
-                var permission = user.roles;
-                var permissions =   [
-                                        "SPR_ADM",
-                                        "RPT"
-                                    ];
-                var acces =  loginService.gestionMenu(permissions,permission);  
-                console.log(acces);      
-                
-
-            });
+        });
 		
     }
 })();
