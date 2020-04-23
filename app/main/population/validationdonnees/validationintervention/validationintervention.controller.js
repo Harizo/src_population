@@ -392,6 +392,7 @@
 			vm.afficherboutonnouveau=0;
         };
 		vm.sauverDocument = function (item,suppression) {
+			vm.affiche_load=true;
 			var config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -489,6 +490,7 @@
             }).error(function (data) {
                 alert('Erreur');
             }); 
+			vm.affiche_load=false;
         }      
         function test_existance (item,suppression) {          
             if (suppression!=1) {
@@ -543,7 +545,6 @@
 						});   
 						vm.afficherboutonnouveau=1;
 					}						
-					vm.affiche_load=false;
 					//add historique : Validation intervention : 
 					var config = {
 						headers : {
@@ -560,14 +561,16 @@
 				}).error(function(){
 					// console.log("Rivotra");
 				});
+				vm.affiche_load=false;
 			} else {
 				vm.sauverDocument(item,0);
 			}
 		}
 		vm.exportfichier = function(item) {
-			var bla = $.post(apiUrl + "Uploadfichier/prendre_fichier",{
+			var rep = apiUrlbase + item.repertoire;
+			var bla = $.post(apiUrl + "uploadfichier/prendre_fichier",{
 						nom_fichier : item.nom_fichier,
-						repertoire: item.repertoire,
+						repertoire: rep,
 						email :vm.adresse_mail,
 					},function(data) {   
 						window.location = data;

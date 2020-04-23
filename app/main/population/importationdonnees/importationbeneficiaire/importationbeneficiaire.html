@@ -15,9 +15,10 @@
     </div>
     <div class="content"layout="column">
 		<div class="form-wrapper"> 
+			<md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
+			<div style="clear:both;"></div>
 			<!-- Début Liste fichier excel en attente d'intégration dans la BDD -->
 			<md-tabs md-dynamic-height>
-                <md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
 				<md-tab label="Bénéficiaires en attente d'importation vers BDD">
 					<md-tab-body>
 						<fieldset>

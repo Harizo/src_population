@@ -9,7 +9,7 @@
            // 'app.population.importdecoupage.decoupagecommune',
            // 'app.population.importdecoupage.decoupagefokontany',
            'app.population.importdecoupage.exportdecoupage',
-           // 'app.population.importdecoupage.importcoordonneescommune',
+           'app.population.importdecoupage.importcoordonneescommune',
             ])
         // .run(testPermission)
         .config(config);

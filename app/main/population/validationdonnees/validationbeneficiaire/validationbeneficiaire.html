@@ -15,8 +15,9 @@
     </div>
     <div class="content"layout="column">
 		<div class="form-wrapper"> 
+			<md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
+			<div style="clear:both;"></div>
 			<md-tabs md-dynamic-height>
-                <md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
 				<md-tab label="Liste validation des bénéficiaires">
 					<md-tab-body>
 						<fieldset>
