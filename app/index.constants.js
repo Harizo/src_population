@@ -5,15 +5,15 @@
     angular
         .module("fuse")
 
-		/*.constant("apiUrl", "http://localhost/2019/population/api/index.php/api/")
+		.constant("apiUrl", "http://localhost/2019/population/api/index.php/api/")
 		.constant("apiUrlbase", "http://localhost/2019/population/")
-		.constant('apiUrlExcel', "http://localhost/2019/population/exportexcel/")*/
+		.constant('apiUrlExcel', "http://localhost/2019/population/exportexcel/")
 
 		/* SERVEUR Min Pop*/
 
-		.constant("apiUrl", "http://192.168.3.7/2019/population/api/index.php/api/")
+		/*.constant("apiUrl", "http://192.168.3.7/2019/population/api/index.php/api/")
 		.constant("apiUrlbase", "http://192.168.3.7/2019/population/")
-		.constant('apiUrlExcel', "http://192.168.3.7/2019/population/exportexcel/")
+		.constant('apiUrlExcel', "http://192.168.3.7/2019/population/exportexcel/")*/
 
 		/* SERVEUR Min Pop*/
 		
