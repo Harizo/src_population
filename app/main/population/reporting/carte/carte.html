@@ -22,13 +22,23 @@
            
             <div class="white-bg md-whiteframe-4dp">
 
-                <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom">
+                <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom" >
                     <div ng-repeat="p in vm.polylines">
 
-                        <ui-gmap-polygon  path="p.path" stroke="p.stroke" visible='p.visible'
-                        geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" clickable='true' icons='p.icons' events="p.events" fill="p.fill" geodesic="true">
+                        <ui-gmap-polygon id="p.id" path="p.path" stroke="p.stroke" visible='p.visible'
+                        geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" clickable='true' icons='p.icons' events="p.events" fill="p.fill" geodesic="true"> 
                       
                     </ui-gmap-polygon>
+
+                    <ui-gmap-marker
+                            idKey='p.id'
+                            coords='p.path[0]'
+                            
+                            options="{labelClass:'marker_labels',labelAnchor:'12 60',labelContent:'title'}"
+                            
+                            >
+                    </ui-gmap-marker>
+
 
                     </div>
                    
