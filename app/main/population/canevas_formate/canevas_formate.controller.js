@@ -57,22 +57,14 @@
 		vm.disable=false;
         vm.selectedDocumentItem={};
         vm.myFile={};
-        vm.parent_courant={};
-        vm.etat="";
         vm.fichier="";
 		vm.directoryName='';
         vm.typeact={};
         vm.selectedItem = {} ;
         vm.selectedcourant={};
-        vm.ajout = ajout ;
         //variale affichage bouton nouveau
         vm.afficherboutonnouveau = 1 ;
-        //variable cache masque de saisie
-        //fin pour les sous tâches
-        vm.allActivite = [] ;
         vm.allCanevasformate = [] ;
-        vm.allParent = [] ;
-        vm.ListeParent = [] ;
         // Data
         vm.dtOptions = {
         dom       : '<"top"f>rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
@@ -81,10 +73,9 @@
         responsive: true
         };
         // vm.activite_col = [{"titre":"Type de document"}];
-        vm.tdr_coldetail = [{"titre":"Resumé"},{"titre":"Fichier"},{"titre":"Date"},{"titre":"Utilisateur"},{"titre":"Action"}];           
+        vm.titre_canevas_formate = [{"titre":"Resumé"},{"titre":"Fichier"},{"titre":"Date"},{"titre":"Utilisateur"},{"titre":"Action"}];           
         var id_user = $cookieStore.get('id');
-		vm.utilisateur_id = id_user;
-		console.log(vm.utilisateur_id);
+		vm.id_utilisateur = id_user;
 		// Début Récupération données référentielles
         apiFactory.getOne("utilisateurs/index", id_user).then(function(result) {
 			vm.nomutilisateur = result.data.response.prenom + ' ' + result.data.response.nom;
@@ -107,70 +98,13 @@
                 .targetEvent()
             );
         } 
-		// Fonction Insertion,modif,suppression table liste_validation_beneficiaire
-        function ajout(activite,suppression) {
-            if (NouvelItem==false) {
-                insert_in_base(activite,suppression); 
-            } else {
-                insert_in_base(activite,suppression);
-            }
-        }
-        function insert_in_base(activite,suppression) {         
-            //add
-            var config = {
-                headers : {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                }
-            };
-            var getId = 0;
-            if (NouvelItem==false) {
-                getId = vm.selectedItem.id;
-            } 
-            var datas = $.param({
-                supprimer:suppression,
-                id:getId,
-                resume: activite.resume,
-                url: activite.url,            
-                nom_fichier: activite.nom_fichier,
-                date_upload: activite.date_upload,
-                repertoire: activite.repertoire,
-                site_id:vm.site_id,
-                utilisateur_id:id_user,
-            });
-            //factory
-            apiFactory.add("listecanevasformate/index",datas, config).success(function (data) {
-                if (NouvelItem == false) {
-                    // Update or delete: id exclu                  
-                    if(suppression==0) {
-                        vm.afficherboutonModifSupr = 0 ;
-                        vm.afficherboutonnouveau = 1 ;
-                } else {
-                    var item = {
-                        num_tdr: activite.num_tdr,
-                        projet: activite.projet,
-                        objectif: activite.objectif,
-                        id:String(data.response) ,
-                        date_tdr:activite.date_tdr,
-                        site_id:vm.site_id 
-                    };     
-                    vm.allActivite.push(item);
-                    vm.activite.num_tdr='';
-                    vm.activite.projet='';
-                    vm.activite.objectif='';
-                    vm.activite.date_tdr='';                    
-                }
-              }
-            }).error(function (data) {                  
-                vm.showAlert('Erreur de saisie','Veuillez saisir les champs manquants !');
-            });              
-        }  
       //*****************************************************************     
-		// Clic sur un item recommandation
+		// Clic sur un item canevas formate
         vm.selectionDocument= function (item) {
             vm.selectedDocumentItem = item;
             currentdocumentItem = JSON.parse(JSON.stringify(vm.selectedDocumentItem));
         };
-		// $watch pour sélectionner ou désélectionner automatiquement un item recommandation
+		// $watch pour sélectionner ou désélectionner automatiquement un item canevas formate
         $scope.$watch('vm.selectedDocumentItem', function() {
 			if (!vm.selectedItem.document) return;
 			vm.allCanevasformate.forEach(function(item) {
@@ -183,7 +117,7 @@
 			var files = event.target.files;
 			vm.myFile=files;               
 		};
-		// Ajout d'un nouvel item recommandation
+		// Ajout d'un nouvel item canevas formate
         vm.ajouterDocument = function () {
             vm.selectedDocumentItem.$selected = false;
             NouveldocumentItem = true ;
@@ -194,12 +128,12 @@
 				resume:'',
 				date_upload:new Date(),
 				nom_fichier:'',
-                utilisateur_id:id_user,
+                id_utilisateur:id_user,
 				nomutilisateur:vm.nomutilisateur		
 			};
 			vm.allCanevasformate.push(items);
 		}
-		// Annulation modification d'un item  recommandation
+		// Annulation modification d'un item  canevas formate
 		vm.annulerDocument = function(item) {
 			if (!item.id) {
 				vm.allCanevasformate.pop();
@@ -216,9 +150,9 @@
 			item.$edit=false; 
 			vm.disable=false;
         };
-		// Suppression d'un item recommandation
+		// Suppression d'un item canevas formate
 		vm.supprimerDocument = function(item) {
-            if(id_user!=item.utilisateur_id && parseInt(id_user)!=1) {
+            if(id_user!=item.id_utilisateur && parseInt(id_user)!=1) {
                 vm.showAlert("Information","Vous n'avez pas le droit de supprimer ce document !. Merci");
                 return;
             }
@@ -237,9 +171,9 @@
              //alert('rien');
             });
         };
-		// Modification d'un item recommandation
+		// Modification d'un item canevas formate
 		vm.modifierDocument = function(item) {
-            if(id_user!=item.utilisateur_id && parseInt(id_user)!=1) {
+            if(id_user!=item.id_utilisateur && parseInt(id_user)!=1) {
                 vm.showAlert("Information","Vous n'avez pas le droit de modifier ce document !. Merci");
                 return;
             }   
@@ -282,14 +216,10 @@
                 supprimer:suppression,
                 id:getId,
                 resume: vm.selectedDocumentItem.resume,
-                url: vm.selectedDocumentItem.url,            
-                validation: vm.selectedDocumentItem.validation,            
-                fait: vm.selectedDocumentItem.fait,            
                 nom_fichier: vm.fichier,
                 date_upload: vm.selectedDocumentItem.date_upload,
                 repertoire: rep,
-                site_id:null,
-                utilisateur_id:id_user
+                id_utilisateur:vm.id_utilisateur
             });
             apiFactory.add("listecanevasformate/index",datas, config).success(function (data) {
                 if (NouveldocumentItem == false) {

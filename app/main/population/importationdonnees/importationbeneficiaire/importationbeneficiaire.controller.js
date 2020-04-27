@@ -384,8 +384,7 @@
 						});               
 						apiFactory.getAPIgeneraliser("listevalidationbeneficiaire/index","etat",20).then(function(result) {
 							vm.Listebeneficiairevalidees = result.data.response;
-						});               
-						vm.affiche_load=false;
+						});               						
 						//add historique : Intégration bénéficiaire : 
 						var actions ="Intégration bénéficiaire : fichier " + item.raisonsociale + "  " + item.repertoire + item.nom_fichier;
 						var config = {
@@ -401,7 +400,8 @@
 						apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
 						});
 						vm.showAlert("INFORMATION","Les données sont intégrées dans la base de données.Merci !");
-					});
+						vm.affiche_load=false;		
+					});			
 		}
     }
 })();

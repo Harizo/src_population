@@ -24,7 +24,7 @@
 							<table ng-table="tableAvancement" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
 								<thead>
 									<tr>
-										<th class="secondary-text" ng-repeat="c in :: vm.tdr_coldetail">
+										<th class="secondary-text" ng-repeat="c in :: vm.titre_canevas_formate">
 											<div class="table-header">
 												<span class="column-title">{{c.titre}}</span>
 											</div>
@@ -85,10 +85,10 @@ height:30px;">Upload me</button>
 											<span>{{docs.nomutilisateur}}</span>
 										</td>
 										<td>
-											<a ng-if="!docs.$edit && (vm.utilisateur_id ==docs.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.modifierDocument(docs)" title="Modifier">
+											<a ng-if="!docs.$edit && (vm.id_utilisateur ==docs.id_utilisateur || vm.id_utilisateur=='1')" ng-click="vm.modifierDocument(docs)" title="Modifier">
 												<span class="icon-table-edit"></span>
 											</a>
-											<a ng-if="!docs.$edit && (vm.utilisateur_id ==docs.utilisateur_id || vm.utilisateur_id=='1')" ng-click="vm.supprimerDocument(docs)" title="Supprimer">
+											<a ng-if="!docs.$edit && (vm.id_utilisateur ==docs.id_utilisateur || vm.id_utilisateur=='1')" ng-click="vm.supprimerDocument(docs)" title="Supprimer">
 												<span class="icon-delete"></span>
 											</a>
 											<a ng-if="docs.$edit" ng-click="vm.annulerDocument(docs)" title="Annuler modification">

@@ -359,7 +359,6 @@
 						apiFactory.getAPIgeneraliser("listevalidationintervention/index","etat",20).then(function(result) {
 							vm.Listeinterventionvalidees = result.data.response;
 						});               
-						vm.affiche_load=false;
 						//add historique : Intégration bénéficiaire : 
 						var actions ="Intégration bénéficiaire : fichier " + item.raisonsociale + "  " + item.repertoire + item.nom_fichier;
 						var config = {
@@ -404,7 +403,8 @@
 							}						
 						}).error(function(){
 							vm.showAlert("INFORMATION","Une erreur s'est produite lors de l'envoi d'un email vers l'acteur.Veuillez vérifier l'adresse e-mail si correct.Merci");
-						});												
+						});	
+						vm.affiche_load=false;
 					});
 		}
     }

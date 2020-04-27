@@ -25,13 +25,5 @@
 		  document.getElementById('forms').innerHTML = 'playerSpriteX = ' + playerSpriteX;*/
 		//});
 		var id_user = $cookieStore.get('id');
-
-		apiFactory.getAll("commune/index").then(function(result) 
-        {
-            console.log(result);      
-            
-
-        });
-		
     }
 })();

@@ -423,10 +423,10 @@
 				vm.selectedListedonneesavaliderItem={};
 				vm.afficherboutonnouveau=1;
 				vm.disable=false;
-				vm.affiche_load=false;
             }).error(function (data) {
                 alert('Erreur');
             }); 
+			vm.affiche_load=false;
         }      
         function test_existance (item,suppression) {          
             if (suppression!=1) {
@@ -452,6 +452,7 @@
 			fd.append('adresse_mail',vm.adresse_mail);
 			fd.append('id_utilisateur',vm.id_utilisateur);
 			if(file) { 
+				vm.affiche_load=true;
 				var upl=   $http.post(uploadUrl, fd, {
 					transformRequest: angular.identity,
 					headers: {'Content-Type': undefined}
@@ -495,7 +496,8 @@
 					});
 					//factory
 					apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-					});									
+					});	
+					vm.affiche_load=false;
 				}).error(function(){
 					// console.log("Rivotra");
 				});
@@ -504,9 +506,10 @@
 			}
 		}
 		vm.exportfichier = function(item) {
-			var bla = $.post(apiUrl + "Uploadfichier/prendre_fichier",{
+			var rep = apiUrlbase + item.repertoire;
+			var bla = $.post(apiUrl + "uploadfichier/prendre_fichier",{
 						nom_fichier : item.nom_fichier,
-						repertoire: item.repertoire,
+						repertoire: rep,
 						email :vm.adresse_mail,
 					},function(data) {   
 						window.location = data;
