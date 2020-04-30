@@ -15,7 +15,7 @@
     {
         // State
         $stateProvider.state('app.population_importationdonnees_importationbeneficiaire', {
-            url      : '/importationdonnees/importation-bénéficiaire',
+            url      : '/importationdonnees/importation-beneficiaire',
             views    : {
                 'content@app': {
                     templateUrl: 'app/main/population/importationdonnees/importationbeneficiaire/importationbeneficiaire.html',
@@ -26,7 +26,7 @@
             data : {
               authorizer : true,
               permitted : ["USER","PERSONNEL","ADMIN","VLD"],
-              page: "Importation-bénéficiaire"
+              page: "Importation-beneficiaire"
             }
 
         });

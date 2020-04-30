@@ -14,7 +14,7 @@
     {
         // State
         $stateProvider.state('app.population_validationdonnees_validationbeneficiaire', {
-            url      : '/validationdonnees/validation-bénéficiaire',
+            url      : '/validationdonnees/validation-beneficiaire',
             views    : {
                 'content@app': {
                     templateUrl: 'app/main/population/validationdonnees/validationbeneficiaire/validationbeneficiaire.html',
@@ -25,7 +25,7 @@
             data : {
               authorizer : true,
               permitted : ["ADMIN","VLD"],
-              page: "Validation-bénéficiaire"
+              page: "Validation-beneficiaire"
             }
 
         });
