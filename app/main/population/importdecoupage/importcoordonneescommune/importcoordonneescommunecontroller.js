@@ -17,7 +17,7 @@
 		//variable cache masque de saisie
 		vm.affichageMasque = 0 ;
 		vm.cliquable=1;
-		vm.affiche_load=true;
+		vm.affiche_load=false;
 		//style
 		vm.dtOptions = {
 			dom: '<"top"f>rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
@@ -27,10 +27,10 @@
 		};
 		//col table
 		vm.commune_column = [{titre:"Code"},{titre:"Nom"}];
-		apiFactory.getAll("commune/index").then(function(result) {
-			vm.allcommune = result.data.response;  
-			vm.affiche_load=false;
-		});
+		// apiFactory.getAll("commune/index").then(function(result) {
+			// vm.allcommune = result.data.response;  
+			// vm.affiche_load=false;
+		// });
  		vm.showAlert = function(titre,textcontent) {
 			// Appending dialog to document.body to cover sidenav in docs app
 			// Modal dialogs should fully cover application
@@ -85,6 +85,25 @@
 			vm.cliquable=0;
 			vm.affiche_load=true;
 			var bla = $.post(apiUrl + "importercoordonneescommune/Mise_a_jour_coordonnees",{
+				repertoire:'importcoordonneescommune/',
+				nom_fichier:"limite_commune_mada_trie.xlsx"
+			},function(data){	
+				vm.allcommune=[];
+				vm.cliquable=1;
+				if(parseInt(data) > 0) {
+					var zz="Nombre d'enregistrement mis à jour = " + data;
+					vm.showAlert("INFORMATION",zz);
+				} else {
+					vm.showAlert("ERREUR !",'Erreur lors de la mise à jour. Merci !');						
+				}
+				// vm.allcommune=data.donnees;
+				vm.affiche_load=false;
+			});
+        };
+       vm.Miseajour_coordonnees_tronquees = function() {
+			vm.cliquable=0;
+			vm.affiche_load=true;
+			var bla = $.post(apiUrl + "importercoordonneescommune/Miseajour_coordonnees_tronquees",{
 				repertoire:'importcoordonneescommune/',
 				nom_fichier:"limite_commune_mada_trie.xlsx"
 			},function(data){	
