@@ -19,10 +19,80 @@
     <!-- CONTENT -->
     <div class="content" layout="column">
         <div class="form-wrapper">
+
+                <form name="formEffAgeSexe" class="md-inline-form" novalidate >
+                            <div layout="column" layout-gt-xs="row">
+                              <md-input-container flex="100" flex-gt-xs="40">
+                                          
+                                <label>Reporting</label>
+                                  <md-select ng-model="vm.filtre_carte.pivot" ng-disabled="vm.affiche_load"  >
+                                    <md-optgroup label="Environnement démographique et socioéconomique">
+                                        <md-option  ng-repeat="pivo in vm.pivots | filter: {category: 'theme1' } | orderBy : 'titre'" value="{{pivo.id}}">{{pivo.titre}}
+                                        </md-option>
+                                    </md-optgroup>
+
+                                    <md-optgroup label="Système de protection sociale">
+                                        <md-option  ng-repeat="pivo in vm.pivots | filter: {category: 'theme2' } | orderBy : 'titre'" value="{{pivo.id}}">{{pivo.titre}}
+                                        </md-option>
+                                    </md-optgroup>
+                                  </md-select>
+                              </md-input-container>
+                              <md-input-container flex="100" flex-gt-xs="60">
+                              </md-input-container>
+                            </div>
+                         
+
+                            <div layout="column" layout-gt-xs="row">       
+                                
+
+                                <md-input-container flex="100" flex-gt-xs="25" >
+
+                                    <label>Region</label>
+                                        <md-select ng-model="vm.filtre_carte.region_id" ng-change="vm.modifierregion(vm.filtre_carte)" required>
+                                            <md-option ng-repeat="region in vm.allregion" value="{{region.id}}">
+                                            {{region.nom}}
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+
+
+                                    <md-input-container flex="100" flex-gt-xs="25" ng-disabled="!(vm.filtre_carte.region_id)">
+
+                                    <label>District</label>
+                                        <md-select ng-model="vm.filtre_carte.district_id">
+
+                                            <md-option value="*">*</md-option>
+                                            <md-option ng-repeat="dist in vm.alldistrict" value="{{dist.id}}">
+                                                
+                                            {{dist.nom}}
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+
+                                   
+
+                            </div>
+
+
+                            
+                            
+                            <div>
+                                <md-button ng-if="!vm.affiche_load" type="submit" class="md-raised md-accent" aria-label="Enregistrer" ng-disabled="formEffAgeSexe.$invalid" ng-click="vm.affichage_commune_in_carte(vm.filtre_carte)"> Afficher les communes sur la carte
+                                     
+                                </md-button>
+
+
+                                <md-progress-circular ng-if="vm.affiche_load" class="md-accent" aria-label="Rating" md-mode="indeterminate" md-diameter="34"></md-progress-circular> 
+                                    <div ng-if="vm.affiche_load" style="position:relative;top: -30px;  left: 60px;color: #039be5">
+                                        Chargement,veuillez patienter s'il vous plait ...
+                                    </div> 
+                            </div>
+                        </form>  
+         
            
             <div class="white-bg md-whiteframe-4dp">
 
-                <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom" >
+                <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom" events="vm.map.events" >
                     <div ng-repeat="p in vm.polylines">
 
                         <ui-gmap-polygon id="p.id" path="p.path" stroke="p.stroke" visible='p.visible'
@@ -30,13 +100,10 @@
                       
                     </ui-gmap-polygon>
 
-                    <ui-gmap-marker
-                            idKey='p.id'
-                            coords='p.path[0]'
-                            
-                            options="{labelClass:'marker_labels',labelAnchor:'12 60',labelContent:'title'}"
-                            
-                            >
+                    <ui-gmap-marker idKey='p.id_mark' coords='p.marker_cord' options="p.marker_option">
+                            <ui-gmap-window idKey="p.id_win" show="true" >
+                                <div>{{p.nom}}</div>
+                            </ui-gmap-window>
                     </ui-gmap-marker>
 
 
@@ -46,7 +113,6 @@
 
                
            
-            </div>
         </div>
     </div>
     <!--/ CONTENT -->    
