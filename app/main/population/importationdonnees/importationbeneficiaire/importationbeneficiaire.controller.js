@@ -403,5 +403,15 @@
 						vm.affiche_load=false;		
 					});			
 		}
+		vm.Importation_FID = function() {
+			vm.affiche_load=true;
+			var bla = $.post(apiUrl + "importationbeneficiaire/importfid",{
+					},function(data) {  
+						console.log(data);
+						vm.showAlert("INFORMATION","Les données sont intégrées dans la base de données.Merci !");
+						vm.affiche_load=false;		
+					});			
+		}
+		
     }
 })();

@@ -427,7 +427,7 @@
 							</md-input-container>
 							<md-input-container flex="100" flex-gt-xs="15">
 								<label>Durée</label>
-								<input type="number" name="duree" ng-model="vm.intervention.duree" placeholder="Duréé" ng-init="vm.intervention.duree=''" >
+								<input type="number" name="duree" ng-model="vm.intervention.duree" placeholder="Duréé" ng-init="vm.intervention.duree=''" required>
 								<div ng-messages="interventionform.duree.$error" role="alert">
 									<div ng-message="required">
 										<span>Duréé obligatoire</span>

@@ -26,6 +26,13 @@
 								Importation des bénéficiaires
 							</legend>
 							<div style="clear:both;"></div>
+							<md-progress-circular ng-if="vm.affiche_load" class="md-accent" md-mode="indeterminate" md-diameter="64"></md-progress-circular>
+						<md-button type="submit" class="md-raised md-accent" aria-label="Enregistrer"
+							ng-disabled="affiche_load" ng-click="vm.Importation_FID()">
+							Importer
+						</md-button>
+							<div style="clear:both;"></div>
+							
 							<table ng-table="tablelistevalidationbeneficiaire" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
 								<thead>
 									<tr>
