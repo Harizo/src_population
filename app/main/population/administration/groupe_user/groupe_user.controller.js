@@ -30,8 +30,23 @@
 	        {
 	            vm.allgroupe_user = result.data.response; 
 
-	            console.log(vm.allgroupe_user);
 	        });
+
+	        vm.id_utilisateur =$cookieStore.get('id');
+
+	        //add historique : consultation DDB annuaire d'intervention
+			var config = {
+				headers : {
+					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+				}
+			};
+			var datas = $.param({
+				action:"Consultation Administration / Groupes d'utilisateur ",
+				id_utilisateur:vm.id_utilisateur
+			});
+			//factory
+			apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+			});	
 
 	        vm.selection= function (item)
 	        {
@@ -52,7 +67,6 @@
 		            if (vm.all_privilege_groupe.length > 0) 
 		            {
 		            	vm.id_access_menu = vm.all_privilege_groupe[0].id ;
-		            	console.log('id_access_menu == '+vm.id_access_menu);
 		            	angular.forEach(vm.all_privilege_groupe[0].privileges, function(value, key)  {           
 							switch(value)   {
 
@@ -130,6 +144,10 @@
 								}
 								case 'CR_CHANGE':  {
 						          vm.acces.cr_change = true ;
+						          break;
+								}
+								case 'REG_BEN':  {
+						          vm.acces.reg_ben = true ;
 						          break;
 								}
 								default:  {
@@ -341,6 +359,7 @@
 				vm.acces.imp_int = false ;
 				vm.acces.rpt = false ;
 				vm.acces.cr_change = false ;
+				vm.acces.reg_ben = false ;
         	}
 
 
@@ -367,6 +386,7 @@
 					vm.acces.imp_int = true ;
 					vm.acces.rpt = true ;
 					vm.acces.cr_change = true ;
+					vm.acces.reg_ben = true ;
         		}
         		else
         		{
@@ -418,6 +438,8 @@
 					if(key == 'rpt' && value == true)
 					tab.push(key.toUpperCase());           
 					if(key == 'cr_change' && value == true)
+					tab.push(key.toUpperCase());  
+					if(key == 'reg_ben' && value == true)
 					tab.push(key.toUpperCase());           
 				}); 
 
@@ -440,7 +462,6 @@
 					{
 						vm.affichage_load = false ;
 						
-						console.log(vm.id_access_menu);
 						if (vm.id_access_menu == 0) 
 						{
 							vm.id_access_menu = (data.response);  

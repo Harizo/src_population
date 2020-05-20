@@ -144,6 +144,8 @@
 			vm.acces.imp_ben = false ;
 			vm.acces.imp_int = false ;
 			vm.acces.rpt = false ;
+			vm.acces.reg_ben = false ;
+			vm.acces.cr_change = false ;
     	}
 
 		vm.get_roles_user = function()
@@ -154,7 +156,7 @@
 			{
 				vm.roles_user = result.data.response;
 
-				console.log(vm.roles_user);
+				
 				angular.forEach(vm.roles_user, function(value, key)  
 				{           
 				switch(value)   {
@@ -229,6 +231,14 @@
 					}
 					case 'RPT':  {
 			          vm.acces.rpt = true ;
+			          break;
+					}
+					case 'REG_BEN':  {
+			          vm.acces.reg_ben = true ;
+			          break;
+					}
+					case 'CR_CHANGE':  {
+			          vm.acces.cr_change = true ;
 			          break;
 					}
 					default:  {
@@ -558,6 +568,14 @@
 			          vm.acces.rpt = true ;
 			          break;
 					}
+					case 'REG_BEN':  {
+			          vm.acces.reg_ben = true ;
+			          break;
+					}
+					case 'CR_CHANGE':  {
+			          vm.acces.cr_change = true ;
+			          break;
+					}
 					default:  {
 			          break ;
 					}
@@ -645,7 +663,6 @@
 				{
 
 					vm.affiche_load = false ;
-					console.log(vm.affiche_load );
 					if (getId==0) { 
 						// Nouvel utilisateur	
 						// Et envoi e-mail pour signaler que le compte utilisateur a été ouvert

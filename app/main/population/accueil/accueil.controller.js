@@ -9,21 +9,32 @@
     /** @ngInject */
     function AccueilController(apiFactory, $cookieStore, loginService)
     {
-    	/*var vm = this ;
-   
-		      let playerSpriteX = 0;
 
-		document.addEventListener('keyup', (e) => {
-
-			console.log(e.keyCode);
-			console.log(e);
-
-			if ( e.keyCode== 116) e.preventDefault();*/
-		  /*if (e.code === "ArrowUp")        playerSpriteX += 10
-		  else if (e.code === "ArrowDown") playerSpriteX -= 10
-
-		  document.getElementById('forms').innerHTML = 'playerSpriteX = ' + playerSpriteX;*/
-		//});
+    	var vm = this ;
+    	vm.autorise_affich_button_reg = true ;
+    	vm.autorise_affich_button_report = true ;
+    	
 		var id_user = $cookieStore.get('id');
+		if (id_user) 
+        {
+            apiFactory.getOne("utilisateurs/index", id_user).then(function(result) 
+            {
+                var user = result.data.response;
+                var permission = user.roles;
+                var permissions_reg =   [
+	                                        "SPR_ADM",
+	                                        "REG_BEN"
+                                    	];
+
+                var permissions_report =    [
+		                                        "SPR_ADM",
+		                                        "RPT"
+		                                    ];
+
+                vm.autorise_affich_button_reg =  loginService.gestionMenu(permissions_reg,permission);    
+                vm.autorise_affich_button_report =  loginService.gestionMenu(permissions_report,permission);    
+
+            });
+        }
     }
 })();

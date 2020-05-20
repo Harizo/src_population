@@ -11,6 +11,8 @@
     {
       var vm = this;
 
+      vm.affiche_load = false ;
+
      
 
       //enregistrer
@@ -18,6 +20,7 @@
 
       function enregistrer(data)
       {
+        vm.affiche_load = true ;
 		  // Connexion à l'application
         loginService.sing_in(data);
       }

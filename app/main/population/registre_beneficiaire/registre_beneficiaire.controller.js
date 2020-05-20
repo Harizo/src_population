@@ -129,7 +129,13 @@
         vm.filtre.date_fin = vm.max_date ;
 
         //recuperation region
-        apiFactory.getAll("region/index").then(function(result)
+        /*apiFactory.getAll("region/index").then(function(result)
+        {
+            vm.allregion = result.data.response;    
+        });*/
+
+
+        apiFactory.getAPIgeneraliserREST("region/index","all_filter",1).then(function(result)
         {
             vm.allregion = result.data.response;    
         });
@@ -259,9 +265,10 @@
         vm.modifierregion = function(filtre)
         {   
             vm.allcommune = [] ;
-            apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",filtre.region_id).then(function(result)
+            //apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",filtre.region_id).then(function(result)
+            apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",filtre.region_id,"data_non_vide",1).then(function(result)
             {
-              vm.filtre.district_id = '*' ;
+              vm.filtre.district_id =  null;
               vm.filtre.commune_id = '*' ;
               vm.alldistrict = result.data.response;
               vm.isDistrict = true;

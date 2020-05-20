@@ -134,7 +134,7 @@
 						} else {	
 							location.reload();
 							// $location.path("/accueil");//si n'est pas packeT    
-							$window.location.href = '/registresocial';
+							$window.location.href = '/';
 						}	
                     }
 				} else {
@@ -265,7 +265,7 @@
                     } else  {
 						location.reload();
 						// $location.path("/accueil");//si n'est pas packeT                
-						$window.location.href = '/registresocial';
+						$window.location.href = '/';
                     }
 				} else {
                     $mdDialog.show({

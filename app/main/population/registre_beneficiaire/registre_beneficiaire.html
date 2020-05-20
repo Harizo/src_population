@@ -23,7 +23,7 @@
                       Chargement,veuillez patienter s'il vous plait ...
                   </div!-->
             <div class="white-bg md-whiteframe-4dp">
-                <md-button style="color: #f8670d;" ui-sref="app.population_accueil">Revenir à l'accueil</md-button>
+                <md-button class="custum_button"  style="color: #f8670d;" ui-sref="app.population_accueil">Revenir à l'accueil</md-button>
             <md-tabs md-dynamic-height>
                 <md-tab label="Filtre">
                     <md-tab-body>
@@ -55,25 +55,37 @@
                                 <md-input-container flex="100" flex-gt-xs="25" >
 
                                     <label>Region</label>
-                                        <md-select ng-model="vm.filtre.region_id" ng-change="vm.modifierregion(vm.filtre)" required>
+                                        <md-select ng-model="vm.filtre.region_id" name="region" ng-change="vm.modifierregion(vm.filtre)" required>
                                             <md-option ng-repeat="region in vm.allregion" value="{{region.id}}">
                                             {{region.nom}}
                                             </md-option>
                                         </md-select>
+
+                                        <div ng-messages="formEffAgeSexe.region.$error" role="alert">
+                                            <div ng-message="required">
+                                                <span >Région obligatoire</span>
+                                            </div>
+                                        </div>
                                     </md-input-container>
 
 
                                     <md-input-container flex="100" flex-gt-xs="25" ng-disabled="!(vm.filtre.region_id)">
 
-                                    <label>District</label>
-                                        <md-select ng-model="vm.filtre.district_id" ng-change="vm.modifierdistrict(vm.filtre)">
+                                        <label>District</label>
+                                        <md-select ng-model="vm.filtre.district_id" name="district" ng-change="vm.modifierdistrict(vm.filtre)" required>
 
-                                            <md-option value="*">*</md-option>
+                                            <!--md-option value="*">*</md-option!-->
                                             <md-option ng-repeat="dist in vm.alldistrict" value="{{dist.id}}">
                                                 
                                             {{dist.nom}}
                                             </md-option>
                                         </md-select>
+
+                                        <div ng-messages="formEffAgeSexe.district.$error" role="alert">
+                                            <div ng-message="required">
+                                                <span >District obligatoire</span>
+                                            </div>
+                                        </div>
                                     </md-input-container>
 
                                     <md-input-container flex="100" flex-gt-xs="25" ng-disabled="!(vm.filtre.district_id)">
@@ -134,6 +146,11 @@
                                         </th!-->
                                         <th class="secondary-text">
                                             <div class="table-header">
+                                                <span class="column-title text-center">Bénéficiaire</span>
+                                            </div>
+                                        </th>
+                                        <th class="secondary-text">
+                                            <div class="table-header">
                                                 <span class="column-title text-center">District</span>
                                             </div>
                                         </th>
@@ -152,11 +169,7 @@
                                                 <span class="column-title text-center">Intervention</span>
                                             </div>
                                         </th>
-                                        <th class="secondary-text">
-                                            <div class="table-header">
-                                                <span class="column-title text-center">Bénéficiaire</span>
-                                            </div>
-                                        </th>
+                                        
                                         <th class="secondary-text">
                                             <div class="table-header">
                                                 <span class="column-title text-center">Type Bénéficiaire</span>
@@ -172,11 +185,11 @@
                             <tbody>
                                 <tr ng-repeat="data in vm.datas">
 
+                                    <td><b>{{data.nom}}</b> <br> {{data.prenom}}</td>
                                     <td>{{data.nom_district}}</td>
                                     <td>{{data.nom_commune}}  </td>
                                     <td>{{data.nom_fokontany}}</td>
                                     <td>{{data.intitule_intervention}}</td>
-                                    <td><b>{{data.nom}}</b> <br> {{data.prenom}}</td>
                                     <td>{{data.type}}</td>
 
                                 </tr>

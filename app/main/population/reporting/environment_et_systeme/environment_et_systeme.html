@@ -25,7 +25,7 @@
                       Chargement,veuillez patienter s'il vous plait ...
                   </div!-->
             <div class="white-bg md-whiteframe-4dp">
-                <md-button style="color: #f8670d;" ui-sref="app.population_accueil">Revenir à l'accueil</md-button>
+                <md-button class="custum_button"  style="color: #f8670d;" ui-sref="app.population_accueil">Revenir à l'accueil</md-button>
             <md-tabs md-dynamic-height>
                 <md-tab label="Filtre">
                     <md-tab-body>
@@ -722,6 +722,18 @@
                                                 <span class="column-title text-center">Âgées</span>
                                             </div>
                                         </th>
+
+                                        <th class="secondary-text" ng-show="vm.cacher_table('req1_theme1',vm.filtre.pivot)">
+                                            <div class="table-header">
+                                                <span class="column-title text-center">Sous-total</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="secondary-text" ng-show="vm.cacher_table('req1_theme1',vm.filtre.pivot)">
+                                            <div class="table-header">
+                                                <span class="column-title text-center">Total</span>
+                                            </div>
+                                        </th>
                                
                                         <!--fin req1_theme1-->
 
@@ -1149,6 +1161,16 @@
                                             {{data.nbr_agee_homme}}
                                             <br>
                                             {{data.nbr_agee_fille}}
+                                        </td>
+                                        <td  ng-show="vm.cacher_table('req1_theme1',vm.filtre.pivot)">
+                                            {{vm.parse_int(data.nbr_agee_homme)+vm.parse_int(data.nbr_agetravaille_homme)+vm.parse_int(data.nbr_agescolaire_homme)+vm.parse_int(data.nbr_enfant_homme)}}
+                                            <br>
+                                            {{vm.parse_int(data.nbr_agee_fille)+vm.parse_int(data.nbr_agetravaille_fille)+vm.parse_int(data.nbr_agescolaire_fille)+vm.parse_int(data.nbr_enfant_fille)}}
+                                        </td>
+
+                                        <td  ng-show="vm.cacher_table('req1_theme1',vm.filtre.pivot)">
+                                            {{vm.parse_int(data.nbr_agee_homme)+vm.parse_int(data.nbr_agetravaille_homme)+vm.parse_int(data.nbr_agescolaire_homme)+vm.parse_int(data.nbr_enfant_homme)+vm.parse_int(data.nbr_agee_fille)+vm.parse_int(data.nbr_agetravaille_fille)+vm.parse_int(data.nbr_agescolaire_fille)+vm.parse_int(data.nbr_enfant_fille)}}
+                                           
                                         </td>
                                         <!--fin 1-->
 

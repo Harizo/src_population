@@ -1,7 +1,11 @@
 #toolbar {
-    height: $toolbarHeight;
+    /*height: $toolbarHeight;
     min-height: $toolbarHeight;
-    max-height: $toolbarHeight;
+    max-height: $toolbarHeight;*/
+
+    height: 20px important;
+    min-height: 20px important;
+    max-height: 20px important;
     z-index: 55 !important;
 
     #navigation-toggle {
@@ -44,7 +48,8 @@
         .user-button {
             margin: 0;
             padding: 0 16px;
-            height: $toolbarHeight;
+            /*height: $toolbarHeight;*/
+            height: 43px;
             text-transform: none;
 
             .avatar-wrapper {

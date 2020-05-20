@@ -1,6 +1,6 @@
 <div class="demo-content">
-    <md-button style="color: #f8670d;" ui-sref="app.population_reporting_environment_et_systeme">Consulter Suivi Stratégique</md-button>
-    <md-button style="color: #f8670d;" ui-sref="app.population_registre_beneficiaire">Consulter Regitre Bénéficiaire</md-button>
+    <md-button ng-if="!vm.autorise_affich_button_report" class="custum_button" style="color: #f8670d;" ui-sref="app.population_reporting_environment_et_systeme">Consulter Suivi Stratégique</md-button>
+    <md-button ng-if="!vm.autorise_affich_button_reg" class="custum_button" style="color: #f8670d;" ui-sref="app.population_registre_beneficiaire">Consulter Regitre Bénéficiaire</md-button>
     <div class="form-wrapper md-whiteframe-1dp" flex="100">
         <span><center><img src="assets/images/backgrounds/acc.jpg"></center></span>
     </div>
@@ -8,7 +8,7 @@
         <h4 class="secondary-text">Demo Content</h4!-->
     <blockquote >
         <p>
-           « Mot du Ministre ici »
+           « Mot du Ministre ici » 
         </p>
         <footer>
             SE Madame NAHARIMAMY Lucien Irmah, Ministre de la Population, de la Protection sociale et de la Femme

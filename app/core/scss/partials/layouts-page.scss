@@ -10,6 +10,20 @@ $card-header-height: $header-height - $card-toolbar-height;
 $header-height-xs: 160px;
 $card-header-height-sm: $header-height-xs - $card-toolbar-height;
 
+.custum_button {
+    color: #f8670d !important;
+    border : 1px solid #f8670d;
+
+}
+
+.custum_button:hover {
+    color: #65371a !important;
+    background-color: #f8670d !important;
+    font-style: italic;
+    font-weight: bold;
+    
+}
+
 .page-layout {
     position: relative;
     overflow: hidden;
@@ -35,10 +49,12 @@ $card-header-height-sm: $header-height-xs - $card-toolbar-height;
         .breadcrumb {
             margin-bottom: 16px;
             font-weight: 500;
-            color: rgba(0, 0, 0, 0.54);
+           /* color: rgba(0, 0, 0, 0.54);*/
+           color: #f8670d !important;
 
             md-icon {
                 margin: 0;
+                color: #f8670d !important;
             }
 
             .separator {
@@ -332,12 +348,13 @@ $card-header-height-sm: $header-height-xs - $card-toolbar-height;
                 min-height: $header-height;
                 max-height: $header-height;
                 padding: 24px;
-                background-image: url('/assets/images/backgrounds/header-bg.png');
-                background-size: cover;
+                /*background-image: url('/assets/images/backgrounds/header-bg.png');
+                background-size: cover;*/
             }
 
             > .content {
-                padding: 24px;
+                /*padding: 24px;code Original*/
+                padding: 4px;
             }
         }
 

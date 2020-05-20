@@ -19,7 +19,7 @@
             
     <div class="content"layout="column">
 		<div class="form-wrapper " >       
-			<div style="clear:both;"></div>
+		
 				<!--md-tabs md-dynamic-height  md-center-tabs="true"!-->
 				<md-tabs md-dynamic-height  >
 					<md-tab label="Groupes">
@@ -144,12 +144,21 @@
 						</fieldset>
 
 						<fieldset class="standard" >
+							<legend><code>Registre bénéficiaire</code></legend>
+							<md-checkbox ng-model="vm.acces.reg_ben" aria-label="Checkbox 1" ng-disabled="vm.acces.spr_adm" style="margin: 4px;">
+								    
+							</md-checkbox>
+
+						</fieldset>
+
+						<fieldset class="standard" >
 							<legend><code>Annuaire Intervention</code></legend>
 							<md-checkbox ng-model="vm.acces.anr_int" aria-label="Checkbox 1" ng-disabled="vm.acces.spr_adm" style="margin: 4px;">
 								    
 							</md-checkbox>
 
 						</fieldset>
+
 						<fieldset class="standard" >
 							<legend><code>Traitement</code></legend>                                
 								<md-checkbox  ng-model="vm.acces.sui_dec" aria-label="Checkbox 1" ng-disabled="vm.acces.spr_adm" style="margin: 4px;">

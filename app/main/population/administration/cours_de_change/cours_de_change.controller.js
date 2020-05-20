@@ -65,7 +65,6 @@
 			date_cours=new Date(date_cours);			
 			vm.date_cours_base_de_donnees=vm.converDateBasededonnees(date_cours);
 			vm.date_cours_affichage=vm.converDateAffiche(date_cours);
-			console.log(date_cours);
 			var config = {
 				headers : {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -123,14 +122,13 @@
 			vm.afficher=0;
 			vm.affiche_load=true;			
 			vm.valeur_saisie_cours =[];
-			console.log(vm.titre_saisie_cours);
 			apiFactory.getAPIgeneraliserREST("cours_de_change/index","requete_titre",Number(20)).then(function(result) {
 				vm.titre_valeur_cours =result.data.response;
-				console.log(vm.titre_valeur_cours);
+				
 				apiFactory.getAPIgeneraliserREST("cours_de_change/index","requete_donnees_croisee",Number(10),"date_debut",moment(vm.filtre.date_debut).format('YYYY-MM-DD'),"date_fin",moment(vm.filtre.date_fin).format('YYYY-MM-DD')).then(function(result) {
 					vm.valeur_saisie_cours =result.data.response;
 					vm.affiche_load=false;
-					console.log(vm.valeur_saisie_cours);
+				
 				});
 			});	
 		}	
@@ -183,8 +181,7 @@
 			$scope.answer = function(reponse,date_saisie) {
 				$rootScope.reponse=reponse;
 				$rootScope.date_saisie=date_saisie;
-				console.log($rootScope.reponse);
-				console.log($rootScope.date_saisie);
+			
 				$rootScope.ajoutersaisiecours($rootScope.reponse,$rootScope.date_saisie);
 				$mdDialog.hide();
 			};

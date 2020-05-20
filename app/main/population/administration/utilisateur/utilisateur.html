@@ -227,7 +227,7 @@
 					          <legend><code>Groupes</code></legend>
 					          <div layout="row" layout-wrap flex>
 					            <div flex="50" ng-repeat="item in vm.all_groupe">
-					              <md-checkbox ng-checked="exists(item.id, vm.tab_selected)" ng-click="toggle(item.id, vm.tab_selected)">
+					              <md-checkbox ng-checked="exists(item.id, vm.tab_selected)" ng-click="toggle(item.id, vm.tab_selected)" required>
 					                {{ item.nom }} 
 					              </md-checkbox>
 					            </div>
@@ -260,6 +260,9 @@
 										<md-checkbox ng-disabled="true" ng-model="vm.acces.his_user" aria-label="Checkbox 1"  style="margin: 4px;">
 										    Historique utilisateur
 										</md-checkbox>
+										<md-checkbox ng-disabled="true" ng-model="vm.acces.cr_change" aria-label="Checkbox 1"  style="margin: 4px;">
+										    Cours de change
+										</md-checkbox>
 								                                                            
 								</fieldset>
 
@@ -284,12 +287,16 @@
 										<md-checkbox ng-model="vm.acces.var_int" aria-label="Checkbox 1" ng-disabled="true" style="margin: 4px;">
 										    Variable/Intervention
 										</md-checkbox> 
-										<md-checkbox ng-model="vm.acces.anr_int" aria-label="Checkbox 1" ng-disabled="true" style="margin: 4px;">
-										    Annuaire Intervention
-										</md-checkbox> 
+										
 								                                                            
 								</fieldset>
 
+								<fieldset class="standard" >
+									<legend><code>Annuaire Intervention</code></legend>  
+									<md-checkbox ng-model="vm.acces.anr_int" aria-label="Checkbox 1" ng-disabled="true" style="margin: 4px;">
+									    
+									</md-checkbox> 
+								</fieldset>
 								<fieldset class="standard" >
 									<legend><code>Traitement</code></legend>                                
 										<md-checkbox  ng-model="vm.acces.sui_dec" aria-label="Checkbox 1" ng-disabled="true" style="margin: 4px;">
@@ -322,6 +329,15 @@
 								<fieldset class="standard" >
 									<legend><code>Suivi stratégique</code></legend>                                
 										<md-checkbox  ng-model="vm.acces.rpt"  aria-label="Checkbox 1" ng-disabled="true" style="margin: 4px;">
+										    
+										</md-checkbox>
+										  
+								                                                            
+								</fieldset>
+
+								<fieldset class="standard" >
+									<legend><code>Registre Bénéficiaire</code></legend>                                
+										<md-checkbox  ng-model="vm.acces.reg_ben"  aria-label="Checkbox 1" ng-disabled="true" style="margin: 4px;">
 										    
 										</md-checkbox>
 										  

@@ -198,6 +198,10 @@
             return "#cecece" ;
           }
         }
+        vm.parse_int = function(str)
+        {
+          return Number(str) ;
+        }
         vm.formatMillier = function (nombre) 
         {
             if (typeof nombre != 'undefined' && parseInt(nombre) >= 0) {

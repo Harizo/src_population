@@ -1,5 +1,5 @@
-<div layout="row" layout-align="start center">
-    <div layout="row" layout-align="start center" flex>
+<div layout="row" layout-align="start center" style=" height: 20px !important;">
+    <div layout="row" layout-align="center center" flex  style="text-align: center !important; ">
         <md-button id="navigation-toggle" class="md-icon-button" ng-click="vm.toggleSidenav('navigation')"
                    hide-gt-sm aria-label="Toggle navigation" translate
                    translate-attr-aria-label="TOOLBAR.TOGGLE_NAVIGATION">
@@ -9,11 +9,11 @@
         <!--ms-search-bar></ms-search-bar-->
        
         
-                
-        <div class="toolbar-separator"></div>
+        
+        <!--div class="toolbar-separator"></div!-->
 
-
-        <md-progress-circular id="toolbar-progress" ng-if="$root.loadingProgress" class="md-accent"
+        <div style="color: #f8670d;"><b>REGISTRE DES BENEFICIAIRES</b></div>
+        <md-progress-circular id="toolbar-progress" ng-if="$root.loadingProgress" style="color: red;"
                               md-mode="indeterminate" md-diameter="64">
         </md-progress-circular>
     </div>
@@ -24,6 +24,7 @@
                 <md-button class="user-button" ng-click="$mdOpenMenu()"
                            aria-label="User settings"
                            translate translate-attr-aria-label="TOOLBAR.USER_SETTINGS">
+
                     <div layout="row" layout-align="space-between center">
                         <!--div class="avatar-wrapper">
                             <img md-menu-align-target class="avatar" src="assets/images/avatars/profile.jpg">
@@ -32,7 +33,9 @@
                                      class="icon status s16">
                             </md-icon>
                         </div-->
-                        <span class="username" hide-xs> <u>Compte:</u>  {{ vm.userdetails.nom }} {{ vm.userdetails.prenom }}</span>
+                        <div class="toolbar-separator"></div>
+                        <md-icon md-font-icon="icon-account" class="s16"></md-icon>
+                        <span class="username" hide-xs style="color: #383c48;"> <b>{{ vm.userdetails.nom }}</b> {{ vm.userdetails.prenom }}</span>
                         <md-icon md-font-icon="icon-chevron-down"
                                  class="icon s16" hide-xs></md-icon>
                     </div>

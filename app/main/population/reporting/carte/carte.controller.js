@@ -294,7 +294,14 @@
               
                   vm.polylines.push(item);
                 
-                console.log(vm.polylines);
+
+                if (key == (vm.all_commune.length - 1)) 
+                {
+                  vm.map.center.latitude = vm.get_center_poly(vm.all_commune[key].coordonnees).latitude ;
+                  vm.map.center.longitude = vm.get_center_poly(vm.all_commune[key].coordonnees).longitude ;
+                  vm.map.zoom = 8 ;
+                 
+                }
                 
               });
 
