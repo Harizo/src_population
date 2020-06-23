@@ -34,7 +34,9 @@
 			{"titre":"Email"},
 			{"titre":"Etat"},
 			//{"titre":"Envoi des données"},
-			{"titre":"Groupes"}
+			{"titre":"Groupes"},
+			{"titre":"Status"}
+
 		];
 
 		vm.dtOptions = {
@@ -384,6 +386,23 @@
               }
           }
 		}
+
+		vm.test_statut = function(valeur) {
+          switch(valeur) {
+              case '1':  {
+                  return 'Connecté' ;
+                  break;
+              }
+              case '0':  {
+                  return 'Déconnecté' ;
+                  break;
+              }
+              default : {
+                  return 'Déconnecté' ;
+                  break;
+              }
+          }
+		}
 		// Ajout d'un nouvel utilisateur
         vm.ajouterUtilisateur = function () {
 			vm.titre="Nouveau utilisateur";
@@ -397,7 +416,8 @@
 			vm.user.user=true;
 			vm.user.prenom=null;
 			vm.user.email=null;
-			vm.user.enabled=1;
+			vm.user.enabled=0;
+			vm.user.etat_connexion=0;
 			vm.user.sigle=null;
 			vm.user.envoi_donnees=null;
 			vm.user.password=null;
@@ -444,6 +464,7 @@
 			vm.user.prenom = vm.selectedItem.prenom ;
 			vm.user.email = vm.selectedItem.email ;
 			vm.user.enabled = vm.selectedItem.enabled ;
+			vm.user.etat_connexion = vm.selectedItem.etat_connexion ;
 			vm.user.sigle = vm.selectedItem.sigle ;
 			vm.user.password = vm.selectedItem.password ;
 			vm.user.default_password = parseInt(vm.selectedItem.default_password) ;
@@ -615,9 +636,12 @@
 					}
 				};
 				var getId = 0;
+				var etat_connexion = 0 ;
 				if (vm.NouvelItem==false) 
 				{
 				   getId = vm.selectedItem.id; 
+
+				   etat_connexion = user.etat_connexion ;
 				} 
 				if (!vm.infoAssuj) 
 				{
@@ -658,6 +682,7 @@
 					email_hote: user.email_hote,                 
 					telephone_hote: user.telephone_hote,                 
 					description_hote: user.description_hote,                 
+					etat_connexion: etat_connexion                
 				});
 				apiFactory.add("utilisateurs/index",datas, config).success(function (data) 
 				{
@@ -672,7 +697,9 @@
 							prenom:user.prenom,
 							email:user.email,
 							sigle:user.sigle,
-							enabled:user.enabled,
+							//enabled:user.enabled,
+							enabled:0,
+							etat_connexion:etat_connexion,
 							envoi_donnees:user.envoi_donnees,
 							password:user.password,
 							default_password:user.default_password,
@@ -710,6 +737,7 @@
 						vm.selectedItem.prenom = user.prenom;
 						vm.selectedItem.sigle = user.sigle;
 						vm.selectedItem.enabled = user.enabled;
+						vm.selectedItem.etat_connexion = user.etat_connexion;
 						vm.selectedItem.envoi_donnees = user.envoi_donnees;
 						vm.selectedItem.password = user.password;
 						vm.selectedItem.default_password = user.default_password;
@@ -747,7 +775,7 @@
 					apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
 					});								
 					}).error(function (data) {               
-				});
+					});
 			} 
 			else 
 			{  //delete
@@ -769,7 +797,7 @@
 						return obj.id !== vm.selectedItem.id;
 					});
 				}).error(function (data) {
-                  
+	              
 				});
 			}
 			vm.afficherboutonnouveau = 1 ;

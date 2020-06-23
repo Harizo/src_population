@@ -134,10 +134,12 @@
             vm.allregion = result.data.response;    
         });*/
 
-
+        vm.load_ddb = true ;
         apiFactory.getAPIgeneraliserREST("region/index","all_filter",1).then(function(result)
         {
             vm.allregion = result.data.response;    
+
+            vm.load_ddb = false ;
         });
 
 
@@ -265,6 +267,7 @@
         vm.modifierregion = function(filtre)
         {   
             vm.allcommune = [] ;
+            vm.load_ddb = true ;
             //apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",filtre.region_id).then(function(result)
             apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",filtre.region_id,"data_non_vide",1).then(function(result)
             {
@@ -272,6 +275,8 @@
               vm.filtre.commune_id = '*' ;
               vm.alldistrict = result.data.response;
               vm.isDistrict = true;
+
+              vm.load_ddb = false ;
             });
         }
 

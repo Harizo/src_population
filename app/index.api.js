@@ -39,6 +39,9 @@
           },
           getTable: function(controller, nom_table) {
             return $http.get(apiUrl+controller+"?nom_table="+nom_table);
+          },
+          getParamsDynamic:function(params){
+            return $http.get(apiUrl+params);
           }
 
 
@@ -76,10 +79,11 @@
     };
 
     /** @ngInject */
-    function loginService($cookieStore,$http, apiUrl, $location, cookieService, storageService, $mdDialog, $state,$window,apiFactory)
+    function loginService($cookieStore,$http, apiUrl, $location, cookieService, storageService, $mdDialog, $state,$window,apiFactory, $rootScope)
     {
       return{
-        sing_in: function(utilisateur, ev){
+        sing_in: function(utilisateur, ev)
+        {
           //clear
           cookieService.del('id');
           cookieService.del('nom');
@@ -94,108 +98,167 @@
           var email = utilisateur.email;
           var pwd = utilisateur.password;
 
-			$http.get(apiUrl+'utilisateurs?email='+email+'&pwd='+pwd).success(function(data){
-				if(data.status == true) {
-                    cookieService.set('id',data.response.id);
-                    cookieService.set('nom',data.response.nom);
-                    cookieService.set('prenom',data.response.prenom);
-                    cookieService.set('email',data.response.email);
-                    cookieService.set('token',data.response.token);
-                    cookieService.set('roles',data.response.roles);
-                    storageService.set('exist',9);
-                    storageService.set('enabled',data.response.enabled);
-					var id_utilisateur = data.response.id;
-					var actions="";
-					if(parseInt(data.response.default_password)==1) {
-						actions="Premier connection à l'application";
-					} else {
-						actions="Connection à l'application";
-					}
-                    //add historique
-                    var config = {
-                        headers : {
-                            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                        }
-                    };
-                    var datas = $.param({
-                        action:actions,
-                        id_utilisateur:id_utilisateur
-                    });
-                    //factory
-                    apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-					});
-					
-                    if(data.response.enabled==0) {
-						$location.path("/auth/lock");
-                    } else  {
-						// Si mot de passe par défaut => rédirection modification mot de passe 
-						if(parseInt(data.response.default_password)==1) {
-							$location.path("/auth/firstlogin");
-						} else {	
-							location.reload();
-							// $location.path("/accueil");//si n'est pas packeT    
-							$window.location.href = '/';
-						}	
+          $http.get(apiUrl+'utilisateurs?email='+email+'&pwd='+pwd).success(function(data)
+          {
+    				if(data.status == true) 
+            {
+              if (data.response.etat_connexion == 0) 
+              {
+                cookieService.set('id',data.response.id);
+                cookieService.set('nom',data.response.nom);
+                cookieService.set('prenom',data.response.prenom);
+                cookieService.set('email',data.response.email);
+                cookieService.set('token',data.response.token);
+                cookieService.set('roles',data.response.roles);
+                storageService.set('exist',9);
+                storageService.set('enabled',data.response.enabled);
+                var id_utilisateur = data.response.id;
+                var actions="";
+                if(parseInt(data.response.default_password)==1) 
+                {
+                  actions="Premier connection à l'application";
+                } 
+                else 
+                {
+                  actions="Connection à l'application";
+                }
+                //add historique
+                var config = {
+                    headers : {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
                     }
-				} else {
-                    $mdDialog.show({
-                      controller         : function ($scope, $mdDialog)
-                      {
-                        $scope.closeDialog = function ()
-                        {
-                          $mdDialog.hide();
-                        }
-                      },
-                      template           : '<md-dialog>' +
-                      '  <md-dialog-content><h1 class="md-warn-fg" translate="LOGIN.error.titre">titre</h1><div><pre translate="LOGIN.error.msg">corps</pre></div></md-dialog-content>' +
-                      '  <md-dialog-actions>' +
-                      '    <md-button ng-click="closeDialog()" class="md-primary" translate="LOGIN.error.quitter">' +
-                      '      Quitter' +
-                      '    </md-button>' +
-                      '  </md-dialog-actions>' +
-                      '</md-dialog>',
-                      parent             : angular.element('body'),
-                      targetEvent        : ev,
-                      clickOutsideToClose: true
-                    });
-                    cookieService.del('id');
-                    cookieService.del('nom');
-                    cookieService.del('prenom');
-                    cookieService.del('email');
-                    cookieService.del('token');
-                    cookieService.del('roles');
-                    cookieService.del('exist');
-                    storageService.del('exist');
-                    storageService.del('enabled');
-                    $location.path("/auth/login");
-				}
-            });
+                };
+                var datas = $.param({
+                    action:actions,
+                    id_utilisateur:id_utilisateur
+                });
+                //factory
+                apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+                });
+      
+                if(data.response.enabled==0) 
+                {
+                  $location.path("/auth/lock");
+                } 
+                else  
+                {
+                  // Si mot de passe par défaut => rédirection modification mot de passe 
+                  if(parseInt(data.response.default_password)==1) 
+                  {
+                    $location.path("/auth/firstlogin");
+                  } 
+                  else 
+                  { 
+                    location.reload();
+                    // $location.path("/accueil");//si n'est pas packeT    
+                    $window.location.href = '/';
+                  } 
+                }
+              }
+              else
+              {
+                $rootScope.afficher_deconnecte_compte = true ;
+                $mdDialog.show({
+                  controller         : function ($scope, $mdDialog, $rootScope)
+                  {
+                    $scope.closeDialog = function ()
+                    {
+                      $mdDialog.hide();
+
+                      $rootScope.etat_load = false ;
+                    }
+                  },
+                  template           : '<md-dialog>' +
+                  '  <md-dialog-content><h1 class="md-warn-fg" translate="LOGIN.error.titre">titre</h1><div><pre translate="LOGIN.error.msg_conecter">corps</pre></div></md-dialog-content>' +
+                  '  <md-dialog-actions>' +
+                  '    <md-button ng-click="closeDialog()" class="md-primary" translate="LOGIN.error.quitter">' +
+                  '      Quitter' +
+                  '    </md-button>' +
+                  '  </md-dialog-actions>' +
+                  '</md-dialog>',
+                  parent             : angular.element('body'),
+                  targetEvent        : ev,
+                  clickOutsideToClose: true
+                });
+              }
+    				} 
+            else 
+            {
+                        $mdDialog.show({
+                          controller         : function ($scope, $mdDialog, $rootScope)
+                          {
+                            $scope.closeDialog = function ()
+                            {
+                              $mdDialog.hide();
+
+                              $rootScope.etat_load = false ;
+                            }
+                          },
+                          template           : '<md-dialog>' +
+                          '  <md-dialog-content><h1 class="md-warn-fg" translate="LOGIN.error.titre">titre</h1><div><pre translate="LOGIN.error.msg">corps</pre></div></md-dialog-content>' +
+                          '  <md-dialog-actions>' +
+                          '    <md-button ng-click="closeDialog()" class="md-primary" translate="LOGIN.error.quitter">' +
+                          '      Quitter' +
+                          '    </md-button>' +
+                          '  </md-dialog-actions>' +
+                          '</md-dialog>',
+                          parent             : angular.element('body'),
+                          targetEvent        : ev,
+                          clickOutsideToClose: true
+                        });
+                        cookieService.del('id');
+                        cookieService.del('nom');
+                        cookieService.del('prenom');
+                        cookieService.del('email');
+                        cookieService.del('token');
+                        cookieService.del('roles');
+                        cookieService.del('exist');
+                        storageService.del('exist');
+                        storageService.del('enabled');
+                        $location.path("/auth/login");
+    				}
+          });
         },
-        logout: function(){
-			var id_utilisateur = $cookieStore.get('id');
-			//add historique
-			var config = {
-				headers : {
-					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-				}
-			};
-			var datas = $.param({
-				action:"Déconnection",
-				id_utilisateur:id_utilisateur	   			
-			});
-			//factory
-			apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
-			}); 
-			cookieService.del('id');
-			cookieService.del('nom');
-			cookieService.del('prenom');
-			cookieService.del('email');
-			cookieService.del('token');
-			cookieService.del('roles');
-			cookieService.del('exist');
-			storageService.del('exist');
-			storageService.del('enabled');
-			$location.path("/auth/login");
+        logout: function()
+        {
+    			var id_utilisateur = $cookieStore.get('id');
+    			//add historique
+    			var config = {
+    				headers : {
+    					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+    				}
+    			};
+    			var datas = $.param({
+    				action:"Déconnection",
+    				id_utilisateur:id_utilisateur	   			
+    			});
+
+    			//factory
+    			apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
+    			}); 
+
+          //update etat déconnection
+
+            var datas_deconnexion = $.param({
+              deconnexion:1,
+              token:cookieService.get('token'),
+              email:cookieService.get('email')         
+            });
+            apiFactory.add("utilisateurs/index",datas_deconnexion, config).success(function (data) 
+            {
+                cookieService.del('id');
+                cookieService.del('nom');
+                cookieService.del('prenom');
+                cookieService.del('email');
+                cookieService.del('token');
+                cookieService.del('roles');
+                cookieService.del('exist');
+                storageService.del('exist');
+                storageService.del('enabled');
+                $location.path("/auth/login");
+            });
+          //fin update etat déconnection
+    			
         },
         isEnabled: function(){
           var token = cookieService.get('token');

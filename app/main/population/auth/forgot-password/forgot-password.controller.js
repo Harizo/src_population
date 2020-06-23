@@ -7,7 +7,7 @@
         .controller('ForgotPasswordController', ForgotPasswordController);
 
     /** @ngInject */
-    function ForgotPasswordController(apiFactory, $location, $mdDialog)
+    function ForgotPasswordController(apiFactory, $location, $mdDialog,$cookieStore)
     {
       var vm = this;
       vm.send = send;
@@ -15,13 +15,17 @@
       function send(email, ev)
       {
 		  // Récupération d'un utilisateur par e-mail en entrée
-        apiFactory.getAll("utilisateurs/index?courriel="+email)
+        apiFactory.getParamsDynamic("utilisateurs/index?courriel="+email)
           .success(function(result) {
 
             if(result.status == false)
             {
               vm.email_exist = 0;
-            }else{
+            }
+            else
+            {
+              /*$cookieStore.put('etat_reset',1);
+              $cookieStore.put('crl',email);*/
               vm.email_exist = 1;
 
               $mdDialog.show({
@@ -34,8 +38,8 @@
                 clickOutsideToClose: false
               });
 
-              apiFactory.getAll("mail/index?actif=2&courriel="+result.response.email+"&token="+result.response.token).then(function() {
-                $location.path('/auth/login');
+              apiFactory.getParamsDynamic("mail/index?actif=2&courriel="+result.response.email+"&token="+result.response.token).then(function() {
+                //$location.path('/auth/login');
                 $mdDialog.hide();
               });
             }

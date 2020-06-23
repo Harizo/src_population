@@ -221,6 +221,19 @@
 									  </div>
 									</div>
 								</md-input-container> 
+								<md-input-container flex="100" flex-gt-xs="10">
+									<label>Etat connexion</label>
+									<md-select name="etat_connexion" ng-model="vm.user.etat_connexion" >
+									  <md-option value="1">Connecté</md-option>
+									  <md-option value="0">Déconnecté</md-option>
+									</md-select>
+									<div ng-messages="etat_connexion.$error"
+									   role="alert">
+									  <div ng-message="">
+										  <span>Etat</span>
+									  </div>
+									</div>
+								</md-input-container> 
 							</div>
 						</fieldset>
 							<fieldset class="standard" >
@@ -472,6 +485,7 @@
 						  {{"- "+vm.affichage_groupe(s)}} <br>
 						</span>
 					</td>
+					<td>{{vm.test_statut(user.etat_connexion)}}</td>
                 </tr>
               </tbody>
             </table>

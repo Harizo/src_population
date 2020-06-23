@@ -22,7 +22,7 @@
     function config(msNavigationServiceProvider)
     {
         msNavigationServiceProvider.saveItem('population.administration', {
-            title : 'Administration',
+            title : 'Administration du système',
             icon  : 'icon-cog',
             weight: 1,
             hidden: function()

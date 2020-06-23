@@ -31,6 +31,22 @@
             responsive: false
         };
 
+        //Tableau ded bord dg
+          vm.affiche_load = true ;
+          apiFactory.getAPIgeneraliserREST("Environment_et_systeme/index",
+                                              "menu","tableu_bord_dg")//fin code harizo
+            .then(function(result)
+            {
+
+              
+                  vm.datas_dg = result.data.response;
+                  vm.affiche_load = false ;
+                  console.log(vm.datas_dg);
+             
+        
+            });
+        //Fin Tableau ded bord dg
+
         vm.pivots = [
           
          /* {
@@ -151,7 +167,8 @@
             titre:"Répartition par âge et par sexe des bénéficiaires",
             id:"req38_theme2",
             category:"theme2"
-          },
+          }
+          ,
           {
             titre:"Répartition financement par programme",
             id:"req7_theme2",
@@ -195,7 +212,7 @@
           if ( (val1 >0) || (val2 > 0) ) 
           {
             
-            return "#cecece" ;
+            return "#b7b7b7" ;
           }
         }
         vm.parse_int = function(str)

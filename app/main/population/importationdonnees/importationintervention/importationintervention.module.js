@@ -15,7 +15,7 @@
     {
         // State
         $stateProvider.state('app.population_importationdonnees_importationintervention', {
-            url      : '/importationdonnees/importation-intervention',
+            url      : '/importationdonnees/importationintervention',
             views    : {
                 'content@app': {
                     templateUrl: 'app/main/population/importationdonnees/importationintervention/importationintervention.html',

@@ -1,6 +1,6 @@
 {
     "RESETPASSWORD": {
-        "TITLE": "réinitialisez votre mot de passe",
+        "TITLE": "Réinitialisez votre mot de passe",
         "EMAIL_ADRESS": "Email",
         "PASSWORD": "Mot de passe",
         "PASSWORD_CONFIRM": "Mot de passe (Confirmation)",

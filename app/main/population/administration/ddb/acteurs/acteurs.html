@@ -200,7 +200,7 @@
                             <fieldset>
                                 <legend>
                                         Type acteur
-                                    <button ng-click="vm.ajouterTypeacteur()" title="Ajouter un type d'acteur" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
+                                    <button ng-click="vm.ajouterTypeacteur()" ng-if="!vm.selectedItemTypeacteur.$edit" title="Ajouter un type d'acteur" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
                                 </legend>
                                 <table ng-table="tablePrestataireTypeacteur" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">
                                     <thead>
@@ -218,7 +218,7 @@
                                                 <span ng-if="presta.$edit">
                                                     <md-input-container style="width:100%;">
                                                         <label>Code type acteur</label>
-                                                        <input name="code" type="text" ng-model="presta.code" maxlength="10"/>
+                                                        <input name="code" type="text" ng-model="presta.code" maxlength="10" ng-readonly="true"/>
                                                     </md-input-container>	
                                                 </span>
                                                 <span ng-if="!presta.$edit">{{presta.code}}</span>
@@ -360,7 +360,7 @@
                         <md-tab-body>
                             <fieldset>
                                 <legend>
-                                        Unité de mésure
+                                        Unité de mesure
                                     <button ng-click="vm.ajouterUnitemesure()" title="Ajouter une unité de mésure" style="font-size: 24px;font-weight: bold;background-color: rgb(255,255,255);color: rgb(3,155,229);">+</button>
                                 </legend>
                                 <table id="tableUnitemesure" ng-table="tableUnitemesure" class="dataTable row-border hover"  datatable="ng" dt-options="vm.dtOptions">

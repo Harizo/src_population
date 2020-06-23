@@ -11,7 +11,7 @@
     {
         // State
         $stateProvider.state('app.population_auth_reset-password', {
-            url      : '/auth/reset-password?token',
+            url      : '/auth/resetpassword?token',
             views    : {
                 'main@'                                : {
                     templateUrl: 'app/core/layouts/content-only.html',

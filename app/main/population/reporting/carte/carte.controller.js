@@ -12,13 +12,16 @@
       var vm = this ;
 
       //recuperation region
-      apiFactory.getAll("region/index").then(function(result)
-      {
-          vm.allregion = result.data.response;    
-      });
+      vm.load_ddb = true ;
+        apiFactory.getAPIgeneraliserREST("region/index","all_filter",1).then(function(result)
+        {
+            vm.allregion = result.data.response;    
+
+            vm.load_ddb = false ;
+        });
 
       //recuperation district par region
-        vm.modifierregion = function(filtre)
+        /*vm.modifierregion = function(filtre)
         {   
             vm.allcommune = [] ;
             apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",filtre.region_id).then(function(result)
@@ -27,6 +30,21 @@
               vm.filtre_carte.commune_id = '*' ;
               vm.alldistrict = result.data.response;
               vm.isDistrict = true;
+            });
+        }
+*/
+        vm.modifierregion = function(filtre)
+        {   
+           
+            vm.load_ddb = true ;
+            apiFactory.getAPIgeneraliserREST("district/index","cle_etrangere",filtre.region_id,"data_non_vide",1).then(function(result)
+            {
+              
+              vm.filtre_carte.district_id = '*' ;
+              vm.alldistrict = result.data.response;
+              vm.isDistrict = true;
+
+              vm.load_ddb = false ;
             });
         }
 
@@ -229,28 +247,26 @@
           };
 
           var id_user = $cookieStore.get('id');
-          vm.polylines = [];   
+         
 
           
 
           vm.affichage_commune_in_carte = function()
           {
 
+            vm.load_ddb = true ;
+
             //apiFactory.getAll("commune/index").then(function(result) 
-            apiFactory.getAPIgeneraliserREST("commune/index","cle_etrangere",vm.filtre_carte.district_id).then(function(result)
+            apiFactory.getAPIgeneraliserREST("commune/index","district_id",vm.filtre_carte.district_id,"etat_carte",1).then(function(result)
             {
-              console.log(result.data.response);  
+
+                vm.polylines = [];  
                
-
-
 
               vm.all_commune = result.data.response ;
 
               angular.forEach(vm.all_commune, function(value, key)
               {
-
-                
-                
 
                 var item = 
                 {
@@ -258,6 +274,7 @@
                   id_mark: "mark_"+value.id ,
                   id_win: "win"+value.id ,
                   nom: value.nom ,
+                  nbr: value.nbr_menage_beneficiaire_commune,
                   path:value.coordonnees,
                   marker_cord:vm.get_center_poly(value.coordonnees),
                   marker_option:{
@@ -276,7 +293,6 @@
                   events: { 
                     click: function(event)
                     { 
-                    console.log(value.id); 
 
                     },
                     mouseover: function(gPoly, eventName, polyModel, latLngArgs) {
@@ -285,9 +301,7 @@
                     },
                     mouseout: function(gPoly, eventName, polyModel, latLngArgs) {
                       polyModel.fill.opacity = '0';
-                      console.log("mouseout ok");
-                      console.log(latLngArgs);
-                    }
+                                          }
                   }
                 };
 
@@ -300,6 +314,7 @@
                   vm.map.center.latitude = vm.get_center_poly(vm.all_commune[key].coordonnees).latitude ;
                   vm.map.center.longitude = vm.get_center_poly(vm.all_commune[key].coordonnees).longitude ;
                   vm.map.zoom = 8 ;
+                  vm.load_ddb = false ;
                  
                 }
                 
@@ -317,24 +332,37 @@
       {
         
         var centroid = [];
-         centroid[0] = 0.0 ;
-         centroid[1] = 0.0 ;
-        path.forEach( function(element, index) {
+        centroid[0] = 0.0 ;
+        centroid[1] = 0.0 ;
+        path.forEach( function(element, index) 
+        {
           centroid[0] += Number(element.latitude);
-            centroid[1] += Number(element.longitude);
+          centroid[1] += Number(element.longitude);
         });
 
         var totalPoints = path.length;
         centroid[0] = centroid[0] / totalPoints;
         centroid[1] = centroid[1] / totalPoints;
 
-        var pts = {
+        var pts = 
+        {
           latitude : centroid[0],
           longitude : centroid[1]
         }
 
         return pts;
 
+      }
+
+      vm.affiche_info_box = function(nbr)
+      {
+        console.log(nbr);
+        if (Number(nbr) > 0) 
+        {
+          return true;
+        }
+        else
+          return false;
       }
 
 

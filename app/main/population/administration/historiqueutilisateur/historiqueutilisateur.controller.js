@@ -36,7 +36,7 @@
 		apiFactory.add("historique_utilisateur/index",datas, config).success(function (data) {
 		});
 	    
-	    vm.historique_column = [{titre: "Utilisateur"},{titre: "Action"},{titre: "Date"}]; //col table
+	    vm.historique_column = [/*{titre: "Utilisateur"},*/{titre: "Action"},{titre: "Date"}]; //col table
     	
 	    //recuperation historique
     	apiFactory.getAll("utilisateurs/index").then(function(result)

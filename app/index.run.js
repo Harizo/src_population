@@ -13,6 +13,7 @@
         var stateChangeStartEvent = $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams)
         {
             $rootScope.loadingProgress = true;
+           
 
             var enabled = loginService.isEnabled();
             var authorized = toState.data.authorizer;
@@ -25,6 +26,10 @@
             }
             var exist = storageService.get('exist');
             var getPermis = loginService.isPermitted(AllPermitted, Permitted);
+           /* if (cookieService.get("etat_reset")) 
+            {
+                $location.path("/auth/resetpassword");
+            }*/
 
             if(!enabled && authorized) {
               $location.path("/auth/login");

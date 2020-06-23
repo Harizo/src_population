@@ -5,9 +5,9 @@
     angular
         .module("fuse")
 
-		.constant("apiUrl", "http://localhost/2019/population/api/index.php/api/")
+		/*.constant("apiUrl", "http://localhost/2019/population/api/index.php/api/")
 		.constant("apiUrlbase", "http://localhost/2019/population/")
-		.constant('apiUrlExcel', "http://localhost/2019/population/exportexcel/")
+		.constant('apiUrlExcel', "http://localhost/2019/population/exportexcel/")*/
 
 		/* SERVEUR Min Pop*/
 
@@ -32,9 +32,9 @@
 
 
 		/* Telma SERVEUR */
-		/*.constant("apiUrl", "http://41.207.51.186/registresocial/2019/population/api/index.php/api/")
-		.constant("apiUrlbase", "http://41.207.51.186/registresocial/2019/population/")
-		.constant('apiUrlExcel', "http://41.207.51.186/registresocial/2019/population/exportexcel/")*/
+		.constant("apiUrl", "http://www.registrebeneficiaires.mg/2019/population/api/index.php/api/")
+		.constant("apiUrlbase", "http://www.registrebeneficiaires.mg/2019/population/")
+		.constant('apiUrlExcel', "http://www.registrebeneficiaires.mg/2019/population/exportexcel/")
 		/*FIN Telma SERVEUR */
 
 

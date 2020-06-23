@@ -13,7 +13,7 @@
     {
         // State
         $stateProvider.state('app.population_registre_beneficiaire', {
-            url      : '/registre_beneficiaire',
+            url      : '/registrebeneficiaire',
             views    : {
                 'content@app': {
                     templateUrl: 'app/main/population/registre_beneficiaire/registre_beneficiaire.html',

@@ -214,6 +214,8 @@
 		// Clic sur un enregistrement type acteur
         vm.selectionTypeacteur= function (item) {     
             vm.selectedItemTypeacteur = item;
+
+            console.log(item);
         };
 		// $watch pour sélectionner ou désélectionner automatiquement un item du type acteur
         $scope.$watch('vm.selectedItemTypeacteur', function() {
@@ -223,37 +225,88 @@
 			});
 			vm.selectedItemTypeacteur.$selected = true;
         });
+
+        function get_max_code_type_acteur(tab)
+        {
+        	console.log(tab);
+        	var max = tab.reduce(function(a,b) {
+			  return Math.max(a, b);
+			});
+
+			var new_code = max+1;
+
+			if (new_code < 10 ) 
+			{
+				return "00"+new_code ;
+			}
+
+			if ((new_code >= 10) && (new_code < 99)) 
+			{
+				return "0"+new_code ;
+			}
+
+			if ((new_code >= 100) && (new_code <= 999)) 
+			{
+				return new_code ;
+			}
+
+        }
         // Ajout d'un nouvel item type acteur
-        vm.ajouterTypeacteur = function () {
-            vm.selectedItemTypeacteur.$selected = false;
-            NouvelItem = true ;
-		    var items = {
-				$edit: true,
-				$selected: true,
-				supprimer:0,
-                code: '',
-                description: '',
-			};
-			vm.allRecordsTypeacteur.push(items);
-		    vm.allRecordsTypeacteur.forEach(function(it) {
-				if(it.$selected==true) {
-					vm.selectedItemTypeacteur = it;
-				}
-			});			
+        vm.ajouterTypeacteur = function () 
+        {
+        	var tab = [] ;
+        	angular.forEach(vm.allRecordsTypeacteur, function(value, key)
+        	{
+        		tab.push(Number(value.code));
+
+        		if (vm.allRecordsTypeacteur.length == (key+1)) 
+        		{
+        			var items = {
+				    	id:0,
+						$edit: true,
+						$selected: true,
+						supprimer:0,
+		                code: get_max_code_type_acteur(tab),
+		                description: '',
+					};
+
+					vm.allRecordsTypeacteur.push(items);
+
+					vm.selectedItemTypeacteur.$selected = false;
+		            NouvelItem = true ;
+				    
+					
+				    vm.allRecordsTypeacteur.forEach(function(it) {
+
+						if(it.$selected==true) {
+							vm.selectedItemTypeacteur = it;
+						}
+					});	
+        		}
+        	});
+            		
         };
 		// Annulation modification d'un item type acteur
         vm.annulerTypeacteur = function(item) {
-			if (!item.id) {
+			if (item.id == 0) 
+			{
 				vm.allRecordsTypeacteur.pop();
-				return;
+				vm.selectedItemTypeacteur.$edit = false;
+				vm.selectedItemTypeacteur = {} ;     	
+				
+			}
+			else 
+			{
+				item.$selected=false;
+				item.$edit=false;
+				NouvelItem = false;
+				item.code = currentItem.code;
+				item.description = currentItem.description;
+				
+				vm.selectedItemTypeacteur.$selected = false;
+				vm.selectedItemTypeacteur = {} ;     	
 			}          
-			item.$selected=false;
-			item.$edit=false;
-			NouvelItem = false;
-			 item.code = currentItem.code;
-			 item.description = currentItem.description;
-			vm.selectedItemTypeacteur = {} ;
-			vm.selectedItemTypeacteur.$selected = false;
+			
        };
 	   // Modification d'un item type acteur
         vm.modifierTypeacteur = function(item) {
